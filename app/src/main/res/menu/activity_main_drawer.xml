@@ -6,6 +6,9 @@
         android:id="@+id/connect"
         android:title="Connect to device" />
     <item
+        android:id="@+id/user_profile"
+        android:title="USERPROFILE" />
+    <item
         android:id="@+id/about"
         android:title="About" />
     </group>

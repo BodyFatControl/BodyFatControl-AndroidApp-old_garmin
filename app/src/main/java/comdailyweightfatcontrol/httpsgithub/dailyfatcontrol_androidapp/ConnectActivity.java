@@ -76,7 +76,6 @@ public class ConnectActivity extends ListActivity {
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
 
         mEmptyView = (TextView)findViewById(android.R.id.empty);
-
     }
 
     @Override
