@@ -9,6 +9,15 @@
         android:id="@+id/user_profile"
         android:title="USERPROFILE" />
     <item
+        android:id="@+id/hr_5m"
+        android:title="HR_5M" />
+    <item
+        android:id="@+id/hr_10m"
+        android:title="HR_10M" />
+    <item
+        android:id="@+id/hr_20m"
+        android:title="HR_20M" />
+    <item
         android:id="@+id/about"
         android:title="About" />
     </group>

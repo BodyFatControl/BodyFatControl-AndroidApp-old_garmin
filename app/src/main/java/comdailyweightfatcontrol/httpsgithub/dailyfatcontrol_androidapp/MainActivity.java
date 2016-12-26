@@ -249,6 +249,8 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        ArrayList<Integer> command = new ArrayList<Integer>();
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -260,14 +262,37 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.about) {
 
         } else if (id == R.id.user_profile) {
-
-            ArrayList<Integer> command = new ArrayList<Integer>();
             command.add(USER_DATA_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
 
             sendMessage(command);
+
+        } else if (id == R.id.hr_5m) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (5 * 60));
+            sendMessage(command);
+
+        } else if (id == R.id.hr_10m) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (10 * 60));
+            sendMessage(command);
+
+        } else if (id == R.id.hr_20m) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (20 * 60));
+            sendMessage(command);
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
