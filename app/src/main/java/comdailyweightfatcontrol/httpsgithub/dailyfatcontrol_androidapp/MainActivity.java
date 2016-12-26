@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,12 +43,20 @@ public class MainActivity extends AppCompatActivity
     private boolean mSdkReady = false;
     public static final String MY_APP = "3F3D83A85F584671A551EA1316623AD7";
     private IQApp mConnectIQApp = new IQApp(MY_APP);
-    public static final int HISTORIC_HR_COMMAND = 0xFFFFA000;
-    public static final int USER_DATA_COMMAND = 0xFFFF0B00;
+    public static final int HISTORIC_HR_COMMAND = 104030201;
+    public static final int USER_DATA_COMMAND = 204030201;
     private TextView mTextView;
 
-    private ConnectIQ.ConnectIQListener mListenerSDKInitialize = new ConnectIQ.ConnectIQListener() {
+    private ConnectIQ.IQDeviceEventListener mDeviceEventListener = new ConnectIQ.IQDeviceEventListener() {
 
+        @Override
+        public void onDeviceStatusChanged(IQDevice device, IQDevice.IQDeviceStatus status) {
+            mAdapter.updateDeviceStatus(device, status);
+        }
+
+    };
+
+    private ConnectIQ.ConnectIQListener mListenerSDKInitialize = new ConnectIQ.ConnectIQListener() {
         @Override
         public void onInitializeError(ConnectIQ.IQSdkErrorStatus errStatus) {
 //            if( null != mTextView )
@@ -65,7 +72,7 @@ public class MainActivity extends AppCompatActivity
             SharedPreferences mPrefs = getSharedPreferences("MainSharedPreferences", MODE_PRIVATE);
             Gson gson = new Gson();
             String json = mPrefs.getString("garmin_device", "");
-            IQDevice mIQDevice = gson.fromJson(json, IQDevice.class);
+            mIQDevice = gson.fromJson(json, IQDevice.class);
 
             if (mIQDevice != null) {
                 // Get our instance of ConnectIQ.  Since we initialized it
@@ -84,6 +91,13 @@ public class MainActivity extends AppCompatActivity
                     });
                 } catch (InvalidStateException e) {
 //                Log.wtf(TAG, "InvalidStateException:  We should not be here!");
+                }
+
+                try {
+                    mConnectIQ.registerForDeviceEvents(mIQDevice, mDeviceEventListener);
+                } catch (InvalidStateException e) {
+                    // This generally means you forgot to call initialize(), but since
+                    // we are in the callback for initialize(), this should never happen
                 }
 
                 // Let's check the status of our application on the device.
