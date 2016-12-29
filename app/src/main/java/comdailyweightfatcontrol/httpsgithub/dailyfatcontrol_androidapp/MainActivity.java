@@ -175,10 +175,15 @@ public class MainActivity extends AppCompatActivity
                                     measurementList.add(measurement);
                                 }
 
-                                Collections.reverse(measurementList); // reverse the list order, to get the values in date ascending order
-                                Calories calories = new Calories(getApplication().getApplicationContext()); // calc calories
+                                // reverse the list order, to get the values in date ascending order
+                                Collections.reverse(measurementList);
+
+                                // calc calories on the measurement list
+                                Calories calories = new Calories(getApplication().getApplicationContext());
                                 measurementList = calories.calcCalories(measurementList);
-                                new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList); // // finally write the values to database
+
+                                // finally write the measurement list to database
+                                new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
 
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
 

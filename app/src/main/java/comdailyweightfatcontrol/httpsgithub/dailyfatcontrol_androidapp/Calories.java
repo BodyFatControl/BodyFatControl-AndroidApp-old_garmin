@@ -3,8 +3,10 @@ package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class Calories {
     /*
@@ -33,8 +35,8 @@ public class Calories {
     Female:((-59.3954 + (0.45 x HR) + (0.380 x VO2max) + (0.103 x W) + (0.274 x A))/4.184) x 60 x T
     */
 
-    private int VIVOACTIVE_HR_SAMPLE_PERIOD = 95; // in seconds
-    private double VIVOACTIVE_HR_DT = 95.0/(60.0*60.0); // hour
+    public final int VIVOACTIVE_HR_SAMPLE_PERIOD = 95; // in seconds
+    private final double VIVOACTIVE_HR_DT = 95.0/(60.0*60.0); // hour
 
     private Context mContext;
 
@@ -48,17 +50,21 @@ public class Calories {
         DataBase dataBase = new DataBase(mContext);
         lastMeasurement = dataBase.DataBaseGetLastMeasurement();
 
+        // loop through all the measurements
         for (Measurement measurement : measurementList) {
 
-            // calc calories value
+            // calc calories value for current measurement
             int hr = measurement.getHRValue();
             int calories;
             SharedPreferences mPrefs = MainActivity.getPrefs();
             int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
+            if (birthYear == 0) return measurementList; // return due to wrong value
             int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
             int gender = mPrefs.getInt("GENDER", 0);
             int height = mPrefs.getInt("HEIGHT", 0);
+            if (height == 0) return measurementList; // return due to wrong value
             int weight = mPrefs.getInt("WEIGHT", 0);
+            if (weight == 0) return measurementList; // return due to wrong value
             int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
 
             if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
@@ -83,6 +89,17 @@ public class Calories {
                 }
             }
 
+            // Now verify if current measure date is after midnight
+            // if is the first measure after midnight, do not sum otherwise do the sum
+            Calendar rightNow = Calendar.getInstance();
+            long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+            long sinceMidnightToday = (rightNow.getTimeInMillis() + offset) % (24 * 60 * 60 * 1000);
+            long midNightToday = (rightNow.getTimeInMillis() + offset) - sinceMidnightToday;
+            midNightToday /= 1000; // value in milliseconds
+            if ((lastMeasurement.getDate() - midNightToday) > VIVOACTIVE_HR_SAMPLE_PERIOD) {
+                measurement.setCaloriesOutSum(calories + lastMeasurement.getCaloriesOutSum());
+            }
+
             // now set all the values on the measurement
             measurement.setCaloriesOut(calories);
             measurement.setIsManualCalories(0);
@@ -92,6 +109,8 @@ public class Calories {
             measurement.setUserWeight(weight);
             measurement.setUserWeight(weight);
             measurement.setUserActivityClass(activityClass);
+
+            lastMeasurement = measurement; // we need to keep the last measurement calories to add to next one
         }
 
         return measurementList;
