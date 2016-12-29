@@ -1,15 +1,16 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 public class Measurement {
-    private int date;
+    private int date; // UTC Unix
     private int HRValue;
-    private int caloriesOut;
+    private int caloriesOut; // value * 1000
+    private int caloriesOutSum;  // value * 1000
     private int isManualCalories;
-    private int userBirthYear;
-    private int userGender;
-    private int userHeight;
-    private int userWeight;
-    private int userActivityClass;
+    private int userBirthYear; //ex: 1980
+    private int userGender; // 0 = female; 1 = male
+    private int userHeight; // centimeters, ex: 170
+    private int userWeight; // grams, ex (82kg): 82000
+    private int userActivityClass; // activity level from 0-100; 20 is low activity, 50 is medium, 80 is high (athlete)
 
     public int getDate() {
         return date;
@@ -81,5 +82,13 @@ public class Measurement {
 
     public void setUserActivityClass(int userActivityClass) {
         this.userActivityClass = userActivityClass;
+    }
+
+    public int getCaloriesOutSum() {
+        return caloriesOutSum;
+    }
+
+    public void setCaloriesOutSum(int caloriesOutSum) {
+        this.caloriesOutSum = caloriesOutSum;
     }
 }

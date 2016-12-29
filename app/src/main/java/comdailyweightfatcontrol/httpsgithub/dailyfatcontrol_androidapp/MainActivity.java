@@ -52,7 +52,12 @@ public class MainActivity extends AppCompatActivity
     public static final int HISTORIC_HR_COMMAND = 104030201;
     public static final int USER_DATA_COMMAND = 204030201;
     private TextView mTextView;
-    private String PREFERENCES = "MainSharedPreferences";
+    public static String PREFERENCES = "MainSharedPreferences";
+    public static SharedPreferences Prefs;
+
+    public static SharedPreferences getPrefs() {
+        return Prefs;
+    }
 
     private ConnectIQ.IQDeviceEventListener mDeviceEventListener = new ConnectIQ.IQDeviceEventListener() {
 
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity
             mSdkReady = true;
 
             // verifiy if Garmin device is saved on SharedPreferences
-            SharedPreferences mPrefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+            SharedPreferences mPrefs = getPrefs();
             Gson gson = new Gson();
             String json = mPrefs.getString("garmin_device", "");
             mIQDevice = gson.fromJson(json, IQDevice.class);
@@ -171,12 +176,14 @@ public class MainActivity extends AppCompatActivity
                                 }
 
                                 Collections.reverse(measurementList); // reverse the list order, to get the values in date ascending order
+                                Calories calories = new Calories(getApplication().getApplicationContext()); // calc calories
+                                measurementList = calories.calcCalories(measurementList);
                                 new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList); // // finally write the values to database
 
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
 
                                 // Store the UserData on Preferences
-                                SharedPreferences.Editor editor = getSharedPreferences(PREFERENCES, MODE_PRIVATE).edit();
+                                SharedPreferences.Editor editor = getPrefs().edit();
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
                                 iteratorTheMessage.next(); // command ID
                                 iteratorTheMessage.next(); // random
@@ -205,12 +212,12 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
 
-                        // Start by sending the USER_DATA_COMMAND, which is needed to get the user information at app start
-                        ArrayList<Integer> command = new ArrayList<Integer>();
-                        command.add(USER_DATA_COMMAND);
-                        Random r = new Random();
-                        command.add(r.nextInt(2^30));
-                        sendMessage(command);
+//                        // Start by sending the USER_DATA_COMMAND, which is needed to get the user information at app start
+//                        ArrayList<Integer> command = new ArrayList<Integer>();
+//                        command.add(USER_DATA_COMMAND);
+//                        Random r = new Random();
+//                        command.add(r.nextInt(2^30));
+//                        sendMessage(command);
 
                 } catch (InvalidStateException e) {
                     Toast.makeText(getApplication().getApplicationContext(), "ConnectIQ is not in a valid state", Toast.LENGTH_LONG).show();
@@ -245,7 +252,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //mTextView = (TextView)findViewById(R.id.text_view);
+        Prefs = getSharedPreferences(MainActivity.PREFERENCES, MODE_PRIVATE);
+
+        //mTextView = (TextView)findViewById(R.id.text_view);garmin_device
 
         // Here we are specifying that we want to use a WIRELESS bluetooth connection.
         // We could have just called getInstance() which would by default create a version
@@ -339,7 +348,7 @@ public class MainActivity extends AppCompatActivity
             Random r = new Random();
             command.add(r.nextInt(2^30));
             int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (20 * 60));
+            command.add(millis - (20 *60));
             sendMessage(command);
         }
 
