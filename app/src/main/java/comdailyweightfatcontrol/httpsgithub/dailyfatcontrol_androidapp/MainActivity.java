@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -29,9 +30,14 @@ import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 
 import com.google.gson.Gson;
 
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import static android.R.id.list;
 
 
 public class MainActivity extends AppCompatActivity
@@ -46,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     public static final int HISTORIC_HR_COMMAND = 104030201;
     public static final int USER_DATA_COMMAND = 204030201;
     private TextView mTextView;
+    private String PREFERENCES = "MainSharedPreferences";
 
     private ConnectIQ.IQDeviceEventListener mDeviceEventListener = new ConnectIQ.IQDeviceEventListener() {
 
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     };
 
-    private ConnectIQ.ConnectIQListener mListenerSDKInitialize = new ConnectIQ.ConnectIQListener() {
+    ConnectIQ.ConnectIQListener mListenerSDKInitialize = new ConnectIQ.ConnectIQListener() {
         @Override
         public void onInitializeError(ConnectIQ.IQSdkErrorStatus errStatus) {
 //            if( null != mTextView )
@@ -69,7 +76,7 @@ public class MainActivity extends AppCompatActivity
             mSdkReady = true;
 
             // verifiy if Garmin device is saved on SharedPreferences
-            SharedPreferences mPrefs = getSharedPreferences("MainSharedPreferences", MODE_PRIVATE);
+            SharedPreferences mPrefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
             Gson gson = new Gson();
             String json = mPrefs.getString("garmin_device", "");
             mIQDevice = gson.fromJson(json, IQDevice.class);
@@ -146,6 +153,41 @@ public class MainActivity extends AppCompatActivity
                             // message list.
                             StringBuilder builder = new StringBuilder();
 
+                            ArrayList<Integer> theMessage = new ArrayList<Integer>();
+                            ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
+
+                            theMessage = (ArrayList<Integer>) message.get(0);
+                            if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
+
+                                Iterator<Integer> iteratorTheMessage = theMessage.iterator();
+                                iteratorTheMessage.next(); // command ID
+                                iteratorTheMessage.next(); // random
+
+                                while (iteratorTheMessage.hasNext()) {
+                                    Measurement measurement = new Measurement();
+                                    measurement.setDate(iteratorTheMessage.next());
+                                    measurement.setHRValue(iteratorTheMessage.next());
+                                    measurementList.add(measurement);
+                                }
+
+                                Collections.reverse(measurementList); // reverse the list order, to get the values in date ascending order
+                                new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList); // // finally write the values to database
+
+                            } else if (theMessage.get(0) == USER_DATA_COMMAND) {
+
+                                // Store the UserData on Preferences
+                                SharedPreferences.Editor editor = getSharedPreferences(PREFERENCES, MODE_PRIVATE).edit();
+                                Iterator<Integer> iteratorTheMessage = theMessage.iterator();
+                                iteratorTheMessage.next(); // command ID
+                                iteratorTheMessage.next(); // random
+                                editor.putInt("BIRTH_YEAR", iteratorTheMessage.next());
+                                editor.putInt("GENDER", iteratorTheMessage.next());
+                                editor.putInt("HEIGHT", iteratorTheMessage.next());
+                                editor.putInt("WEIGHT", iteratorTheMessage.next());
+                                editor.putInt("ACTIVITY_CLASS", iteratorTheMessage.next());
+                                editor.commit();
+                            }
+
                             if (message.size() > 0) {
                                 for (Object o : message) {
                                     builder.append(o.toString());
@@ -162,6 +204,14 @@ public class MainActivity extends AppCompatActivity
                             dialog.create().show();
                         }
                     });
+
+                        // Start by sending the USER_DATA_COMMAND, which is needed to get the user information at app start
+                        ArrayList<Integer> command = new ArrayList<Integer>();
+                        command.add(USER_DATA_COMMAND);
+                        Random r = new Random();
+                        command.add(r.nextInt(2^30));
+                        sendMessage(command);
+
                 } catch (InvalidStateException e) {
                     Toast.makeText(getApplication().getApplicationContext(), "ConnectIQ is not in a valid state", Toast.LENGTH_LONG).show();
                 }
