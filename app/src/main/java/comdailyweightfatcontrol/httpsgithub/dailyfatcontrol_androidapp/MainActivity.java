@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -164,6 +165,14 @@ public class MainActivity extends AppCompatActivity
                             theMessage = (ArrayList<Integer>) message.get(0);
                             if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
 
+                                // Get the user data to store on each measurement
+                                SharedPreferences mPrefs = MainActivity.getPrefs();
+                                int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
+                                int gender = mPrefs.getInt("GENDER", 0);
+                                int height = mPrefs.getInt("HEIGHT", 0);
+                                int weight = mPrefs.getInt("WEIGHT", 0);
+                                int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
                                 iteratorTheMessage.next(); // command ID
                                 iteratorTheMessage.next(); // random
@@ -172,15 +181,19 @@ public class MainActivity extends AppCompatActivity
                                     Measurement measurement = new Measurement();
                                     measurement.setDate(iteratorTheMessage.next());
                                     measurement.setHRValue(iteratorTheMessage.next());
+
+                                    // now set all the values on the measurement
+                                    measurement.setUserBirthYear(birthYear);
+                                    measurement.setUserGender(gender);
+                                    measurement.setUserHeight(height);
+                                    measurement.setUserWeight(weight);
+                                    measurement.setUserActivityClass(activityClass);
+
                                     measurementList.add(measurement);
                                 }
 
                                 // reverse the list order, to get the values in date ascending order
                                 Collections.reverse(measurementList);
-
-                                // calc calories on the measurement list
-                                Calories calories = new Calories(getApplication().getApplicationContext());
-                                measurementList = calories.calcCalories(measurementList);
 
                                 // finally write the measurement list to database
                                 new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
@@ -269,6 +282,10 @@ public class MainActivity extends AppCompatActivity
 
         // Initialize the SDK
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
+
+        new GraphData(getApplication().getApplicationContext()).prepare();
+
+
     }
 
     @Override

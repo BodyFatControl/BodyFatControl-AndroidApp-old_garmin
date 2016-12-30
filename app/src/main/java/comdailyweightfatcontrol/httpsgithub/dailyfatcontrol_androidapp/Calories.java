@@ -35,84 +35,86 @@ public class Calories {
     Female:((-59.3954 + (0.45 x HR) + (0.380 x VO2max) + (0.103 x W) + (0.274 x A))/4.184) x 60 x T
     */
 
-    public final int VIVOACTIVE_HR_SAMPLE_PERIOD = 95; // in seconds
-    private final double VIVOACTIVE_HR_DT = 95.0/(60.0*60.0); // hour
+    private final double HR_DT = 1/(60.0); // 1 minute
 
-    private Context mContext;
-
-    public Calories(Context context) {
-        mContext = context;
+    public Calories() {
     }
 
     public ArrayList<Measurement> calcCalories (ArrayList<Measurement> measurementList) {
 
-        Measurement lastMeasurement = new Measurement();
-        DataBase dataBase = new DataBase(mContext);
-        lastMeasurement = dataBase.DataBaseGetLastMeasurement();
+//        SharedPreferences mPrefs = MainActivity.getPrefs();
+//        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
+//        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+//        int gender = mPrefs.getInt("GENDER", 0);
+//        double height = (double) mPrefs.getInt("HEIGHT", 0);
+//        double weight = (double) mPrefs.getInt("WEIGHT", 0);
+//        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+//
+//        // loop through all the measurements
+//        for (Measurement measurement : measurementList) {
+//            // calc calories value for current measurement
+//            double hr = (double) measurement.getHRValue();
+//            double calories;
+//
+//            if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
+//                if (gender == 0) { // female
+//                    calories = (int) ((((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
+//                            (0.074*height/100)) / 4.184) * 60*VIVOACTIVE_HR_DT) * 1000);
+//                } else { // male
+//                    calories = (int) ((((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
+//                            (0.2017*height/100)) / 4.184) * 60*VIVOACTIVE_HR_DT) * 1000);
+//                }
+//            } else { // calculation based on Estimated Energy Requirements
+//                if (gender == 0) { // female
+//                    calories = (int) (((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
+//                            (660.7*height/100))) * 1000); // daily value
+//                    calories = (int) ((calories/24)*VIVOACTIVE_HR_DT); // value in VIVOACTIVE_HR_DT
+//                } else { // male
+//                    calories = (int) (((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
+//                            (503*height/100))) * 1000);
+//                    calories = (int) ((calories/24)*VIVOACTIVE_HR_DT);
+//                }
+//            }
+//
+//            measurement.setCaloriesOut((int) calories);
+//        }
+//
+        return measurementList;
+    }
 
-        // loop through all the measurements
-        for (Measurement measurement : measurementList) {
+    public double calcCalories (int hr_value){
 
-            // calc calories value for current measurement
-            int hr = measurement.getHRValue();
-            int calories;
-            SharedPreferences mPrefs = MainActivity.getPrefs();
-            int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
-            if (birthYear == 0) return measurementList; // return due to wrong value
-            int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
-            int gender = mPrefs.getInt("GENDER", 0);
-            int height = mPrefs.getInt("HEIGHT", 0);
-            if (height == 0) return measurementList; // return due to wrong value
-            int weight = mPrefs.getInt("WEIGHT", 0);
-            if (weight == 0) return measurementList; // return due to wrong value
-            int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+        SharedPreferences mPrefs = MainActivity.getPrefs();
+        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
+        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+        int gender = mPrefs.getInt("GENDER", 0);
+        double height = (double) mPrefs.getInt("HEIGHT", 0);
+        double weight = (double) mPrefs.getInt("WEIGHT", 0);
+        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
 
-            if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
-                if (gender == 0) { // female
-                    calories = (int) ((((-20.4022 + (0.4472*hr) - (0.1988*weight/1000) +
-                            (0.2017*height/100)) / 4.184) * 60*VIVOACTIVE_HR_DT) * 1000);
+        double hr = (double) hr_value;
+        double calories;
 
-                } else { // male
-                    calories = (int) ((((-55.0969 + (0.6309*hr) - (0.1263*weight/1000) +
-                            (0.074*height/100)) / 4.184) * 60*VIVOACTIVE_HR_DT) * 1000);
-                }
-
-            } else { // calculation based on Estimated Energy Requirements
-                if (gender == 0) { // female
-                    calories = (int) (((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
-                            (660.7*height/100))) * 1000); // daily value
-                    calories = (int) ((calories/24)*VIVOACTIVE_HR_DT); // value in VIVOACTIVE_HR_DT
-                } else { // male
-                    calories = (int) (((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
-                            (503*height/100))) * 1000);
-                    calories = (int) ((calories/24)*VIVOACTIVE_HR_DT);
-                }
+        if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
+            if (gender == 0) { // female
+                calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
+                        (0.074*height/100)) / 4.184) * 60*HR_DT);
+            } else { // male
+                calories = (((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
+                        (0.2017*height/100)) / 4.184) * 60*HR_DT);
             }
-
-            // Now verify if current measure date is after midnight
-            // if is the first measure after midnight, do not sum otherwise do the sum
-            Calendar rightNow = Calendar.getInstance();
-            long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-            long sinceMidnightToday = (rightNow.getTimeInMillis() + offset) % (24 * 60 * 60 * 1000);
-            long midNightToday = (rightNow.getTimeInMillis() + offset) - sinceMidnightToday;
-            midNightToday /= 1000; // value in milliseconds
-            if ((lastMeasurement.getDate() - midNightToday) > VIVOACTIVE_HR_SAMPLE_PERIOD) {
-                measurement.setCaloriesOutSum(calories + lastMeasurement.getCaloriesOutSum());
+        } else { // calculation based on Estimated Energy Requirements
+            if (gender == 0) { // female
+                calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
+                        (660.7*height/100))); // daily value
+                calories = (int) ((calories/24)*HR_DT); // value in VIVOACTIVE_HR_DT
+            } else { // male
+                calories = ((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
+                        (503*height/100)));
+                calories = ((calories/24)*HR_DT);
             }
-
-            // now set all the values on the measurement
-            measurement.setCaloriesOut(calories);
-            measurement.setIsManualCalories(0);
-            measurement.setUserBirthYear(birthYear);
-            measurement.setUserGender(gender);
-            measurement.setUserHeight(height);
-            measurement.setUserWeight(weight);
-            measurement.setUserWeight(weight);
-            measurement.setUserActivityClass(activityClass);
-
-            lastMeasurement = measurement; // we need to keep the last measurement calories to add to next one
         }
 
-        return measurementList;
+        return calories;
     }
 }
