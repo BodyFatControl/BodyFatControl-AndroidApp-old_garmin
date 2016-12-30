@@ -3,6 +3,7 @@ package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -28,17 +28,23 @@ import com.garmin.android.connectiq.ConnectIQ.IQApplicationEventListener;
 import com.garmin.android.connectiq.ConnectIQ.IQSendMessageListener;
 import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.XAxis.XAxisPosition;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
 import com.google.gson.Gson;
 
-import java.io.Console;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import static android.R.id.list;
 
 
 public class MainActivity extends AppCompatActivity
@@ -283,9 +289,35 @@ public class MainActivity extends AppCompatActivity
         // Initialize the SDK
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
 
-        new GraphData(getApplication().getApplicationContext()).prepare();
+        GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
+        List<Entry> graphData = graphDataObj.prepare();
 
+        // add entries to dataset
+        LineDataSet dataSet = new LineDataSet(graphData, "Time");
+        dataSet.setColor(Color.rgb(0, 0, 0));
 
+        dataSet.setCircleRadius(1);
+        dataSet.setCubicIntensity(0.2f);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+        LineData lineData = new LineData(dataSet);
+
+        // in this example, a LineChart is initialized from xml
+        LineChart chart = (LineChart) findViewById(R.id.chart);
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxisPosition.BOTTOM);
+        xAxis.setTextColor(Color.GRAY);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGridLineWidth(1);
+
+        // no description text
+        chart.getDescription().setEnabled(false);
+
+        chart.setAutoScaleMinMaxEnabled(false);
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
     }
 
     @Override

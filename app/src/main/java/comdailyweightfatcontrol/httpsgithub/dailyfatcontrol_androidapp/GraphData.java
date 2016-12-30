@@ -2,10 +2,13 @@ package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.content.Context;
 
+import com.github.mikephil.charting.data.Entry;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class GraphData {
     private Context mContext;
@@ -14,7 +17,7 @@ public class GraphData {
     public GraphData(Context context) {
         mContext = context;
     }
-    public HashMap<Long, Double> prepare() {
+    public List<Entry> prepare() {
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
         ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
@@ -31,6 +34,7 @@ public class GraphData {
         rightNowMillis /= 1000; // now in seconds
         midNightToday /= 1000; // now in seconds
 
+        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
         long date = midNightToday;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
@@ -54,9 +58,9 @@ public class GraphData {
 
             caloriesSum += calories.calcCalories(hr);
 
-            graphData.put(date, caloriesSum);
+            graphDataEntriesList.add(new Entry((float) date, (float) caloriesSum));
         }
 
-        return graphData;
+        return graphDataEntriesList;
     }
 }
