@@ -17,6 +17,7 @@ public class GraphData {
     public GraphData(Context context) {
         mContext = context;
     }
+
     public List<Entry> prepareCaloiresActive() {
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
@@ -34,8 +35,10 @@ public class GraphData {
         rightNowMillis /= 1000; // now in seconds
         midNightToday /= 1000; // now in seconds
 
+        rightNowMillis -= midNightToday;
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
-        long date = midNightToday;
+
+        long date = 0;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -49,7 +52,7 @@ public class GraphData {
                 moveToNextMeasurement = false;
             }
 
-            int measurementDate = measurement.getDate();
+            long measurementDate = (measurement.getDate() - midNightToday);
             hr = 0;
             if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                 hr = measurement.getHRValue();
@@ -58,7 +61,7 @@ public class GraphData {
 
             caloriesSum += calories.calcActiveCalories(hr);
 
-            graphDataEntriesList.add(new Entry((float) date, (float) caloriesSum));
+            graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
         }
 
         return graphDataEntriesList;
@@ -81,8 +84,10 @@ public class GraphData {
         rightNowMillis /= 1000; // now in seconds
         midNightToday /= 1000; // now in seconds
 
+        rightNowMillis -= midNightToday;
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
-        long date = midNightToday;
+
+        long date = 0;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -96,7 +101,7 @@ public class GraphData {
                 moveToNextMeasurement = false;
             }
 
-            int measurementDate = measurement.getDate();
+            long measurementDate = (measurement.getDate() - midNightToday);
             hr = 0;
             if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                 hr = measurement.getHRValue();
@@ -105,7 +110,7 @@ public class GraphData {
 
             caloriesSum += calories.calcCalories(hr);
 
-            graphDataEntriesList.add(new Entry((float) date, (float) caloriesSum));
+            graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
         }
 
         return graphDataEntriesList;
