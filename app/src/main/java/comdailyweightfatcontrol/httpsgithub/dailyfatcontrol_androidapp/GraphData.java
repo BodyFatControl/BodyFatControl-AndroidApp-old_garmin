@@ -56,7 +56,7 @@ public class GraphData {
                 moveToNextMeasurement = true;
             }
 
-            caloriesSum += calories.calcCalories(hr);
+            caloriesSum += calories.calcActiveCalories(hr);
 
             graphDataEntriesList.add(new Entry((float) date, (float) caloriesSum));
         }

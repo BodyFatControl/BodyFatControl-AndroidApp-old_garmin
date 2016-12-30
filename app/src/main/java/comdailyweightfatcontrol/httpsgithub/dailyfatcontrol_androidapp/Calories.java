@@ -117,4 +117,32 @@ public class Calories {
 
         return calories;
     }
+
+    public double calcActiveCalories (int hr_value){
+
+        SharedPreferences mPrefs = MainActivity.getPrefs();
+        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
+        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+        int gender = mPrefs.getInt("GENDER", 0);
+        double height = (double) mPrefs.getInt("HEIGHT", 0);
+        double weight = (double) mPrefs.getInt("WEIGHT", 0);
+        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+
+        double hr = (double) hr_value;
+        double calories;
+
+        if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
+            if (gender == 0) { // female
+                calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
+                        (0.074*height/100)) / 4.184) * 60*HR_DT);
+            } else { // male
+                calories = (((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
+                        (0.2017*height/100)) / 4.184) * 60*HR_DT);
+            }
+        } else { // calculation based on Estimated Energy Requirements
+            calories = 0;
+        }
+
+        return calories;
+    }
 }

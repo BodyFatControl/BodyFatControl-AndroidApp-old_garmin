@@ -297,8 +297,8 @@ public class MainActivity extends AppCompatActivity
         dataSet.setColor(Color.rgb(0, 0, 0));
 
         dataSet.setCircleRadius(1);
-        dataSet.setCubicIntensity(0.2f);
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+//        dataSet.setCubicIntensity(0.2f);
+//        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         LineData lineData = new LineData(dataSet);
 
