@@ -204,6 +204,8 @@ public class MainActivity extends AppCompatActivity
                                 // finally write the measurement list to database
                                 new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
 
+                                refreshGraphs();
+
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
 
                                 // Store the UserData on Preferences
@@ -289,35 +291,7 @@ public class MainActivity extends AppCompatActivity
         // Initialize the SDK
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
 
-        GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
-        List<Entry> graphData = graphDataObj.prepare();
-
-        // add entries to dataset
-        LineDataSet dataSet = new LineDataSet(graphData, "Time");
-        dataSet.setColor(Color.rgb(0, 0, 0));
-
-        dataSet.setCircleRadius(1);
-//        dataSet.setCubicIntensity(0.2f);
-//        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-
-        LineData lineData = new LineData(dataSet);
-
-        // in this example, a LineChart is initialized from xml
-        LineChart chart = (LineChart) findViewById(R.id.chart);
-
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxisPosition.BOTTOM);
-        xAxis.setTextColor(Color.GRAY);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setGridLineWidth(1);
-
-        // no description text
-        chart.getDescription().setEnabled(false);
-
-        chart.setAutoScaleMinMaxEnabled(false);
-        chart.setData(lineData);
-        chart.invalidate(); // refresh
+        refreshGraphs();
     }
 
     @Override
@@ -350,9 +324,46 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        ArrayList<Integer> command = new ArrayList<Integer>();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.connect) {
+            // Handle the connect action
+            Intent intent = new Intent(this, ConnectActivity.class);
+            startActivity(intent);
+            return true;
+
+        } else if (id == R.id.user_profile) {
+            command.add(USER_DATA_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            sendMessage(command);
+            return true;
+
+        } else if (id == R.id.hr_5m) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (5 * 60));
+            sendMessage(command);
+            return true;
+
+        } else if (id == R.id.hr_10m) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (10 * 60));
+            sendMessage(command);
+            return true;
+
+        } else if (id == R.id.hr_4h) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (4 * 60 *60));
+            sendMessage(command);
             return true;
         }
 
@@ -362,50 +373,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        ArrayList<Integer> command = new ArrayList<Integer>();
-
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.connect) {
-            // Handle the connect action
-            Intent intent = new Intent(this, ConnectActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.about) {
-
-        } else if (id == R.id.user_profile) {
-            command.add(USER_DATA_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-
-            sendMessage(command);
-
-        } else if (id == R.id.hr_5m) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (5 * 60));
-            sendMessage(command);
-
-        } else if (id == R.id.hr_10m) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (10 * 60));
-            sendMessage(command);
-
-        } else if (id == R.id.hr_20m) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (20 *60));
-            sendMessage(command);
-        }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -426,5 +393,68 @@ public class MainActivity extends AppCompatActivity
         } catch (ServiceUnavailableException e) {
             Toast.makeText(this, "ConnectIQ service is unavailable. Is Garmin Connect Mobile installed and running?", Toast.LENGTH_LONG).show();
         }
+    }
+
+    void refreshGraphs() {
+        GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
+        List<Entry> graphData = graphDataObj.prepareCaloiresActive();
+
+        // add entries to dataset
+        LineDataSet dataSet = new LineDataSet(graphData, "Time");
+        dataSet.setColor(Color.rgb(0, 0, 0));
+
+        dataSet.setCircleRadius(1);
+//        dataSet.setCubicIntensity(0.2f);
+//        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+        LineData lineData = new LineData(dataSet);
+
+        // in this example, a LineChart is initialized from xml
+        LineChart chart = (LineChart) findViewById(R.id.chart_calories_active);
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxisPosition.BOTTOM);
+        xAxis.setTextColor(Color.GRAY);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGridLineWidth(1);
+
+        // no description text
+        chart.getDescription().setEnabled(false);
+
+        chart.setAutoScaleMinMaxEnabled(false);
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
+
+        //-------------------------
+
+        List<Entry> graphData1 = graphDataObj.prepareCaloriesTotal();
+
+        // add entries to dataset
+        dataSet = new LineDataSet(graphData1, "Time");
+        dataSet.setColor(Color.rgb(0, 0, 0));
+
+        dataSet.setCircleRadius(1);
+//        dataSet.setCubicIntensity(0.2f);
+//        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+        lineData = new LineData(dataSet);
+
+        // in this example, a LineChart is initialized from xml
+        chart = (LineChart) findViewById(R.id.chart_calories_sum);
+
+        xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxisPosition.BOTTOM);
+        xAxis.setTextColor(Color.GRAY);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGridLineWidth(1);
+
+        // no description text
+        chart.getDescription().setEnabled(false);
+
+        chart.setAutoScaleMinMaxEnabled(false);
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
     }
 }

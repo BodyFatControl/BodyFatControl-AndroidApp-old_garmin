@@ -2,8 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/connect"
+        android:title="Connect to device" />
+    <item
+        android:id="@+id/user_profile"
+        android:title="USERPROFILE" />
+    <item
+        android:id="@+id/hr_5m"
+        android:title="HR_5M" />
+    <item
+        android:id="@+id/hr_10m"
+        android:title="HR_10M" />
+    <item
+        android:id="@+id/hr_4h"
+        android:title="HR_4H" />
 </menu>
