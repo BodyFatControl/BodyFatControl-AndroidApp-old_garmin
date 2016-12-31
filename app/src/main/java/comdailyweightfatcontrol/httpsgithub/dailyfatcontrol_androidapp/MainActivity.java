@@ -29,6 +29,7 @@ import com.garmin.android.connectiq.ConnectIQ.IQSendMessageListener;
 import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
@@ -339,21 +340,30 @@ public class MainActivity extends AppCompatActivity
             sendMessage(command);
             return true;
 
-        } else if (id == R.id.hr_5m) {
+        } else if (id == R.id.hr_15m) {
             command.add(HISTORIC_HR_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
             int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (5 * 60));
+            command.add(millis - (15 * 60));
             sendMessage(command);
             return true;
 
-        } else if (id == R.id.hr_10m) {
+        } else if (id == R.id.hr_30m) {
             command.add(HISTORIC_HR_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
             int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (10 * 60));
+            command.add(millis - (30 * 60));
+            sendMessage(command);
+            return true;
+
+        } else if (id == R.id.hr_1h) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            int millis = (int) (System.currentTimeMillis() / 1000);
+            command.add(millis - (60 * 60));
             sendMessage(command);
             return true;
 
@@ -402,15 +412,21 @@ public class MainActivity extends AppCompatActivity
         // add entries to dataset
         LineDataSet dataSet = new LineDataSet(graphData, "Time");
         dataSet.setColor(Color.rgb(0, 0, 0));
-
         dataSet.setCircleRadius(1);
 //        dataSet.setCubicIntensity(0.1f);
 //        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
+        dataSet.setFillAlpha(255);
+        dataSet.setDrawFilled(true);
 
         LineData lineData = new LineData(dataSet);
 
         // in this example, a LineChart is initialized from xml
         LineChart chart = (LineChart) findViewById(R.id.chart_calories_active);
+
+        chart.setBackgroundColor(Color.WHITE);
+        chart.setDrawGridBackground(true);
+        chart.setDrawBorders(true);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
@@ -418,6 +434,11 @@ public class MainActivity extends AppCompatActivity
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(true);
         xAxis.setGridLineWidth(1);
+
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f);
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setAxisMinimum(0f);
 
         // no description text
         chart.getDescription().setEnabled(false);
@@ -435,13 +456,18 @@ public class MainActivity extends AppCompatActivity
         dataSet.setColor(Color.rgb(0, 0, 0));
 
         dataSet.setCircleRadius(1);
-//        dataSet.setCubicIntensity(0.2f);
-//        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
+        dataSet.setFillAlpha(x);
+        dataSet.setDrawFilled(true);
 
         lineData = new LineData(dataSet);
 
         // in this example, a LineChart is initialized from xml
         chart = (LineChart) findViewById(R.id.chart_calories_sum);
+
+        chart.setBackgroundColor(Color.WHITE);
+        chart.setDrawGridBackground(true);
+        chart.setDrawBorders(true);
 
         xAxis = chart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
@@ -449,6 +475,12 @@ public class MainActivity extends AppCompatActivity
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(true);
         xAxis.setGridLineWidth(1);
+        xAxis.setAxisMinimum(0f);
+
+        leftAxis = chart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f);
+        rightAxis = chart.getAxisRight();
+        rightAxis.setAxisMinimum(0f);
 
         // no description text
         chart.getDescription().setEnabled(false);

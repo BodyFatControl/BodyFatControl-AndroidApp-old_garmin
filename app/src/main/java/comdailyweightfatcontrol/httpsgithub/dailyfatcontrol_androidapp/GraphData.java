@@ -19,6 +19,8 @@ public class GraphData {
     }
 
     public List<Entry> prepareCaloiresActive() {
+        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
+
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
         ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
@@ -32,34 +34,35 @@ public class GraphData {
         long rightNowMillis = rightNow.getTimeInMillis() + offset;
         long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
         long midNightToday = rightNowMillis - sinceMidnightToday;
-        rightNowMillis /= 1000; // now in seconds
         midNightToday /= 1000; // now in seconds
 
-        rightNowMillis -= midNightToday;
-        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
-
         long date = 0;
+        long endOfToday = 24*60*60;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
         Measurement measurement = null;
         double caloriesSum = 0;
         // Loop trough all the minutes starting from today midnight
-        for ( ; date < rightNowMillis; date += 60) {
+        for ( ; date < endOfToday; date += 60) {
 
             if ((moveToNextMeasurement == true) && measurementListIterator.hasNext()) {
                 measurement = (Measurement) measurementListIterator.next();
                 moveToNextMeasurement = false;
-            }
+            }midNightToday /= 1000; // now in seconds
 
-            long measurementDate = (measurement.getDate() - midNightToday);
             hr = 0;
-            if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
-                hr = measurement.getHRValue();
-                moveToNextMeasurement = true;
+            if (measurement != null) {
+                long measurementDate = (measurement.getDate() - midNightToday);
+                if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
+                    hr = measurement.getHRValue();
+                    moveToNextMeasurement = true;
+                }
             }
 
-            caloriesSum += calories.calcActiveCalories(hr);
+            if (date < rightNowMillis) { //  calc calories only until current date
+                caloriesSum += calories.calcActiveCalories(hr);
+            }
 
             graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
         }
@@ -68,6 +71,8 @@ public class GraphData {
     }
 
     public List<Entry> prepareCaloriesTotal() {
+        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
+
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
         ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
@@ -81,34 +86,37 @@ public class GraphData {
         long rightNowMillis = rightNow.getTimeInMillis() + offset;
         long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
         long midNightToday = rightNowMillis - sinceMidnightToday;
-        rightNowMillis /= 1000; // now in seconds
         midNightToday /= 1000; // now in seconds
-
+        rightNowMillis /= 1000; // now in seconds
         rightNowMillis -= midNightToday;
-        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         long date = 0;
+        long endOfToday = 24*60*60;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
         Measurement measurement = null;
         double caloriesSum = 0;
         // Loop trough all the minutes starting from today midnight
-        for ( ; date < rightNowMillis; date += 60) {
+        for ( ; date < endOfToday; date += 60) {
 
             if ((moveToNextMeasurement == true) && measurementListIterator.hasNext()) {
                 measurement = (Measurement) measurementListIterator.next();
                 moveToNextMeasurement = false;
             }
 
-            long measurementDate = (measurement.getDate() - midNightToday);
             hr = 0;
-            if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
-                hr = measurement.getHRValue();
-                moveToNextMeasurement = true;
+            if (measurement != null) {
+                long measurementDate = (measurement.getDate() - midNightToday);
+                if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
+                    hr = measurement.getHRValue();
+                    moveToNextMeasurement = true;
+                }
             }
 
-            caloriesSum += calories.calcCalories(hr);
+            if (date < rightNowMillis) { //  calc calories only until current date
+                caloriesSum += calories.calcCalories(hr);
+            }
 
             graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
         }
