@@ -18,7 +18,7 @@ public class GraphData {
         mContext = context;
     }
 
-    public List<Entry> prepareCaloiresActive() {
+    public List<Entry> prepareCaloriesActive() {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
@@ -35,6 +35,8 @@ public class GraphData {
         long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
         long midNightToday = rightNowMillis - sinceMidnightToday;
         midNightToday /= 1000; // now in seconds
+        rightNowMillis /= 1000; // now in seconds
+        rightNowMillis -= midNightToday;
 
         long date = 0;
         long endOfToday = 24*60*60;
@@ -44,12 +46,12 @@ public class GraphData {
         Measurement measurement = null;
         double caloriesSum = 0;
         // Loop trough all the minutes starting from today midnight
-        for ( ; date < endOfToday; date += 60) {
+        for ( ; date < rightNowMillis; date += 60) {
 
             if ((moveToNextMeasurement == true) && measurementListIterator.hasNext()) {
                 measurement = (Measurement) measurementListIterator.next();
                 moveToNextMeasurement = false;
-            }midNightToday /= 1000; // now in seconds
+            }
 
             hr = 0;
             if (measurement != null) {
@@ -62,9 +64,8 @@ public class GraphData {
 
             if (date < rightNowMillis) { //  calc calories only until current date
                 caloriesSum += calories.calcActiveCalories(hr);
+                graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
             }
-
-            graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
         }
 
         return graphDataEntriesList;
@@ -116,9 +117,8 @@ public class GraphData {
 
             if (date < rightNowMillis) { //  calc calories only until current date
                 caloriesSum += calories.calcCalories(hr);
+                graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
             }
-
-            graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
         }
 
         return graphDataEntriesList;

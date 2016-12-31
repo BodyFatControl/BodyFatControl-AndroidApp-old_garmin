@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity
 
     void refreshGraphs() {
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
-        List<Entry> graphData = graphDataObj.prepareCaloiresActive();
+        List<Entry> graphData = graphDataObj.prepareCaloriesActive();
 
         // add entries to dataset
         LineDataSet dataSet = new LineDataSet(graphData, "Time");
@@ -434,6 +434,7 @@ public class MainActivity extends AppCompatActivity
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(true);
         xAxis.setGridLineWidth(1);
+        xAxis.setAxisMaximum(24f);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
@@ -457,7 +458,7 @@ public class MainActivity extends AppCompatActivity
 
         dataSet.setCircleRadius(1);
         dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-        dataSet.setFillAlpha(x);
+        dataSet.setFillAlpha(255);
         dataSet.setDrawFilled(true);
 
         lineData = new LineData(dataSet);
@@ -475,7 +476,8 @@ public class MainActivity extends AppCompatActivity
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(true);
         xAxis.setGridLineWidth(1);
-        xAxis.setAxisMinimum(0f);
+        xAxis.setGridLineWidth(1);
+        xAxis.setAxisMaximum(24f);
 
         leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
