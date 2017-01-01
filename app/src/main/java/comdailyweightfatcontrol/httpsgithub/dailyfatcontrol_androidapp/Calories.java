@@ -130,14 +130,19 @@ public class Calories {
 
         double hr = (double) hr_value;
         double calories;
+        double test;
 
         if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
             if (gender == 0) { // female
                 calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
                         (0.074*height/100)) / 4.184) * 60*HR_DT);
             } else { // male
-                calories = (((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
-                        (0.2017*height/100)) / 4.184) * 60*HR_DT);
+                calories = (-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
+                        (0.2017*height/100));
+                calories = calories / 4.184;
+                calories = calories * 60*HR_DT;
+                test = calories;
+                System.out.println(test);
             }
         } else { // calculation based on Estimated Energy Requirements
             calories = 0;

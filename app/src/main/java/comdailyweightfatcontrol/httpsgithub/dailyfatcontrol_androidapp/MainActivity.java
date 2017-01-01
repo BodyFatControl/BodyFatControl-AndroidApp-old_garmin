@@ -48,8 +48,9 @@ import java.util.Random;
 
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+//public class MainActivity extends AppCompatActivity
+//        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private ConnectIQ mConnectIQ;
     private IQDevice mIQDevice;
@@ -270,14 +271,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
 
         Prefs = getSharedPreferences(MainActivity.PREFERENCES, MODE_PRIVATE);
 
@@ -302,15 +303,15 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -380,14 +381,14 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
     void sendMessage(ArrayList<Integer> command) {
         try {
@@ -450,7 +451,7 @@ public class MainActivity extends AppCompatActivity
 
         //-------------------------
 
-        List<Entry> graphData1 = graphDataObj.prepareCaloriesTotal();
+        List<Entry> graphData1 = graphDataObj.prepareHRHigher90();
 
         // add entries to dataset
         dataSet = new LineDataSet(graphData1, "Time");
@@ -464,7 +465,50 @@ public class MainActivity extends AppCompatActivity
         lineData = new LineData(dataSet);
 
         // in this example, a LineChart is initialized from xml
-        chart = (LineChart) findViewById(R.id.chart_calories_sum);
+        chart = (LineChart) findViewById(R.id.chart_hr_higher_90);
+
+        chart.setBackgroundColor(Color.WHITE);
+        chart.setDrawGridBackground(true);
+        chart.setDrawBorders(true);
+
+        xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxisPosition.BOTTOM);
+        xAxis.setTextColor(Color.GRAY);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGridLineWidth(1);
+        xAxis.setGridLineWidth(1);
+        xAxis.setAxisMaximum(24f);
+
+        leftAxis = chart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f);
+        rightAxis = chart.getAxisRight();
+        rightAxis.setAxisMinimum(0f);
+
+        // no description text
+        chart.getDescription().setEnabled(false);
+
+        chart.setAutoScaleMinMaxEnabled(false);
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
+
+//        ------------------------
+
+        List<Entry> graphData2 = graphDataObj.prepareHR();
+
+        // add entries to dataset
+        dataSet = new LineDataSet(graphData2, "Time");
+        dataSet.setColor(Color.rgb(0, 0, 0));
+
+        dataSet.setCircleRadius(1);
+        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
+        dataSet.setFillAlpha(255);
+        dataSet.setDrawFilled(true);
+
+        lineData = new LineData(dataSet);
+
+        // in this example, a LineChart is initialized from xml
+        chart = (LineChart) findViewById(R.id.chart_hr);
 
         chart.setBackgroundColor(Color.WHITE);
         chart.setDrawGridBackground(true);
