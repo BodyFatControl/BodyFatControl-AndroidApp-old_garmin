@@ -16,28 +16,29 @@ android:background="@color/firstBackgroundColor">
         android:layout_marginBottom="6dp">
 
         <Button
-            android:id="@+id/left_button"
+            android:id="@+id/previous_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Previous"
             android:layout_alignParentLeft="true"/>
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/date_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_centerVertical="true"
-            android:text="---"
+            android:text="today"
             android:textSize="@dimen/title_text_size"
-            android:layout_toLeftOf="@+id/right_button"
-            android:layout_toRightOf="@+id/left_button" />
+            android:layout_toLeftOf="@+id/next_button"
+            android:layout_toRightOf="@+id/previous_button" />
 
         <Button
-            android:id="@+id/right_button"
+            android:id="@+id/next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next"
+            android:visibility="invisible"
             android:layout_alignParentRight="true"/>
 
     </RelativeLayout>

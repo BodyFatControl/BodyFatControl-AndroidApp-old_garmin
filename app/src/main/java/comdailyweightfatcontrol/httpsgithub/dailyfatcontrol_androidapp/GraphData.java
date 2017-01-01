@@ -18,12 +18,12 @@ public class GraphData {
         mContext = context;
     }
 
-    public List<Entry> prepareCaloriesActive() {
+    public List<Entry> prepareCaloriesActive(long initialDate, long finalDate) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
-        ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
+        ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(initialDate, finalDate);
 
         // Calc calories on the measurement list
         Calories calories = new Calories();
@@ -74,12 +74,12 @@ public class GraphData {
         return graphDataEntriesList;
     }
 
-    public List<Entry> prepareCaloriesTotal() {
+    public List<Entry> prepareCaloriesTotal(long initialDate, long finalDate) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
-        ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
+        ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(initialDate, finalDate);
 
         // Calc calories on the measurement list
         Calories calories = new Calories();
@@ -129,12 +129,12 @@ public class GraphData {
         return graphDataEntriesList;
     }
 
-    public List<Entry> prepareHRHigher90() {
+    public List<Entry> prepareHRHigher90(long initialDate, long finalDate) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
-        ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
+        ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(initialDate, finalDate);
 
         // Calc calories on the measurement list
         Calories calories = new Calories();
@@ -182,12 +182,12 @@ public class GraphData {
         return graphDataEntriesList;
     }
 
-    public List<Entry> prepareHR() {
+    public List<Entry> prepareHR(long initialDate, long finalDate) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
         DataBase dataBase = new DataBase(mContext);
-        ArrayList<Measurement> measurementList = dataBase.DataBaseGetLastDayMeasurements();
+        ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(initialDate, finalDate);
 
         // Calc calories on the measurement list
         Calories calories = new Calories();

@@ -115,6 +115,37 @@ public class DataBase extends SQLiteOpenHelper {
         return measurementList;
     }
 
+    public ArrayList<Measurement> DataBaseGetMeasurements (long initialDate, long finalDate) {
+        // Query to get all the records starting at last midnight, ordered by date ascending
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_DATE + " BETWEEN " +
+                + initialDate + " AND " + finalDate + " ORDER BY " + COLUMN_DATE +
+                " ASC";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        // Loop to put all the values to the ArrayList<Measurement>
+        cursor.moveToFirst();
+        int counter = cursor.getCount();
+        int date;
+        int hr;
+        ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
+        for ( ; counter > 0; ) {
+            if (cursor.isAfterLast()) break;
+            date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
+            hr = cursor.getInt(cursor.getColumnIndex(COLUMN_HR_VALUE));
+            cursor.moveToNext();
+
+            Measurement measurement = new Measurement();
+            measurement.setDate(date);
+            measurement.setHRValue(hr);
+            measurementList.add(measurement);
+        }
+
+        db.close(); // Closing database connection
+        return measurementList;
+    }
+
     public Measurement DataBaseGetLastMeasurement () {
         Measurement measurement = new Measurement();
         SQLiteDatabase db = this.getWritableDatabase();

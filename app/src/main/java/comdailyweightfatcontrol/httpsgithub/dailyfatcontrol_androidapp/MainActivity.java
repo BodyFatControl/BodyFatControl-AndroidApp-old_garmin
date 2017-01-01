@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +40,12 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextView;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
+    private long mMidNightToday;
+    private long mGraphInitialDate;
+    private long mGraphFinalDate;
+    private long SECONDS_24H = 24*60*60;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -271,6 +280,79 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final Button buttonNext = (Button) findViewById(R.id.next_button);
+        Button buttonPrevious = (Button) findViewById(R.id.previous_button);
+        final TextView dateTitle = (TextView) findViewById(R.id.date_title);
+
+        // Calc and set graph initial and final dates (midnight today and rightnow)
+        Calendar rightNow = Calendar.getInstance();
+        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+        long rightNowMillis = rightNow.getTimeInMillis() + offset;
+        long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
+        long midNightToday = rightNowMillis - sinceMidnightToday;
+        long now = rightNowMillis / 1000; // now in seconds
+        midNightToday /= 1000; // now in seconds
+        mMidNightToday = midNightToday;
+        mGraphInitialDate = midNightToday;
+        mGraphFinalDate = now;
+
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // do something when the button is clicked
+                // Yes we will handle click here but which button clicked??? We don't know
+
+                mGraphInitialDate += SECONDS_24H; // seconds
+
+                if (mGraphInitialDate == mMidNightToday) { // today
+                    buttonNext.setVisibility(View.INVISIBLE);
+                    dateTitle.setText("today");
+
+                    Calendar rightNow = Calendar.getInstance();
+                    long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+                    long rightNowMillis = rightNow.getTimeInMillis() + offset;
+                    mGraphFinalDate = rightNowMillis / 1000; // seconds
+
+                } else if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
+                    buttonNext.setVisibility(View.VISIBLE);
+                    dateTitle.setText("yesterday");
+                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+
+                } else { // other days
+                    buttonNext.setVisibility(View.VISIBLE);
+                    SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
+                    String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
+                    dateTitle.setText(dateString);
+                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                }
+
+                refreshGraphs();
+            }
+        });
+
+        buttonPrevious.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // do something when the button is clicked
+                // Yes we will handle click here but which button clicked??? We don't know
+
+                mGraphInitialDate -= SECONDS_24H; // seconds
+
+                if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
+                    buttonNext.setVisibility(View.VISIBLE);
+                    dateTitle.setText("yesterday");
+                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+
+                } else { // other days
+                    buttonNext.setVisibility(View.VISIBLE);
+                    SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
+                    String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
+                    dateTitle.setText(dateString);
+                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                }
+
+                refreshGraphs();
+            }
+        });
+
 //        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -408,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
 
     void refreshGraphs() {
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
-        List<Entry> graphData = graphDataObj.prepareCaloriesActive();
+        List<Entry> graphData = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate);
 
         // add entries to dataset
         LineDataSet dataSet = new LineDataSet(graphData, "Time");
@@ -451,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
 
         //-------------------------
 
-        List<Entry> graphData1 = graphDataObj.prepareHRHigher90();
+        List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
 
         // add entries to dataset
         dataSet = new LineDataSet(graphData1, "Time");
@@ -494,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        ------------------------
 
-        List<Entry> graphData2 = graphDataObj.prepareHR();
+        List<Entry> graphData2 = graphDataObj.prepareHR(mGraphInitialDate, mGraphFinalDate);
 
         // add entries to dataset
         dataSet = new LineDataSet(graphData2, "Time");
