@@ -5,19 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -67,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private IQApp mConnectIQApp = new IQApp(MY_APP);
     public static final int HISTORIC_HR_COMMAND = 104030201;
     public static final int USER_DATA_COMMAND = 204030201;
-    private TextView mTextView;
+    public static TextView connectStatus;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
     private long mMidNightToday;
@@ -84,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceStatusChanged(IQDevice device, IQDevice.IQDeviceStatus status) {
             mAdapter.updateDeviceStatus(device, status);
+
+            if (mIQDevice.getStatus() == IQDeviceStatus.CONNECTED) {
+                connectStatus.setText("connected");
+            } else if (mIQDevice.getStatus() == IQDeviceStatus.NOT_CONNECTED) {
+                connectStatus.setText("not connected");
+            } else if (mIQDevice.getStatus() == IQDeviceStatus.NOT_PAIRED) {
+                connectStatus.setText("not paired");
+            } else if (mIQDevice.getStatus() == IQDeviceStatus.UNKNOWN) {
+                connectStatus.setText("unknown");
+            }
         }
 
     };
@@ -282,31 +284,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // send the update command
-                        ArrayList<Integer> command = new ArrayList<Integer>();
-                        command.add(HISTORIC_HR_COMMAND);
-                        Random r = new Random();
-                        command.add(r.nextInt(2^30));
-                        long date = new DataBase(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
-                        command.add((int) date);
-                        sendMessage(command);
-
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1);
-            }
-        });
-
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
         final TextView dateTitle = (TextView) findViewById(R.id.date_title);
+        connectStatus = (TextView) findViewById(R.id.status_connection);
 
         // Calc and set graph initial and final dates (midnight today and rightnow)
         Calendar rightNow = Calendar.getInstance();
@@ -530,46 +511,46 @@ public class MainActivity extends AppCompatActivity {
 
         //-------------------------
 
-        List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
-
-        // add entries to dataset
-        dataSet = new LineDataSet(graphData1, "HR >= 90");
-        dataSet.setColor(Color.rgb(0, 0, 0));
-
-        dataSet.setCircleRadius(1);
-        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-        dataSet.setFillAlpha(255);
-        dataSet.setDrawFilled(true);
-
-        lineData = new LineData(dataSet);
-
-        // in this example, a LineChart is initialized from xml
-        chart = (LineChart) findViewById(R.id.chart_hr_higher_90);
-
-        chart.setBackgroundColor(Color.WHITE);
-        chart.setDrawGridBackground(true);
-        chart.setDrawBorders(true);
-
-        xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxisPosition.BOTTOM);
-        xAxis.setTextColor(Color.GRAY);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setGridLineWidth(1);
-        xAxis.setGridLineWidth(1);
-        xAxis.setAxisMaximum(24f);
-
-        leftAxis = chart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f);
-        rightAxis = chart.getAxisRight();
-        rightAxis.setAxisMinimum(0f);
-
-        // no description text
-        chart.getDescription().setEnabled(false);
-
-        chart.setAutoScaleMinMaxEnabled(false);
-        chart.setData(lineData);
-        chart.invalidate(); // refresh
+//        List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
+//
+//        // add entries to dataset
+//        dataSet = new LineDataSet(graphData1, "HR >= 90");
+//        dataSet.setColor(Color.rgb(0, 0, 0));
+//
+//        dataSet.setCircleRadius(1);
+//        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
+//        dataSet.setFillAlpha(255);
+//        dataSet.setDrawFilled(true);
+//
+//        lineData = new LineData(dataSet);
+//
+//        // in this example, a LineChart is initialized from xml
+//        chart = (LineChart) findViewById(R.id.chart_hr_higher_90);
+//
+//        chart.setBackgroundColor(Color.WHITE);
+//        chart.setDrawGridBackground(true);
+//        chart.setDrawBorders(true);
+//
+//        xAxis = chart.getXAxis();
+//        xAxis.setPosition(XAxisPosition.BOTTOM);
+//        xAxis.setTextColor(Color.GRAY);
+//        xAxis.setDrawAxisLine(false);
+//        xAxis.setDrawGridLines(true);
+//        xAxis.setGridLineWidth(1);
+//        xAxis.setGridLineWidth(1);
+//        xAxis.setAxisMaximum(24f);
+//
+//        leftAxis = chart.getAxisLeft();
+//        leftAxis.setAxisMinimum(0f);
+//        rightAxis = chart.getAxisRight();
+//        rightAxis.setAxisMinimum(0f);
+//
+//        // no description text
+//        chart.getDescription().setEnabled(false);
+//
+//        chart.setAutoScaleMinMaxEnabled(false);
+//        chart.setData(lineData);
+//        chart.invalidate(); // refresh
 
 //        ------------------------
 

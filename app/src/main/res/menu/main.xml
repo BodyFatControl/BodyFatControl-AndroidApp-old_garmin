@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/connect"
-        android:title="Connect to device" />
-    <item
         android:id="@+id/update"
         android:title="Update" />
+    <item
+        android:id="@+id/connect"
+        android:title="Connect to device" />
     <item
         android:id="@+id/user_profile"
         android:title="UserProfile" />
