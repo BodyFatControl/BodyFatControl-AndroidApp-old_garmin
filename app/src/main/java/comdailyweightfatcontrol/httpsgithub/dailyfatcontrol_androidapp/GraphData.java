@@ -28,25 +28,16 @@ public class GraphData {
         // Calc calories on the measurement list
         Calories calories = new Calories();
 
-        // Get the MidNightToday and RightNow date values
-        Calendar rightNow = Calendar.getInstance();
-        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-        long rightNowMillis = rightNow.getTimeInMillis() + offset;
-        long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
-        long midNightToday = rightNowMillis - sinceMidnightToday;
-        midNightToday /= 1000; // now in seconds
-        rightNowMillis /= 1000; // now in seconds
-        rightNowMillis -= midNightToday;
-
         long date = 0;
-        long endOfToday = 24*60*60;
+        long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
         Measurement measurement = null;
         double caloriesSum = 0;
         // Loop trough all the minutes starting from today midnight
-        for ( ; date < rightNowMillis; date += 60) {
+        for ( ; date < endOfToday; date += 60) {
 
             if ((moveToNextMeasurement == true) && measurementListIterator.hasNext()) {
                 measurement = (Measurement) measurementListIterator.next();
@@ -55,14 +46,14 @@ public class GraphData {
 
             hr = 0;
             if (measurement != null) {
-                long measurementDate = (measurement.getDate() - midNightToday);
+                long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                     hr = measurement.getHRValue();
                     moveToNextMeasurement = true;
                 }
             }
 
-            if (date < rightNowMillis) { //  calc calories only until current date
+            if (date < graphFinalDate) { //  calc calories only until current date
                 double tmp = calories.calcActiveCalories(hr);
                 if (tmp > 0) {
                     caloriesSum += tmp;
@@ -84,18 +75,9 @@ public class GraphData {
         // Calc calories on the measurement list
         Calories calories = new Calories();
 
-        // Get the MidNightToday and RightNow date values
-        Calendar rightNow = Calendar.getInstance();
-        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-        long rightNowMillis = rightNow.getTimeInMillis() + offset;
-        long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
-        long midNightToday = rightNowMillis - sinceMidnightToday;
-        midNightToday /= 1000; // now in seconds
-        rightNowMillis /= 1000; // now in seconds
-        rightNowMillis -= midNightToday;
-
         long date = 0;
-        long endOfToday = 24*60*60;
+        long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -111,14 +93,14 @@ public class GraphData {
 
             hr = 0;
             if (measurement != null) {
-                long measurementDate = (measurement.getDate() - midNightToday);
+                long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                     hr = measurement.getHRValue();
                     moveToNextMeasurement = true;
                 }
             }
 
-            if (date < rightNowMillis) { //  calc calories only until current date
+            if (date < graphFinalDate) { //  calc calories only until current date
 //                caloriesSum += calories.calcCalories(hr);
                 caloriesSum = calories.calcCalories(hr);
 //                if (caloriesSum < 90) caloriesSum = 0;
@@ -139,18 +121,9 @@ public class GraphData {
         // Calc calories on the measurement list
         Calories calories = new Calories();
 
-        // Get the MidNightToday and RightNow date values
-        Calendar rightNow = Calendar.getInstance();
-        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-        long rightNowMillis = rightNow.getTimeInMillis() + offset;
-        long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
-        long midNightToday = rightNowMillis - sinceMidnightToday;
-        midNightToday /= 1000; // now in seconds
-        rightNowMillis /= 1000; // now in seconds
-        rightNowMillis -= midNightToday;
-
         long date = 0;
-        long endOfToday = 24*60*60;
+        long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -166,14 +139,14 @@ public class GraphData {
 
             hr = 0;
             if (measurement != null) {
-                long measurementDate = (measurement.getDate() - midNightToday);
+                long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                     hr = measurement.getHRValue();
                     moveToNextMeasurement = true;
                 }
             }
 
-            if (date < rightNowMillis) { //  calc calories only until current date
+            if (date < graphFinalDate) { //  calc calories only until current date
                 if (hr < 90) hr = 0;
                 graphDataEntriesList.add(new Entry((float) date/(60*60), (float) hr));
             }
@@ -192,18 +165,9 @@ public class GraphData {
         // Calc calories on the measurement list
         Calories calories = new Calories();
 
-        // Get the MidNightToday and RightNow date values
-        Calendar rightNow = Calendar.getInstance();
-        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-        long rightNowMillis = rightNow.getTimeInMillis() + offset;
-        long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
-        long midNightToday = rightNowMillis - sinceMidnightToday;
-        midNightToday /= 1000; // now in seconds
-        rightNowMillis /= 1000; // now in seconds
-        rightNowMillis -= midNightToday;
-
         long date = 0;
-        long endOfToday = 24*60*60;
+        long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -219,14 +183,14 @@ public class GraphData {
 
             hr = 0;
             if (measurement != null) {
-                long measurementDate = (measurement.getDate() - midNightToday);
+                long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                     hr = measurement.getHRValue();
                     moveToNextMeasurement = true;
                 }
             }
 
-            if (date < rightNowMillis) { //  calc calories only until current date
+            if (date < graphFinalDate) { //  calc calories only until current date
                 graphDataEntriesList.add(new Entry((float) date/(60*60), (float) hr));
             }
         }

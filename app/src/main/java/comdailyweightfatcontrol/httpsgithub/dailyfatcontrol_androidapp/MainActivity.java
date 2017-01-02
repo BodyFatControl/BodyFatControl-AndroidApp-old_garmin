@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private long mMidNightToday;
     private long mGraphInitialDate;
     private long mGraphFinalDate;
-    private long SECONDS_24H = 24*60*60;
+    public static final long SECONDS_24H = 24*60*60;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
