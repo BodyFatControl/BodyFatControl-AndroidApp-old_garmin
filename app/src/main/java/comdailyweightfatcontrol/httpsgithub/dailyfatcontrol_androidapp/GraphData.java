@@ -125,7 +125,7 @@ public class GraphData {
         long endOfToday = MainActivity.SECONDS_24H - 1;
         long graphFinalDate = finalDate - initialDate;
         Iterator measurementListIterator = measurementList.iterator();
-        int hr;
+        int hr = 0;
         boolean moveToNextMeasurement = true;
         Measurement measurement = null;
         double caloriesSum = 0;
@@ -137,7 +137,6 @@ public class GraphData {
                 moveToNextMeasurement = false;
             }
 
-            hr = 0;
             if (measurement != null) {
                 long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
@@ -169,7 +168,7 @@ public class GraphData {
         long endOfToday = MainActivity.SECONDS_24H - 1;
         long graphFinalDate = finalDate - initialDate;
         Iterator measurementListIterator = measurementList.iterator();
-        int hr;
+        int hr = 0;
         boolean moveToNextMeasurement = true;
         Measurement measurement = null;
         double caloriesSum = 0;
@@ -181,7 +180,6 @@ public class GraphData {
                 moveToNextMeasurement = false;
             }
 
-            hr = 0;
             if (measurement != null) {
                 long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
