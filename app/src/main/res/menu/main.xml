@@ -5,18 +5,9 @@
         android:id="@+id/connect"
         android:title="Connect to device" />
     <item
+        android:id="@+id/update"
+        android:title="Update" />
+    <item
         android:id="@+id/user_profile"
-        android:title="USERPROFILE" />
-    <item
-        android:id="@+id/hr_15m"
-        android:title="HR_15M" />
-    <item
-        android:id="@+id/hr_30m"
-        android:title="HR_30M" />
-    <item
-        android:id="@+id/hr_1h"
-        android:title="HR_1H" />
-    <item
-        android:id="@+id/hr_4h"
-        android:title="HR_4H" />
+        android:title="UserProfile" />
 </menu>

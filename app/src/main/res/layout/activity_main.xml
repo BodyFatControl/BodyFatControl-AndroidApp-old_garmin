@@ -8,77 +8,88 @@ android:paddingLeft="@dimen/activity_horizontal_margin"
 android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 android:background="@color/firstBackgroundColor">
-    <RelativeLayout
-        android:id="@+id/first_relative_layout"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/corner"
-        android:layout_marginBottom="6dp">
-
-        <Button
-            android:id="@+id/previous_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Previous"
-            android:layout_alignParentLeft="true"/>
-
-        <TextView
-            android:id="@+id/date_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_centerVertical="true"
-            android:text="today"
-            android:textSize="@dimen/title_text_size"
-            android:layout_toLeftOf="@+id/next_button"
-            android:layout_toRightOf="@+id/previous_button" />
-
-        <Button
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next"
-            android:visibility="invisible"
-            android:layout_alignParentRight="true"/>
-
-    </RelativeLayout>
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/ScrollView01"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/first_relative_layout">
-        <LinearLayout
+        android:layout_height="wrap_content">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="2dp"
-            android:background="@drawable/corner" >
+            >
+        <RelativeLayout
+            android:id="@+id/first_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/corner"
+            android:layout_marginBottom="6dp">
 
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_calories_active"
+            <Button
+                android:id="@+id/previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Previous"
+                android:layout_alignParentLeft="true"/>
+
+            <TextView
+                android:id="@+id/date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_centerVertical="true"
+                android:text="today"
+                android:textSize="@dimen/title_text_size"
+                android:layout_toLeftOf="@+id/next_button"
+                android:layout_toRightOf="@+id/previous_button" />
+
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                android:visibility="invisible"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/ScrollView01"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/first_relative_layout">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="60dp"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="2dp"
+                    android:background="@drawable/corner" >
 
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_hr_higher_90"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="10dp" />
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chart_calories_active"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="60dp"wrap_content
+                            android:layout_marginBottom="10dp" />
 
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_hr"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="10dp" />
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chart_hr_higher_90"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="10dp" />
 
-        </LinearLayout>
-    </ScrollView>
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chart_hr"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="10dp" />
+
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

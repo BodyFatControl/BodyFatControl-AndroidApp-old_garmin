@@ -146,8 +146,7 @@ public class DataBase extends SQLiteOpenHelper {
         return measurementList;
     }
 
-    public Measurement DataBaseGetLastMeasurement () {
-        Measurement measurement = new Measurement();
+    public long DataBaseGetLastMeasurementDate() {
         SQLiteDatabase db = this.getWritableDatabase();
         // build the query
         String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_DATE + " DESC LIMIT 1";
@@ -155,21 +154,13 @@ public class DataBase extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
+        long date = 0;
         if (cursor.getCount() > 0) {
-            measurement.setDate(cursor.getInt(cursor.getColumnIndex(COLUMN_DATE)));
-            measurement.setHRValue(cursor.getInt(cursor.getColumnIndex(COLUMN_HR_VALUE)));
-            measurement.setCaloriesOut(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
-            measurement.setCaloriesOutSum(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_SUM)));
-            measurement.setIsManualCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_MANUAL_CALORIES)));
-            measurement.setUserBirthYear(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_BIRTH_YEAR)));
-            measurement.setUserGender(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_GENDER)));
-            measurement.setUserHeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_HEIGH)));
-            measurement.setUserWeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_WEIGH)));
-            measurement.setUserActivityClass(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ACTIVITY_CLASS)));
+            date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
         }
 
         db.close(); // Closing database connection
-        return measurement;
+        return date;
     }
 }
 

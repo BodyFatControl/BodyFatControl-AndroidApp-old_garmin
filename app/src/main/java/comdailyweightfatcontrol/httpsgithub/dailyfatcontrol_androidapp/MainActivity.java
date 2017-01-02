@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +53,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 
 
 //public class MainActivity extends AppCompatActivity
@@ -280,6 +282,28 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // send the update command
+                        ArrayList<Integer> command = new ArrayList<Integer>();
+                        command.add(HISTORIC_HR_COMMAND);
+                        Random r = new Random();
+                        command.add(r.nextInt(2^30));
+                        long date = new DataBase(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
+                        command.add((int) date);
+                        sendMessage(command);
+
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 1);
+            }
+        });
+
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
         final TextView dateTitle = (TextView) findViewById(R.id.date_title);
@@ -416,46 +440,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
 
+        } else if (id == R.id.update) {
+            command.add(HISTORIC_HR_COMMAND);
+            Random r = new Random();
+            command.add(r.nextInt(2^30));
+            long date = new DataBase(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
+            command.add((int) date);
+            sendMessage(command);
+            return true;
+
         } else if (id == R.id.user_profile) {
             command.add(USER_DATA_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
-            sendMessage(command);
-            return true;
-
-        } else if (id == R.id.hr_15m) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (15 * 60));
-            sendMessage(command);
-            return true;
-
-        } else if (id == R.id.hr_30m) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (30 * 60));
-            sendMessage(command);
-            return true;
-
-        } else if (id == R.id.hr_1h) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (60 * 60));
-            sendMessage(command);
-            return true;
-
-        } else if (id == R.id.hr_4h) {
-            command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
-            int millis = (int) (System.currentTimeMillis() / 1000);
-            command.add(millis - (4 * 60 *60));
             sendMessage(command);
             return true;
         }
@@ -493,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
         List<Entry> graphData = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate);
 
         // add entries to dataset
-        LineDataSet dataSet = new LineDataSet(graphData, "Time");
+        LineDataSet dataSet = new LineDataSet(graphData, "Active calories");
         dataSet.setColor(Color.rgb(0, 0, 0));
         dataSet.setCircleRadius(1);
 //        dataSet.setCubicIntensity(0.1f);
@@ -536,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
         List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
 
         // add entries to dataset
-        dataSet = new LineDataSet(graphData1, "Time");
+        dataSet = new LineDataSet(graphData1, "HR >= 90");
         dataSet.setColor(Color.rgb(0, 0, 0));
 
         dataSet.setCircleRadius(1);
@@ -579,13 +576,14 @@ public class MainActivity extends AppCompatActivity {
         List<Entry> graphData2 = graphDataObj.prepareHR(mGraphInitialDate, mGraphFinalDate);
 
         // add entries to dataset
-        dataSet = new LineDataSet(graphData2, "Time");
+        dataSet = new LineDataSet(graphData2, "HR");
         dataSet.setColor(Color.rgb(0, 0, 0));
 
         dataSet.setCircleRadius(1);
         dataSet.setFillColor(Color.argb(150, 51, 181, 229));
         dataSet.setFillAlpha(255);
         dataSet.setDrawFilled(true);
+//        dataSet.setDrawCircles(false);
 
         lineData = new LineData(dataSet);
 
