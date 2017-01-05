@@ -70,13 +70,28 @@
             android:padding="2dp"
             android:background="@drawable/corner" >
 
+            <TextView
+                android:id="@+id/active_calories_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="---"
+                android:textSize="@dimen/title2_text_size" />
+            <TextView
+                android:id="@+id/active_calories_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="---"
+                android:textSize="@dimen/title_text_size" />
+
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart_calories_active"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp" />
 
             <!--<com.github.mikephil.charting.charts.LineChart-->
@@ -87,13 +102,13 @@
                 <!--android:layout_marginRight="20dp"-->
                 <!--android:layout_marginTop="10dp" />-->
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chart_hr"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp" />
+            <!--<com.github.mikephil.charting.charts.LineChart-->
+                <!--android:id="@+id/chart_hr"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="220dp"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:layout_marginTop="10dp" />-->
 
         </LinearLayout>
     </ScrollView>

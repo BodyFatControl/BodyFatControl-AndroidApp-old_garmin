@@ -60,9 +60,11 @@ public class MainActivity extends AppCompatActivity {
     public static final int HISTORIC_HR_COMMAND = 104030201;
     public static final int USER_DATA_COMMAND = 204030201;
     public static TextView connectStatus;
+    public static TextView activeCaloriesLabel;
+    public static TextView activeCaloriesTotal;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
-    private long mMidNightToday;
+    public static long mMidNightToday;
     private long mGraphInitialDate;
     private long mGraphFinalDate;
     public static final long SECONDS_24H = 24*60*60;
@@ -287,6 +289,8 @@ public class MainActivity extends AppCompatActivity {
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
         final TextView dateTitle = (TextView) findViewById(R.id.date_title);
+        activeCaloriesLabel = (TextView) findViewById(R.id.active_calories_label);
+        activeCaloriesTotal = (TextView) findViewById(R.id.active_calories_total);
         connectStatus = (TextView) findViewById(R.id.status_connection);
 
         // Calc and set graph initial and final dates (midnight today and rightnow)
@@ -467,133 +471,162 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void refreshGraphs() {
+        int max = 0;
+
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
         List<Entry> graphData = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate);
 
-        // add entries to dataset
-        LineDataSet dataSet = new LineDataSet(graphData, "Active calories");
-        dataSet.setColor(Color.rgb(0, 0, 0));
-        dataSet.setCircleRadius(1);
-//        dataSet.setCubicIntensity(0.1f);
-//        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-        dataSet.setFillAlpha(255);
-        dataSet.setDrawFilled(true);
+        if (graphData != null) {
+            max = (int) graphDataObj.getMax();
+            activeCaloriesLabel.setText("active calories");
+            activeCaloriesTotal.setText(Integer.toString(max));
 
-        LineData lineData = new LineData(dataSet);
+            // add entries to dataset
+            LineDataSet dataSet = new LineDataSet(graphData, "Active calories");
+            dataSet.setColor(Color.rgb(0, 172 , 117));
+            dataSet.setCubicIntensity(0.5f);
+            dataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+            dataSet.setFillColor(Color.rgb(0, 229, 154));
+            dataSet.setFillAlpha(255);
+            dataSet.setDrawFilled(true);
+            dataSet.setDrawHighlightIndicators(true);
+            dataSet.setHighlightLineWidth(2f);
 
-        // in this example, a LineChart is initialized from xml
-        LineChart chart = (LineChart) findViewById(R.id.chart_calories_active);
+            dataSet.setDrawValues(false);
+            dataSet.setLineWidth(2f);
+            dataSet.setDrawCircles(false);
 
-        chart.setBackgroundColor(Color.WHITE);
-        chart.setDrawGridBackground(true);
-        chart.setDrawBorders(true);
 
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxisPosition.BOTTOM);
-        xAxis.setTextColor(Color.GRAY);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setGridLineWidth(1);
-        xAxis.setAxisMaximum(24f);
+            LineData lineData = new LineData(dataSet);
 
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f);
-        YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setAxisMinimum(0f);
+            // in this example, a LineChart is initialized from xml
+            LineChart chart = (LineChart) findViewById(R.id.chart_calories_active);
 
-        // no description text
-        chart.getDescription().setEnabled(false);
+            chart.setBackgroundColor(Color.WHITE);
+            chart.setDrawGridBackground(false);
+            chart.setDrawBorders(true);
 
-        chart.setAutoScaleMinMaxEnabled(false);
-        chart.setData(lineData);
-        chart.invalidate(); // refresh
+            chart.setDoubleTapToZoomEnabled(false);
 
-        //-------------------------
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setTextColor(Color.GRAY);
+            xAxis.setDrawAxisLine(true);
+            xAxis.setDrawGridLines(true);
+            xAxis.setAxisMinimum(0f);
+            xAxis.setAxisMaximum(24f);
+            xAxis.setGranularity(0.25f);
 
-//        List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
-//
-//        // add entries to dataset
-//        dataSet = new LineDataSet(graphData1, "HR >= 90");
-//        dataSet.setColor(Color.rgb(0, 0, 0));
-//
-//        dataSet.setCircleRadius(1);
-//        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-//        dataSet.setFillAlpha(255);
-//        dataSet.setDrawFilled(true);
-//
-//        lineData = new LineData(dataSet);
-//
-//        // in this example, a LineChart is initialized from xml
-//        chart = (LineChart) findViewById(R.id.chart_hr_higher_90);
-//
-//        chart.setBackgroundColor(Color.WHITE);
-//        chart.setDrawGridBackground(true);
-//        chart.setDrawBorders(true);
-//
-//        xAxis = chart.getXAxis();
-//        xAxis.setPosition(XAxisPosition.BOTTOM);
-//        xAxis.setTextColor(Color.GRAY);
-//        xAxis.setDrawAxisLine(false);
-//        xAxis.setDrawGridLines(true);
-//        xAxis.setGridLineWidth(1);
-//        xAxis.setGridLineWidth(1);
-//        xAxis.setAxisMaximum(24f);
-//
-//        leftAxis = chart.getAxisLeft();
-//        leftAxis.setAxisMinimum(0f);
-//        rightAxis = chart.getAxisRight();
-//        rightAxis.setAxisMinimum(0f);
-//
-//        // no description text
-//        chart.getDescription().setEnabled(false);
-//
-//        chart.setAutoScaleMinMaxEnabled(false);
-//        chart.setData(lineData);
-//        chart.invalidate(); // refresh
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setEnabled(true);
+            leftAxis.setGranularity(1);
+            leftAxis.setAxisMinimum(0);
+            leftAxis.setDrawTopYLabelEntry(true);
 
-//        ------------------------
+            // adjust max y axis value
+            if (max > 450) {
+                leftAxis.resetAxisMaximum();
+            } else {
+                leftAxis.setAxisMaximum(500);
+            }
 
-        List<Entry> graphData2 = graphDataObj.prepareHR(mGraphInitialDate, mGraphFinalDate);
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setEnabled(false);
 
-        // add entries to dataset
-        dataSet = new LineDataSet(graphData2, "HR");
-        dataSet.setColor(Color.rgb(0, 0, 0));
+            // no description text
+            chart.getDescription().setEnabled(false);
 
-        dataSet.setCircleRadius(1);
-        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-        dataSet.setFillAlpha(255);
-        dataSet.setDrawFilled(true);
-//        dataSet.setDrawCircles(false);
+            chart.setAutoScaleMinMaxEnabled(true);
+            chart.setData(lineData);
+            chart.invalidate(); // refresh
 
-        lineData = new LineData(dataSet);
+            //-------------------------
 
-        // in this example, a LineChart is initialized from xml
-        chart = (LineChart) findViewById(R.id.chart_hr);
+            //        List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
+            //
+            //        // add entries to dataset
+            //        dataSet = new LineDataSet(graphData1, "HR >= 90");
+            //        dataSet.setColor(Color.rgb(0, 0, 0));
+            //
+            //        dataSet.setCircleRadius(1);
+            //        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
+            //        dataSet.setFillAlpha(255);
+            //        dataSet.setDrawFilled(true);
+            //
+            //        lineData = new LineData(dataSet);
+            //
+            //        // in this example, a LineChart is initialized from xml
+            //        chart = (LineChart) findViewById(R.id.chart_hr_higher_90);
+            //
+            //        chart.setBackgroundColor(Color.WHITE);
+            //        chart.setDrawGridBackground(true);
+            //        chart.setDrawBorders(true);
+            //
+            //        xAxis = chart.getXAxis();
+            //        xAxis.setPosition(XAxisPosition.BOTTOM);
+            //        xAxis.setTextColor(Color.GRAY);
+            //        xAxis.setDrawAxisLine(false);
+            //        xAxis.setDrawGridLines(true);
+            //        xAxis.setGridLineWidth(1);
+            //        xAxis.setGridLineWidth(1);
+            //        xAxis.setAxisMaximum(24f);
+            //
+            //        leftAxis = chart.getAxisLeft();
+            //        leftAxis.setAxisMinimum(0f);
+            //        rightAxis = chart.getAxisRight();
+            //        rightAxis.setAxisMinimum(0f);
+            //
+            //        // no description text
+            //        chart.getDescription().setEnabled(false);
+            //
+            //        chart.setAutoScaleMinMaxEnabled(false);
+            //        chart.setData(lineData);
+            //        chart.invalidate(); // refresh
 
-        chart.setBackgroundColor(Color.WHITE);
-        chart.setDrawGridBackground(true);
-        chart.setDrawBorders(true);
+            //        ------------------------
 
-        xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxisPosition.BOTTOM);
-        xAxis.setTextColor(Color.GRAY);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setGridLineWidth(1);
-        xAxis.setGridLineWidth(1);
-        xAxis.setAxisMaximum(24f);
+            //        List<Entry> graphData2 = graphDataObj.prepareHR(mGraphInitialDate, mGraphFinalDate);
+            //
+            //        // add entries to dataset
+            //        dataSet = new LineDataSet(graphData2, "HR");
+            //        dataSet.setColor(Color.rgb(0, 0, 0));
+            //
+            //        dataSet.setCircleRadius(1);
+            //        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
+            //        dataSet.setFillAlpha(255);
+            //        dataSet.setDrawFilled(true);
+            ////        dataSet.setDrawCircles(false);
+            //
+            //        lineData = new LineData(dataSet);
+            //
+            //        // in this example, a LineChart is initialized from xml
+            //        chart = (LineChart) findViewById(R.id.chart_hr);
+            //
+            //        chart.setBackgroundColor(Color.WHITE);
+            //        chart.setDrawGridBackground(true);
+            //        chart.setDrawBorders(true);
+            //
+            //        xAxis = chart.getXAxis();
+            //        xAxis.setPosition(XAxisPosition.BOTTOM);
+            //        xAxis.setTextColor(Color.GRAY);
+            //        xAxis.setDrawAxisLine(false);
+            //        xAxis.setDrawGridLines(true);
+            //        xAxis.setGridLineWidth(1);
+            //        xAxis.setGridLineWidth(1);
+            //        xAxis.setAxisMaximum(24f);
+            //
+            //        leftAxis = chart.getAxisLeft();
+            //        leftAxis.setAxisMinimum(0f);
+            //        rightAxis = chart.getAxisRight();
+            //        rightAxis.setAxisMinimum(0f);
+            //
+            //        // no description text
+            //        chart.getDescription().setEnabled(false);
+            //
+            //        chart.setAutoScaleMinMaxEnabled(false);
+            //        chart.setData(lineData);
+            //        chart.invalidate(); // refresh
 
-        leftAxis = chart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f);
-        rightAxis = chart.getAxisRight();
-        rightAxis.setAxisMinimum(0f);
-
-        // no description text
-        chart.getDescription().setEnabled(false);
-
-        chart.setAutoScaleMinMaxEnabled(false);
-        chart.setData(lineData);
-        chart.invalidate(); // refresh
+        }
     }
 }

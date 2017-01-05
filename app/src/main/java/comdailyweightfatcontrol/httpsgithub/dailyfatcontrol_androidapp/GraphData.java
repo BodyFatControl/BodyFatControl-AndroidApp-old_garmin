@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GraphData {
     private Context mContext;
-    private HashMap<Long, Double> graphData = new HashMap<Long, Double>();
+    private double mMax = 0;
 
     public GraphData(Context context) {
         mContext = context;
@@ -55,14 +55,26 @@ public class GraphData {
 
             if (date < graphFinalDate) { //  calc calories only until current date
                 double tmp = calories.calcActiveCalories(hr);
-                if (tmp > 0) {
+                if (true/*tmp > 0*/) {
                     caloriesSum += tmp;
+                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) caloriesSum));
+                } else if (tmp == 0 && date == 0) { // very first value should be added to the graph
+                    graphDataEntriesList.add(new Entry(0, -2));
                 }
-                graphDataEntriesList.add(new Entry((float) date/(60*60), (float) caloriesSum));
+            }
+
+            if (date == (endOfToday - 59) && (initialDate < MainActivity.mMidNightToday)) { //  last point
+                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) caloriesSum));
             }
         }
 
+        mMax = caloriesSum;
+
         return graphDataEntriesList;
+    }
+
+    public double getMax() {
+        return mMax;
     }
 
     public List<Entry> prepareCaloriesTotal(long initialDate, long finalDate) {
