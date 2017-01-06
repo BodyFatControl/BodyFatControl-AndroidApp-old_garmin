@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -579,11 +580,82 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             if ((caloriesEERMax + caloriesActiveMax) > 2950) {
                 leftAxis.resetAxisMaximum();
             } else {
-                leftAxis.setAxisMaximum(3000);
+                leftAxis.setAxisMaximum(1300);
             }
 
+//            leftAxis.setValueFormatter(new IAxisValueFormatter() {
+//                @Override
+//                public String getFormattedValue(float value, AxisBase axis) {
+//                    if (value < (caloriesEERMax/10)) {
+//                        value *= 10;
+//                    } else {
+//                        value = value + ((float) caloriesEERMax);
+//                    }
+//
+//                    return Integer.toString((int) value);
+//                }
+//            });
+
+            leftAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if (value < (caloriesEERMax/10)) {
+//                        value *= 10;
+                        return "";
+                    } else {
+                        value = value - ((float) caloriesEERMax / 10);
+                    }
+//            // adjust max y axis value
+//            if ((caloriesEERMax + caloriesActiveMax) > 2950) {
+//                leftAxis.resetAxisMaximum();
+//            } else {
+//                leftAxis.setAxisMaximum(1300);
+//            }
+
+//            leftAxis.setValueFormatter(new IAxisValueFormatter() {
+//                @Override
+//                public String getFormattedValue(float value, AxisBase axis) {
+//                    if (value < (caloriesEERMax/10)) {
+//                        value *= 10;
+//                    } else {
+//                        value = value + ((float) caloriesEERMax);
+//                    }
+//
+//                    return Integer.toString((int) value);
+//                }
+//            });
+
+                    return Integer.toString((int) value);
+                }
+            });
+
+
             YAxis rightAxis = mChart.getAxisRight();
-            rightAxis.setEnabled(false);
+            rightAxis.setEnabled(true);
+            rightAxis.setGranularity(1);
+            rightAxis.setAxisMinimum(0);
+            rightAxis.setDrawTopYLabelEntry(true);
+            rightAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if (value < (caloriesEERMax/10)) {
+                        value *= 10;
+                    } else {
+//                        value = value*10 - ((float) caloriesEERMax / 10);
+                        value = value + (float) caloriesEERMax;
+                    }
+
+                    return Integer.toString((int) value);
+                }
+            });
+
+            // adjust max y axis value
+            if ((caloriesEERMax + caloriesActiveMax) > 2950) {
+                rightAxis.resetAxisMaximum();
+            } else {
+                rightAxis.setAxisMaximum(1300);
+            }
+
 
             // no description text
             mChart.getDescription().setEnabled(false);
@@ -692,8 +764,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mFormat = new SimpleDateFormat("H'h'mm");
         String dateString = mFormat.format(new Date((long) ((date-1) *60*60*1000)));
 
-        textViewCalories1.setText(dateString + " total calories " + Integer.toString(Math.round(e.getY())));
-        textViewCalories2.setText("active calories " + Integer.toString(((int) e.getY()) - (int) (caloriesEERMax)));
+        float value = 0;
+        if (e.getY() < (caloriesEERMax/10)) {
+            value = e.getY()*10;
+        } else {
+//            value = (float) (e.getY()*10 - caloriesEERMax);
+            value = (float) (caloriesEERMax + (e.getY() - (caloriesEERMax / 10)));
+//            value = value + (float) caloriesEERMax;
+        }
+
+        textViewCalories1.setText(dateString + " total calories " + Integer.toString((int) (value)));
+        textViewCalories2.setText("active calories " + Integer.toString(((int) value) - (int) (caloriesEERMax)));
     }
 
     @Override

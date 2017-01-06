@@ -97,7 +97,8 @@ public class Calories {
         if (gender == 0) { // female
             calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
                     (660.7*height/100))); // daily value
-            double temp = (initialDate - finalDate) / MainActivity.SECONDS_24H;
+            double temp = (finalDate - initialDate);
+            temp = temp / MainActivity.SECONDS_24H;
             calories = calories * temp;
 
         } else { // male

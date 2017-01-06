@@ -29,11 +29,12 @@ public class GraphData {
         long date = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
         long graphFinalDate = finalDate - initialDate;
+        calories = caloriesObject.calcCaloriesEER(initialDate, finalDate);
         // Loop trough all the minutes starting from today midnight
         for ( ; date < endOfToday; date += 60) {
             if (date < graphFinalDate) { //  calc calories only until current date
-                calories = caloriesObject.calcCaloriesEER(initialDate, finalDate);
-                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) calories));
+                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) calories
+                        / 10)); // divide by 10 for the graph scale
             }
         }
 
@@ -80,14 +81,14 @@ public class GraphData {
                 double tmp = calories.calcActiveCalories(hr);
                 if (true/*tmp > 0*/) {
                     caloriesSum += tmp;
-                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + CaloriesEER)));
+                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
                 } else if (tmp == 0 && date == 0) { // very first value should be added to the graph
                     graphDataEntriesList.add(new Entry(0, -2));
                 }
             }
 
             if (date == (endOfToday - 59) && (initialDate < MainActivity.mMidNightToday)) { //  last point
-                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + CaloriesEER)));
+                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
             }
         }
 
