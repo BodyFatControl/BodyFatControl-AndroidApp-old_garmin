@@ -487,29 +487,43 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         int max = 0;
 
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
-        List<Entry> graphData = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate);
+        List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate);
+        double caloriesEERMax = graphDataObj.getMax();
+        List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, caloriesEERMax);
 
-        if (graphData != null) {
+        if (graphDataCaloriesActive != null && graphDataCaloriesEER != null) {
             max = (int) graphDataObj.getMax();
             activeCaloriesSelected.setVisibility(View.INVISIBLE);
             activeCaloriesTotal.setText("active calories: " + Integer.toString(max));
 
-            // add entries to dataset
-            LineDataSet dataSet = new LineDataSet(graphData, "Active calories");
-            dataSet.setColor(Color.rgb(0, 172 , 117));
-            dataSet.setCubicIntensity(1f);
-            dataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-            dataSet.setFillColor(Color.rgb(0, 229, 154));
-            dataSet.setFillAlpha(255);
-            dataSet.setDrawFilled(true);
-            dataSet.setDrawHighlightIndicators(true);
-            dataSet.setHighlightLineWidth(2f);
+            // add entries to Calories Active dataset
+            LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Active calories");
+            dataSetCaloriesActive.setColor(Color.rgb(0, 172 , 117));
+            dataSetCaloriesActive.setCubicIntensity(1f);
+            dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+            dataSetCaloriesActive.setFillColor(Color.rgb(0, 229, 154));
+            dataSetCaloriesActive.setFillAlpha(66);
+            dataSetCaloriesActive.setDrawFilled(true);
+            dataSetCaloriesActive.setDrawHighlightIndicators(true);
+            dataSetCaloriesActive.setHighlightLineWidth(2f);
+            dataSetCaloriesActive.setDrawValues(false);
+            dataSetCaloriesActive.setLineWidth(2f);
+            dataSetCaloriesActive.setDrawCircles(false);
 
-            dataSet.setDrawValues(false);
-            dataSet.setLineWidth(2f);
-            dataSet.setDrawCircles(false);
+            // add entries to Calories EER dataset
+            LineDataSet dataSetCaloriesEER = new LineDataSet(graphDataCaloriesEER, "No active calories");
+            dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
+            dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
+            dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
+            dataSetCaloriesEER.setFillAlpha(66);
+            dataSetCaloriesEER.setDrawFilled(true);
+            dataSetCaloriesEER.setHighlightEnabled(false);
+            dataSetCaloriesEER.setDrawValues(false);
+            dataSetCaloriesEER.setLineWidth(2f);
+            dataSetCaloriesEER.setLineWidth(0);
+            dataSetCaloriesEER.setDrawCircles(false);
 
-            LineData lineData = new LineData(dataSet);
+            LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive);
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
@@ -671,8 +685,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         // write the selected value of Y value (calories on the point selected)
+
+        float date = e.getX();
+        SimpleDateFormat mFormat;
+        mFormat = new SimpleDateFormat("H'h'mm");
+        String dateString = mFormat.format(new Date((long) ((date-1) *60*60*1000)));
+
         activeCaloriesSelected.setVisibility(View.VISIBLE);
-        activeCaloriesSelected.setText(Integer.toString(Math.round(e.getY())) + " calories");
+        activeCaloriesSelected.setText(dateString + "  " + Integer.toString(Math.round(e.getY())) + " cals");
     }
 
     @Override

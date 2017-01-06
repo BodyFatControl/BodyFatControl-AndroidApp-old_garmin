@@ -82,7 +82,36 @@ public class Calories {
         return measurementList;
     }
 
-    public double calcCalories (int hr_value){
+    public double calcCaloriesEER (long initialDate, long finalDate) {
+
+        SharedPreferences mPrefs = MainActivity.getPrefs();
+        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
+        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+        int gender = mPrefs.getInt("GENDER", 0);
+        double height = (double) mPrefs.getInt("HEIGHT", 0);
+        double weight = (double) mPrefs.getInt("WEIGHT", 0);
+        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+
+        double calories;
+
+        if (gender == 0) { // female
+            calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
+                    (660.7*height/100))); // daily value
+            double temp = (initialDate - finalDate) / MainActivity.SECONDS_24H;
+            calories = calories * temp;
+
+        } else { // male
+            calories = ((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
+                    (503*height/100)));
+            double temp = (finalDate - initialDate);
+            temp = temp / MainActivity.SECONDS_24H;
+            calories = calories * temp;
+        }
+
+        return calories;
+    }
+
+    public double calcCalories (int hr_value) {
 
         SharedPreferences mPrefs = MainActivity.getPrefs();
         int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
@@ -118,7 +147,7 @@ public class Calories {
         return calories;
     }
 
-    public double calcActiveCalories (int hr_value){
+    public double calcActiveCalories (int hr_value) {
 
         SharedPreferences mPrefs = MainActivity.getPrefs();
         int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);

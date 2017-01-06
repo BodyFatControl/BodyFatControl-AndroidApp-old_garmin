@@ -18,7 +18,29 @@ public class GraphData {
         mContext = context;
     }
 
-    public List<Entry> prepareCaloriesActive(long initialDate, long finalDate) {
+    public List<Entry> prepareCaloriesEER(long initialDate, long finalDate) {
+        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
+
+        // Calc calories on the measurement list
+        Calories caloriesObject = new Calories();
+        double calories = 0;
+
+        long date = 0;
+        long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
+        // Loop trough all the minutes starting from today midnight
+        for ( ; date < endOfToday; date += 60) {
+            if (date < graphFinalDate) { //  calc calories only until current date
+                calories = caloriesObject.calcCaloriesEER(initialDate, finalDate);
+                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) calories));
+            }
+        }
+
+        mMax = calories;
+        return graphDataEntriesList;
+    }
+
+    public List<Entry> prepareCaloriesActive(long initialDate, long finalDate, double CaloriesEER) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
@@ -57,19 +79,18 @@ public class GraphData {
                 double tmp = calories.calcActiveCalories(hr);
                 if (true/*tmp > 0*/) {
                     caloriesSum += tmp;
-                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) caloriesSum));
+                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + CaloriesEER)));
                 } else if (tmp == 0 && date == 0) { // very first value should be added to the graph
                     graphDataEntriesList.add(new Entry(0, -2));
                 }
             }
 
             if (date == (endOfToday - 59) && (initialDate < MainActivity.mMidNightToday)) { //  last point
-                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) caloriesSum));
+                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + CaloriesEER)));
             }
         }
 
-        mMax = caloriesSum;
-
+        mMax = caloriesSum + CaloriesEER;
         return graphDataEntriesList;
     }
 
