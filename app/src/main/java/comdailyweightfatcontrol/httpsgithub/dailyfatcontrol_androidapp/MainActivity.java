@@ -28,6 +28,7 @@ import com.garmin.android.connectiq.ConnectIQ.IQSendMessageListener;
 import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.components.XAxis;
@@ -35,6 +36,7 @@ import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.gson.Gson;
@@ -535,8 +537,22 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             xAxis.setDrawAxisLine(true);
             xAxis.setDrawGridLines(true);
             xAxis.setAxisMinimum(0f);
-            xAxis.setAxisMaximum(24f);
-            xAxis.setGranularity(0.25f);
+            xAxis.setAxisMaximum(23.983f); //23h59m
+            xAxis.setGranularity(0.016666667f); //1m
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+                private SimpleDateFormat mFormat = new SimpleDateFormat("H'h'mm");
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if ((value % 1) == 0) {
+                        mFormat = new SimpleDateFormat("H'h'");
+                    } else {
+                        mFormat = new SimpleDateFormat("H'h'mm");
+                    }
+                    return mFormat.format(new Date((long) ((value-1) *60*60*1000)));
+                }
+            });
 
             YAxis leftAxis = mChart.getAxisLeft();
             leftAxis.setEnabled(true);
