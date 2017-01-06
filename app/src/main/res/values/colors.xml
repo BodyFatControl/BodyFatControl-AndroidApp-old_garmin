@@ -3,7 +3,8 @@
     <color name="colorPrimary">#00695C</color>
     <color name="colorPrimaryDark">#004D40</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="backgroundColor">#80CBC4</color>
+    <!--<color name="backgroundColor">#80CBC4</color>-->
+    <color name="backgroundColor">#ffffff</color>
     <color name="firstBackgroundColor">#424242</color>
     <color name="pointColor">#691A99</color>
     <color name="lineColor">#1DE9B6</color>

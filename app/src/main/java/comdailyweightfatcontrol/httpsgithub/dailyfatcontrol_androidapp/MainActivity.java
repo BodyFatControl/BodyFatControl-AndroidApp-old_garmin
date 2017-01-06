@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,8 @@ import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +52,7 @@ import java.util.Random;
 
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener {
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
     private ConnectIQ mConnectIQ;
     private IQDevice mIQDevice;
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int HISTORIC_HR_COMMAND = 104030201;
     public static final int USER_DATA_COMMAND = 204030201;
     public static TextView connectStatus;
-    public static TextView activeCaloriesLabel;
+    public static TextView activeCaloriesSelected;
     public static TextView activeCaloriesTotal;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
@@ -68,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     private long mGraphInitialDate;
     private long mGraphFinalDate;
     public static final long SECONDS_24H = 24*60*60;
+
+    private LineChart mChart;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -77,17 +82,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceStatusChanged(IQDevice device, IQDevice.IQDeviceStatus status) {
-            mAdapter.updateDeviceStatus(device, status);
-
-            if (mIQDevice.getStatus() == IQDeviceStatus.CONNECTED) {
+            if (status == IQDeviceStatus.CONNECTED) {
                 connectStatus.setText("connected");
-            } else if (mIQDevice.getStatus() == IQDeviceStatus.NOT_CONNECTED) {
+            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
                 connectStatus.setText("not connected");
-            } else if (mIQDevice.getStatus() == IQDeviceStatus.NOT_PAIRED) {
+            } else if (status == IQDeviceStatus.NOT_PAIRED) {
                 connectStatus.setText("not paired");
-            } else if (mIQDevice.getStatus() == IQDeviceStatus.UNKNOWN) {
+            } else if (status == IQDeviceStatus.UNKNOWN) {
                 connectStatus.setText("unknown");
             }
+
+            device.setStatus(status);
         }
 
     };
@@ -120,10 +125,16 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onDeviceStatusChanged(IQDevice device, IQDeviceStatus status) {
-                            // Since we will only get updates for this device, just display the status
-//                        mDeviceStatus.setText(status.name());
+                            if (status == IQDeviceStatus.CONNECTED) {
+                                connectStatus.setText("connected");
+                            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
+                                connectStatus.setText("not connected");
+                            } else if (status == IQDeviceStatus.NOT_PAIRED) {
+                                connectStatus.setText("not paired");
+                            } else if (status == IQDeviceStatus.UNKNOWN) {
+                                connectStatus.setText("unknown");
+                            }
                         }
-
                     });
                 } catch (InvalidStateException e) {
 //                Log.wtf(TAG, "InvalidStateException:  We should not be here!");
@@ -289,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
         final TextView dateTitle = (TextView) findViewById(R.id.date_title);
-        activeCaloriesLabel = (TextView) findViewById(R.id.active_calories_label);
+        activeCaloriesSelected = (TextView) findViewById(R.id.active_calories_selected);
         activeCaloriesTotal = (TextView) findViewById(R.id.active_calories_total);
         connectStatus = (TextView) findViewById(R.id.status_connection);
 
@@ -478,13 +489,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (graphData != null) {
             max = (int) graphDataObj.getMax();
-            activeCaloriesLabel.setText("active calories");
-            activeCaloriesTotal.setText(Integer.toString(max));
+            activeCaloriesSelected.setVisibility(View.INVISIBLE);
+            activeCaloriesTotal.setText("active calories: " + Integer.toString(max));
 
             // add entries to dataset
             LineDataSet dataSet = new LineDataSet(graphData, "Active calories");
             dataSet.setColor(Color.rgb(0, 172 , 117));
-            dataSet.setCubicIntensity(0.5f);
+            dataSet.setCubicIntensity(1f);
             dataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
             dataSet.setFillColor(Color.rgb(0, 229, 154));
             dataSet.setFillAlpha(255);
@@ -496,19 +507,29 @@ public class MainActivity extends AppCompatActivity {
             dataSet.setLineWidth(2f);
             dataSet.setDrawCircles(false);
 
-
             LineData lineData = new LineData(dataSet);
 
             // in this example, a LineChart is initialized from xml
-            LineChart chart = (LineChart) findViewById(R.id.chart_calories_active);
+            LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
 
-            chart.setBackgroundColor(Color.WHITE);
-            chart.setDrawGridBackground(false);
-            chart.setDrawBorders(true);
+            // enable touch gestures
+            mChart.setTouchEnabled(true);
+//            mChart.setOnChartGestureListener(this);
+            mChart.setOnChartValueSelectedListener(this);
 
-            chart.setDoubleTapToZoomEnabled(false);
+            mChart.setBackgroundColor(Color.WHITE);
+            mChart.setDrawGridBackground(false);
+            mChart.setDrawBorders(true);
 
-            XAxis xAxis = chart.getXAxis();
+            mChart.setDoubleTapToZoomEnabled(false);
+
+            // enable scaling and dragging
+//            chart.setDragEnabled(true);
+//            chart.setScaleEnabled(true);
+            mChart.setScaleXEnabled(true);
+            mChart.setScaleYEnabled(false);
+
+            XAxis xAxis = mChart.getXAxis();
             xAxis.setPosition(XAxisPosition.BOTTOM);
             xAxis.setTextColor(Color.GRAY);
             xAxis.setDrawAxisLine(true);
@@ -517,28 +538,29 @@ public class MainActivity extends AppCompatActivity {
             xAxis.setAxisMaximum(24f);
             xAxis.setGranularity(0.25f);
 
-            YAxis leftAxis = chart.getAxisLeft();
+            YAxis leftAxis = mChart.getAxisLeft();
             leftAxis.setEnabled(true);
             leftAxis.setGranularity(1);
             leftAxis.setAxisMinimum(0);
             leftAxis.setDrawTopYLabelEntry(true);
 
             // adjust max y axis value
-            if (max > 450) {
+            if (max > 2950) {
                 leftAxis.resetAxisMaximum();
             } else {
-                leftAxis.setAxisMaximum(500);
+                leftAxis.setAxisMaximum(3000);
             }
 
-            YAxis rightAxis = chart.getAxisRight();
+            YAxis rightAxis = mChart.getAxisRight();
             rightAxis.setEnabled(false);
 
             // no description text
-            chart.getDescription().setEnabled(false);
+            mChart.getDescription().setEnabled(false);
 
-            chart.setAutoScaleMinMaxEnabled(true);
-            chart.setData(lineData);
-            chart.invalidate(); // refresh
+            mChart.setAutoScaleMinMaxEnabled(true);
+            mChart.setData(lineData);
+//            chart.animateY(200);
+            mChart.invalidate(); // refresh
 
             //-------------------------
 
@@ -628,5 +650,17 @@ public class MainActivity extends AppCompatActivity {
             //        chart.invalidate(); // refresh
 
         }
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        // write the selected value of Y value (calories on the point selected)
+        activeCaloriesSelected.setVisibility(View.VISIBLE);
+        activeCaloriesSelected.setText(Integer.toString(Math.round(e.getY())) + " calories");
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 }
