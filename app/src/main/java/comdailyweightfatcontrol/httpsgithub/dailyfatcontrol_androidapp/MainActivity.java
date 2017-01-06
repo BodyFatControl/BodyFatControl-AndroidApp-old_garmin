@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,6 +39,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.gson.Gson;
 
@@ -54,7 +57,7 @@ import java.util.Random;
 
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener {
-public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener, OnChartGestureListener {
 
     private ConnectIQ mConnectIQ;
     private IQDevice mIQDevice;
@@ -65,16 +68,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final int HISTORIC_HR_COMMAND = 104030201;
     public static final int USER_DATA_COMMAND = 204030201;
     public static TextView connectStatus;
-    public static TextView activeCaloriesSelected;
-    public static TextView activeCaloriesTotal;
+    public static TextView textViewCalories1;
+    public static TextView textViewCalories2;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
     public static long mMidNightToday;
     private long mGraphInitialDate;
     private long mGraphFinalDate;
     public static final long SECONDS_24H = 24*60*60;
-
-    private LineChart mChart;
+    private double caloriesEERMax = 0;
+    private double caloriesActiveMax = 0;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -302,8 +305,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
         final TextView dateTitle = (TextView) findViewById(R.id.date_title);
-        activeCaloriesSelected = (TextView) findViewById(R.id.active_calories_selected);
-        activeCaloriesTotal = (TextView) findViewById(R.id.active_calories_total);
+        textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
+        textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
         connectStatus = (TextView) findViewById(R.id.status_connection);
 
         // Calc and set graph initial and final dates (midnight today and rightnow)
@@ -484,17 +487,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     void refreshGraphs() {
-        int max = 0;
-
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
         List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate);
-        double caloriesEERMax = graphDataObj.getMax();
+        caloriesEERMax = graphDataObj.getmMaxCaloriesEER();
         List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, caloriesEERMax);
 
         if (graphDataCaloriesActive != null && graphDataCaloriesEER != null) {
-            max = (int) graphDataObj.getMax();
-            activeCaloriesSelected.setVisibility(View.INVISIBLE);
-            activeCaloriesTotal.setText("active calories: " + Integer.toString(max));
+            caloriesActiveMax = graphDataObj.getmMaxCaloriesActive();
+            textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
+            textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
 
             // add entries to Calories Active dataset
             LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Active calories");
@@ -575,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             leftAxis.setDrawTopYLabelEntry(true);
 
             // adjust max y axis value
-            if (max > 2950) {
+            if ((caloriesEERMax + caloriesActiveMax) > 2950) {
                 leftAxis.resetAxisMaximum();
             } else {
                 leftAxis.setAxisMaximum(3000);
@@ -691,12 +692,54 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mFormat = new SimpleDateFormat("H'h'mm");
         String dateString = mFormat.format(new Date((long) ((date-1) *60*60*1000)));
 
-        activeCaloriesSelected.setVisibility(View.VISIBLE);
-        activeCaloriesSelected.setText(dateString + "  " + Integer.toString(Math.round(e.getY())) + " cals");
+        textViewCalories1.setText(dateString + " total calories " + Integer.toString(Math.round(e.getY())));
+        textViewCalories2.setText("active calories " + Integer.toString(((int) e.getY()) - (int) (caloriesEERMax)));
+    }
+
+    @Override
+    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+        textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
+        textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
+    }
+
+    @Override
+    public void onChartLongPressed(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartDoubleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartSingleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+    }
+
+    @Override
+    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+    }
+
+    @Override
+    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
     }
 
     @Override
     public void onNothingSelected() {
-
+        textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
+        textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
     }
 }

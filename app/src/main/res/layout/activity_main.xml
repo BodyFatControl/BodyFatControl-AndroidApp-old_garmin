@@ -71,19 +71,19 @@
             android:background="@drawable/corner" >
 
             <TextView
-                android:id="@+id/active_calories_total"
+                android:id="@+id/textViewCalories1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="---"
                 android:textSize="@dimen/title_text_size" />
             <TextView
-                android:id="@+id/active_calories_selected"
+                android:id="@+id/textViewCalories2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="---"
-                android:textSize="@dimen/title2_text_size" />
+                android:textSize="@dimen/title_text_size" />
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart_calories_active"

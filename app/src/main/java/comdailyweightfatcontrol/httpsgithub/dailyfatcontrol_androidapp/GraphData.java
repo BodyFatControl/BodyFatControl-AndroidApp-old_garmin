@@ -12,7 +12,8 @@ import java.util.List;
 
 public class GraphData {
     private Context mContext;
-    private double mMax = 0;
+    private double mMaxCaloriesEER = 0;
+    private double mMaxCaloriesActive = 0;
 
     public GraphData(Context context) {
         mContext = context;
@@ -36,7 +37,7 @@ public class GraphData {
             }
         }
 
-        mMax = calories;
+        mMaxCaloriesEER = calories;
         return graphDataEntriesList;
     }
 
@@ -90,12 +91,16 @@ public class GraphData {
             }
         }
 
-        mMax = caloriesSum + CaloriesEER;
+        mMaxCaloriesActive = caloriesSum;
         return graphDataEntriesList;
     }
 
-    public double getMax() {
-        return mMax;
+    public double getmMaxCaloriesEER() {
+        return mMaxCaloriesEER;
+    }
+
+    public double getmMaxCaloriesActive() {
+        return mMaxCaloriesActive;
     }
 
     public List<Entry> prepareCaloriesTotal(long initialDate, long finalDate) {
