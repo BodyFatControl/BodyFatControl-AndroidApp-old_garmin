@@ -13,7 +13,8 @@
         android:inputType="text"
         android:id="@+id/food_name"
         android:textSize="@dimen/title_text_size"
-        android:hint="Food name" />
+        android:hint="Food name"
+        android:singleLine="true" />
 
     <EditText
         android:layout_width="match_parent"
@@ -21,7 +22,8 @@
         android:inputType="text"
         android:id="@+id/brand"
         android:textSize="@dimen/title_text_size"
-        android:hint="Brand" />
+        android:hint="Brand"
+        android:singleLine="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:inputType="text"
+            android:inputType="number"
             android:id="@+id/serving_size_entry"
             android:textSize="@dimen/title_text_size"
             android:hint="1"/>
@@ -73,10 +75,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:inputType="text"
-            android:id="@+id/calories_entry"
+                android:id="@+id/calories_entry"
             android:textSize="@dimen/title_text_size"
-            android:hint="0 cals"/>
+            android:hint="0 cals"
+                android:inputType="number" />
     </LinearLayout>
 
     <LinearLayout
