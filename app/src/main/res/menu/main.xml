@@ -10,4 +10,7 @@
     <item
         android:id="@+id/user_profile"
         android:title="UserProfile" />
+    <item
+        android:id="@+id/create_food"
+        android:title="Create food" />
 </menu>

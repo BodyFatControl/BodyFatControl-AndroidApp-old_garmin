@@ -451,6 +451,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             sendMessage(command);
             return true;
 
+        } else if (id == R.id.create_food) {
+            // Handle the connect action
+            Intent intent = new Intent(this, CreateFoodActivity.class);
+            startActivity(intent);
+            return true;
+
         } else if (id == R.id.user_profile) {
             command.add(USER_DATA_COMMAND);
             Random r = new Random();
