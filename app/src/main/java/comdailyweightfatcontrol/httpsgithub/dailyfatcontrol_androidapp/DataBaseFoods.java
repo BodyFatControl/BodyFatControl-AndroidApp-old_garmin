@@ -2,8 +2,11 @@ package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
 
 import comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.Foods;
 
@@ -60,8 +63,40 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
         db.close(); // Closing database connection
+    }
 
+    public ArrayList<String> DataBaseGetFoodsNames () {
+        // Query to get all records
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME;
 
+        Cursor cursor = db.rawQuery(query, null);
+
+        // Loop to put all the values to the ArrayList<Foods>
+        cursor.moveToFirst();
+        int counter = cursor.getCount();
+        ArrayList<String> foodsNames = new ArrayList<>();
+        for ( ; counter > 0; ) {
+            if (cursor.isAfterLast()) break;
+
+            String name;
+            name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
+            foodsNames.add(name);
+
+            cursor.moveToNext();
+        }
+
+        db.close(); // Closing database connection
+        return foodsNames;
+    }
+
+    public void DataBaseDeleteFood (String name) {
+        // Query to get all records
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TABLE_NAME, "name=?", new String[]{name});
+
+        db.close(); // Closing database connection
     }
 }
 
