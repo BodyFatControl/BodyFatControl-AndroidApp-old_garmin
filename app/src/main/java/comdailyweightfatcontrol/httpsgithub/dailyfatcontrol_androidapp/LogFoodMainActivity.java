@@ -41,6 +41,18 @@ public class LogFoodMainActivity extends AppCompatActivity {
             }
         });
 
+        // Add a food from the list
+        listViewFoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+               @Override
+               public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+                   Intent intent = new Intent(LogFoodMainActivity.this, LogFoodActivity.class);
+                   intent.putExtra("FOOD_NAME", listViewFoodsList.getItemAtPosition(position).toString());
+                   startActivity(intent);
+               }
+           });
+
+        // Delete a food from the list
         listViewFoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
