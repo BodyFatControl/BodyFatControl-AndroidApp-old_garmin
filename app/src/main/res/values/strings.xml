@@ -13,4 +13,10 @@
     <string name="received_message">Received message from device.</string>
     <string name="missing_widget">Missing Daily Fat Control app</string>
     <string name="missing_widget_message">The Daily Fat Control app used with this application is not installed on your ConnectIQ device.   Please install the app and try again.</string>
+
+    <string-array name="foods_unity_type">
+        <item>grams</item>
+        <item>mls</item>
+        <item>piece</item>
+    </string-array>
 </resources>

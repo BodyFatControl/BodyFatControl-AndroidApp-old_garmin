@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
+        Button buttonLogFood = (Button) findViewById(R.id.button_log_food);
         final TextView dateTitle = (TextView) findViewById(R.id.date_title);
         textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
         textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
@@ -321,6 +322,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mMidNightToday = midNightToday;
         mGraphInitialDate = midNightToday;
         mGraphFinalDate = now;
+
+        buttonLogFood.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplication().getApplicationContext(), LogFoodMainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         buttonNext.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
