@@ -8,17 +8,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-import comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.Foods;
-
 public class DataBaseFoods extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "database_foods.db";
     private static final String TABLE_NAME = "foods";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_BRAND = "brand";
-    private static final String COLUMN_UNITY = "unity";
-    private static final String COLUMN_UNITY_TYPE = "unity_type";
+    private static final String COLUMN_UNIT = "unit";
+    private static final String COLUMN_UNIT_TYPE = "unit_type";
     private static final String COLUMN_CALORIES = "calories";
     private static final String COLUMN_LAST_USAGE_DATE = "last_usage_date";
     private static final String COLUMN_USAGE_FREQUENCY = "usage_frequency";
@@ -33,8 +31,8 @@ public class DataBaseFoods extends SQLiteOpenHelper {
                 COLUMN_NAME + " text UNIQUE, " + /* UNIQUE means that there will not be duplicate entries with the same date */
                 COLUMN_DATE + " integer, " +
                 COLUMN_BRAND + " text, " +
-                COLUMN_UNITY + " integer, " +
-                COLUMN_UNITY_TYPE + " text, " +
+                COLUMN_UNIT + " integer, " +
+                COLUMN_UNIT_TYPE + " text, " +
                 COLUMN_CALORIES + " integer, " +
                 COLUMN_LAST_USAGE_DATE + " integer, " +
                 COLUMN_USAGE_FREQUENCY + " integer)");
@@ -54,8 +52,8 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, food.getDate());
         values.put(COLUMN_NAME, food.getName());
         values.put(COLUMN_BRAND, food.getBrand());
-        values.put(COLUMN_UNITY, food.getUnity());
-        values.put(COLUMN_UNITY_TYPE, food.getUnityType());
+        values.put(COLUMN_UNIT, food.getUnit());
+        values.put(COLUMN_UNIT_TYPE, food.getUnitType());
         values.put(COLUMN_CALORIES, food.getCalories());
 
         // Inserting Row: if there is one food with the same COLUMN_NAME, there new one will not be
@@ -109,8 +107,8 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
         food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
         food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-        food.setUnity(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITY)));
-        food.setUnityType(cursor.getString(cursor.getColumnIndex(COLUMN_UNITY_TYPE)));
+        food.setUnit(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT)));
+        food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
         food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
         food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));
         food.setUsageFrequency(cursor.getLong(cursor.getColumnIndex(COLUMN_USAGE_FREQUENCY)));

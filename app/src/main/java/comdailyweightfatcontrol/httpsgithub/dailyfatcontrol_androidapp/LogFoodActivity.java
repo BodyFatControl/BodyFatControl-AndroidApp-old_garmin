@@ -1,15 +1,18 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.icu.util.Calendar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +22,10 @@ public class LogFoodActivity extends AppCompatActivity {
     private EditText mEditTextServingSizeEntry = null;
     private TextView mTextViewCalories = null;
     private EditText mEditTextDate = null;
+    private EditText mEditTextTime = null;
+    private Button mButtonLogThis = null;
     private long mNowMillis = 0;
+    java.util.Calendar mCalendarDate = java.util.Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,9 @@ public class LogFoodActivity extends AppCompatActivity {
         final TextView textViewFoodUnityType = (TextView) findViewById(R.id.food_unity_type);
         mTextViewCalories = (TextView) findViewById(R.id.calories);
         mEditTextDate = (EditText) findViewById(R.id.date);
+        mEditTextTime = (EditText) findViewById(R.id.time);
         mEditTextServingSizeEntry = (EditText) findViewById(R.id.serving_size_entry);
+        mButtonLogThis = (Button) findViewById(R.id.button_log_this);
 
         Bundle extras = getIntent().getExtras();
 
@@ -45,7 +53,7 @@ public class LogFoodActivity extends AppCompatActivity {
 
         textViewFoodName.setText(mFood.getName());
         textViewBrand.setText(mFood.getBrand());
-        textViewFoodUnityType.setText(mFood.getUnityType());
+        textViewFoodUnityType.setText(mFood.getUnitType());
         mTextViewCalories.setText("");
 
         mEditTextServingSizeEntry.addTextChangedListener(new TextWatcher() {
@@ -54,7 +62,7 @@ public class LogFoodActivity extends AppCompatActivity {
                 if (!string.isEmpty()) {
                     float value = Integer.parseInt(s.toString());
                     float calories = mFood.getCalories();
-                    float unity = mFood.getUnity();
+                    float unity = mFood.getUnit();
                     value = (1/unity) * calories * value;
                     mTextViewCalories.setText(Integer.toString((int) value));
                 } else {
@@ -67,44 +75,71 @@ public class LogFoodActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-        java.util.Calendar rightNow = java.util.Calendar.getInstance();
-        long offset = rightNow.get(java.util.Calendar.ZONE_OFFSET) + rightNow.get(java.util.Calendar.DST_OFFSET);
-        mNowMillis = rightNow.getTimeInMillis() + offset;
-        SimpleDateFormat formater = new SimpleDateFormat("dd MMM yyyy");
-        mEditTextDate.setText(formater.format(new Date(mNowMillis)));
+        mEditTextDate.setText(mCalendarDate.get(Calendar.DAY_OF_MONTH) + "/" +
+                                (mCalendarDate.get(Calendar.MONTH)+1)  + "/" +
+                                mCalendarDate.get(Calendar.YEAR));
+
+        mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR) + "h" +
+                (mCalendarDate.get(Calendar.MINUTE)));
 
         mEditTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
-                    java.util.Calendar rightNow = java.util.Calendar.getInstance();
-                    rightNow.setTimeInMillis(mNowMillis);
-                    int year = rightNow.get(Calendar.YEAR);
-                    int month = rightNow.get(Calendar.MONTH);
-                    int day = rightNow.get(Calendar.DAY_OF_MONTH);
-
                     DatePickerDialog dialog = new DatePickerDialog(LogFoodActivity.this,
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year,
                                                       int monthOfYear, int dayOfMonth) {
 
-                                    java.util.Calendar rightNow = java.util.Calendar.getInstance();
-                                    rightNow.clear();
-                                    rightNow.set(year, monthOfYear, dayOfMonth);
-                                    mNowMillis = rightNow.getTimeInMillis();
+                                    mCalendarDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                    mCalendarDate.set(Calendar.MONTH, monthOfYear);
+                                    mCalendarDate.set(Calendar.YEAR, year);
 
-                                    SimpleDateFormat formater = new SimpleDateFormat("dd MMM yyyy");
-                                    mEditTextDate.setText(formater.format(new Date(mNowMillis)));
+                                    mEditTextDate.setText(mCalendarDate.get(Calendar.DAY_OF_MONTH) + "/" +
+                                            (mCalendarDate.get(Calendar.MONTH)+1) + "/" +
+                                            mCalendarDate.get(Calendar.YEAR));
                                 }
                             },
-                            year,
-                            month,
-                            day);
+                            mCalendarDate.get(Calendar.YEAR),
+                            mCalendarDate.get(Calendar.MONTH),
+                            mCalendarDate.get(Calendar.DAY_OF_MONTH));
                     dialog.show();
                 }else {
 
                 }
+            }
+        });
+
+        mEditTextTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(LogFoodActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            mCalendarDate.set(Calendar.HOUR, selectedHour);
+                            mCalendarDate.set(Calendar.MINUTE, selectedMinute);
+
+                            mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR) + "h" +
+                                    (mCalendarDate.get(Calendar.MINUTE)));
+                        }
+                    }, mCalendarDate.get(Calendar.HOUR), mCalendarDate.get(Calendar.MINUTE), true);//Yes 24 hour time
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.show();
+                }else {
+
+                }
+            }
+        });
+
+        mButtonLogThis.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+
+
+                finish(); // finish this activity
             }
         });
     }

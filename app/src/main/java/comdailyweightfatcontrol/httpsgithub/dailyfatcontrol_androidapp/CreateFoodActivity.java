@@ -27,21 +27,21 @@ public class CreateFoodActivity extends AppCompatActivity {
         buttonSaveCustomFood.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Foods food = new Foods();
-                food.setName(editTextFoodName.getText().toString());
-                food.setBrand(editTextBrand.getText().toString());
-                food.setUnity(Integer.valueOf(textViewServingSizeEntry.getText().toString()));
-                food.setUnityType(spinnerUnityType.getSelectedItem().toString());
-                food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
+            Foods food = new Foods();
+            food.setName(editTextFoodName.getText().toString());
+            food.setBrand(editTextBrand.getText().toString());
+            food.setUnit(Integer.valueOf(textViewServingSizeEntry.getText().toString()));
+            food.setUnitType(spinnerUnityType.getSelectedItem().toString());
+            food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
 
-                Calendar rightNow = Calendar.getInstance();
-                long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-                long rightNowMillis = rightNow.getTimeInMillis() + offset;
-                food.setDate(rightNowMillis);
+            Calendar rightNow = Calendar.getInstance();
+            long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+            long rightNowMillis = rightNow.getTimeInMillis() + offset;
+            food.setDate(rightNowMillis);
 
-                new DataBaseFoods(getApplication().getApplicationContext()).DataBaseWriteFood(food);
+            new DataBaseFoods(getApplication().getApplicationContext()).DataBaseWriteFood(food);
 
-                finish(); // finish this activity
+            finish(); // finish this activity
             }
         });
     }

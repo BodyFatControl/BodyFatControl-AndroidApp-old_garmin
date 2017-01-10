@@ -21,15 +21,6 @@
             android:textSize="@dimen/title_text_size"
             android:text="---" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height= "2dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:background="#c0c0c0" />
-
         <TextView
             android:id="@+id/brand"
             android:layout_width="match_parent"
@@ -39,7 +30,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:singleLine="true"
-            android:textSize="@dimen/title_text_size"
+            android:textSize="@dimen/title2_text_size"
             android:text="---" />
 
         <View
@@ -202,7 +193,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                android:paddingBottom="5dp"
                 android:layout_weight="0.5"
                 android:textSize="@dimen/title_text_size"
                 android:text="Date" />
@@ -211,13 +202,35 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                android:paddingBottom="5dp"
                 android:layout_weight="0.5"
-                android:inputType="number"
+                android:inputType="text|number"
                 android:id="@+id/date"
-                android:textSize="@dimen/title_text_size"
-                android:hint="today"/>
+                android:textSize="@dimen/title2_text_size"
+                android:hint="date"/>
+        </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp">
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:inputType="text|number"
+                android:id="@+id/time"
+                android:textSize="@dimen/title2_text_size"
+                android:hint="time"/>
         </LinearLayout>
 
         <View
@@ -242,6 +255,7 @@
                 android:layout_weight="0.5"/>
 
             <Button
+                android:id="@+id/button_log_this"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"

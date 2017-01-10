@@ -6,8 +6,8 @@ public class Foods {
     private long usageFrequency = 0;
     private String name = null;
     private String brand = null;
-    private int unity = 0;
-    private String unityType = null;
+    private int unit = 0;
+    private String unitType = null;
     private int calories = 0;
     private int unityLogged = 0;
     private int caloriesLogged = 0;
@@ -38,20 +38,20 @@ public class Foods {
         this.brand = brand;
     }
 
-    public int getUnity() {
-        return unity;
+    public int getUnit() {
+        return unit;
     }
 
-    public void setUnity(int unity) {
-        this.unity = unity;
+    public void setUnit(int unit) {
+        this.unit = unit;
     }
 
-    public String getUnityType() {
-        return unityType;
+    public String getUnitType() {
+        return unitType;
     }
 
-    public void setUnityType(String unityType) {
-        this.unityType = unityType;
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
     }
 
     public int getCalories() {
