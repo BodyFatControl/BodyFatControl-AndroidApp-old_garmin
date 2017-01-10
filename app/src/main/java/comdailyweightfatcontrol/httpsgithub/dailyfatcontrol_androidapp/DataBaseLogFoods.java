@@ -109,5 +109,31 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         db.close(); // Closing database connection
         return foodsList;
     }
+
+    public ArrayList<String> DataBaseLogFoodsGetNames (long initialDate, long finalDate) {
+        // Query to get all the records starting at initialDate up to finalDate, ordered by date ascending
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_DATE + " BETWEEN " +
+                + initialDate*1000 + " AND " + finalDate*1000 + " ORDER BY " + COLUMN_DATE +
+                " ASC";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+        int counter = cursor.getCount();
+        ArrayList<String> foodsNames = new ArrayList<>();
+        for (; counter > 0; ) {
+            if (cursor.isAfterLast()) break;
+
+            String name;
+            name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
+            foodsNames.add(name);
+
+            cursor.moveToNext();
+        }
+
+        db.close(); // Closing database connection
+        return foodsNames;
+    }
 }
 

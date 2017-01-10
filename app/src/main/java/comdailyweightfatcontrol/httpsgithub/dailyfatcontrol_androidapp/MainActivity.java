@@ -1,6 +1,7 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -13,7 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,10 +71,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final String MY_APP = "3F3D83A85F584671A551EA1316623AD7";
     private IQApp mConnectIQApp = new IQApp(MY_APP);
     public static final int HISTORIC_HR_COMMAND = 104030201;
-    public static final int USER_DATA_COMMAND = 204030201;
-    public static TextView connectStatus;
-    public static TextView textViewCalories1;
-    public static TextView textViewCalories2;
+    private static final int USER_DATA_COMMAND = 204030201;
+    private TextView connectStatus;
+    private TextView textViewCalories1;
+    private TextView textViewCalories2;
+    private ListView listViewLogFoodList;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
     public static long mMidNightToday;
@@ -79,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final long SECONDS_24H = 24*60*60;
     private double caloriesEERMax = 0;
     private double caloriesActiveMax = 0;
+    DataBaseLogFoods mDataBaseLogFoods = new DataBaseLogFoods(this);
+    ArrayList<String> mLogFoodsNames;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -303,6 +310,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Prefs = getSharedPreferences(MainActivity.PREFERENCES, MODE_PRIVATE);
+        mConnectIQ = ConnectIQ.getInstance(this, ConnectIQ.IQConnectType.WIRELESS);
+
+        // Initialize the SDK
+        mConnectIQ.initialize(this, true, mListenerSDKInitialize);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         final Button buttonNext = (Button) findViewById(R.id.next_button);
         Button buttonPrevious = (Button) findViewById(R.id.previous_button);
         Button buttonLogFood = (Button) findViewById(R.id.button_log_food);
@@ -310,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
         textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
         connectStatus = (TextView) findViewById(R.id.status_connection);
+        listViewLogFoodList = (ListView) findViewById(R.id.log_food_list);
+        listViewLogFoodList.setLongClickable(true);
 
         // Calc and set graph initial and final dates (midnight today and rightnow)
         Calendar rightNow = Calendar.getInstance();
@@ -387,36 +407,40 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             }
         });
 
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.setDrawerListener(toggle);
-//        toggle.syncState();
-//
-//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
+        // Delete a food from the list
+        listViewLogFoodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                final int position = pos;
 
-        Prefs = getSharedPreferences(MainActivity.PREFERENCES, MODE_PRIVATE);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Delete food")
+                        .setMessage("Are you sure you want to delete?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDataBaseLogFoods.DataBaseLogFoodsDeleteFood(
+                                        listViewLogFoodList.getItemAtPosition(position).toString());
 
-        //mTextView = (TextView)findViewById(R.id.text_view);garmin_device
+                                onResume(); // refresh the view by calling the onResume()
+                            }
 
-        // Here we are specifying that we want to use a WIRELESS bluetooth connection.
-        // We could have just called getInstance() which would by default create a version
-        // for WIRELESS, unless we had previously gotten an instance passing TETHERED
-        // as the connection type.
-        mConnectIQ = ConnectIQ.getInstance(this, ConnectIQ.IQConnectType.WIRELESS);
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
 
-        // Initialize the SDK
-        mConnectIQ.initialize(this, true, mListenerSDKInitialize);
+                return true;
+            }
+        });
+
+        mLogFoodsNames = mDataBaseLogFoods.DataBaseLogFoodsGetNames(mGraphInitialDate, mGraphFinalDate);
+        ArrayAdapter<String> arrayAdapterLogFoodsList =  new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, mLogFoodsNames);
+        listViewLogFoodList.setAdapter(arrayAdapterLogFoodsList);
 
         refreshGraphs();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
     }
 
 //    @Override
@@ -547,13 +571,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesConsumed.setFillAlpha(66);
             dataSetCaloriesConsumed.setDrawFilled(true);
             dataSetCaloriesConsumed.setHighlightEnabled(false);
-            dataSetCaloriesConsumed.setDrawValues(true);
+            dataSetCaloriesConsumed.setDrawValues(false);
             dataSetCaloriesConsumed.setLineWidth(2f);
-            dataSetCaloriesConsumed.setDrawCircles(true);
+            dataSetCaloriesConsumed.setDrawCircles(false);
 
             LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive, dataSetCaloriesConsumed);
-//            LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive);
-//            LineData lineData = new LineData(dataSetCaloriesConsumed);
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
@@ -586,8 +608,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             xAxis.setValueFormatter(new IAxisValueFormatter() {
 
                 private SimpleDateFormat mFormat = new SimpleDateFormat("H'h'mm");
-
-                @Override
                 public String getFormattedValue(float value, AxisBase axis) {
                     if ((value % 1) == 0) {
                         mFormat = new SimpleDateFormat("H'h'");
@@ -658,94 +678,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             mChart.setData(lineData);
 //            chart.animateY(200);
             mChart.invalidate(); // refresh
-
-            //-------------------------
-
-            //        List<Entry> graphData1 = graphDataObj.prepareHRHigher90(mGraphInitialDate, mGraphFinalDate);
-            //
-            //        // add entries to dataset
-            //        dataSet = new LineDataSet(graphData1, "HR >= 90");
-            //        dataSet.setColor(Color.rgb(0, 0, 0));
-            //
-            //        dataSet.setCircleRadius(1);
-            //        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-            //        dataSet.setFillAlpha(255);
-            //        dataSet.setDrawFilled(true);
-            //
-            //        lineData = new LineData(dataSet);
-            //
-            //        // in this example, a LineChart is initialized from xml
-            //        chart = (LineChart) findViewById(R.id.chart_hr_higher_90);
-            //
-            //        chart.setBackgroundColor(Color.WHITE);
-            //        chart.setDrawGridBackground(true);
-            //        chart.setDrawBorders(true);
-            //
-            //        xAxis = chart.getXAxis();
-            //        xAxis.setPosition(XAxisPosition.BOTTOM);
-            //        xAxis.setTextColor(Color.GRAY);
-            //        xAxis.setDrawAxisLine(false);
-            //        xAxis.setDrawGridLines(true);
-            //        xAxis.setGridLineWidth(1);
-            //        xAxis.setGridLineWidth(1);
-            //        xAxis.setAxisMaximum(24f);
-            //
-            //        leftAxis = chart.getAxisLeft();
-            //        leftAxis.setAxisMinimum(0f);
-            //        rightAxis = chart.getAxisRight();
-            //        rightAxis.setAxisMinimum(0f);
-            //
-            //        // no description text
-            //        chart.getDescription().setEnabled(false);
-            //
-            //        chart.setAutoScaleMinMaxEnabled(false);
-            //        chart.setData(lineData);
-            //        chart.invalidate(); // refresh
-
-            //        ------------------------
-
-            //        List<Entry> graphData2 = graphDataObj.prepareHR(mGraphInitialDate, mGraphFinalDate);
-            //
-            //        // add entries to dataset
-            //        dataSet = new LineDataSet(graphData2, "HR");
-            //        dataSet.setColor(Color.rgb(0, 0, 0));
-            //
-            //        dataSet.setCircleRadius(1);
-            //        dataSet.setFillColor(Color.argb(150, 51, 181, 229));
-            //        dataSet.setFillAlpha(255);
-            //        dataSet.setDrawFilled(true);
-            ////        dataSet.setDrawCircles(false);
-            //
-            //        lineData = new LineData(dataSet);
-            //
-            //        // in this example, a LineChart is initialized from xml
-            //        chart = (LineChart) findViewById(R.id.chart_hr);
-            //
-            //        chart.setBackgroundColor(Color.WHITE);
-            //        chart.setDrawGridBackground(true);
-            //        chart.setDrawBorders(true);
-            //
-            //        xAxis = chart.getXAxis();
-            //        xAxis.setPosition(XAxisPosition.BOTTOM);
-            //        xAxis.setTextColor(Color.GRAY);
-            //        xAxis.setDrawAxisLine(false);
-            //        xAxis.setDrawGridLines(true);
-            //        xAxis.setGridLineWidth(1);
-            //        xAxis.setGridLineWidth(1);
-            //        xAxis.setAxisMaximum(24f);
-            //
-            //        leftAxis = chart.getAxisLeft();
-            //        leftAxis.setAxisMinimum(0f);
-            //        rightAxis = chart.getAxisRight();
-            //        rightAxis.setAxisMinimum(0f);
-            //
-            //        // no description text
-            //        chart.getDescription().setEnabled(false);
-            //
-            //        chart.setAutoScaleMinMaxEnabled(false);
-            //        chart.setData(lineData);
-            //        chart.invalidate(); // refresh
-
         }
     }
 

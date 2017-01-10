@@ -77,7 +77,7 @@ public class LogFoodActivity extends AppCompatActivity {
                                 (mCalendarDate.get(Calendar.MONTH)+1)  + "/" +
                                 mCalendarDate.get(Calendar.YEAR));
 
-        mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR) + "h" +
+        mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR_OF_DAY) + "h" +
                 (mCalendarDate.get(Calendar.MINUTE)));
 
         mEditTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -119,18 +119,18 @@ public class LogFoodActivity extends AppCompatActivity {
                     mTimePicker = new TimePickerDialog(LogFoodActivity.this, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                            mCalendarDate.set(Calendar.HOUR, selectedHour);
+                            mCalendarDate.set(Calendar.HOUR_OF_DAY, selectedHour);
                             mCalendarDate.set(Calendar.MINUTE, selectedMinute);
                             mCalendarDate.set(Calendar.SECOND, 0);
                             mCalendarDate.set(Calendar.MILLISECOND, 0);
 
-                            mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR) + "h" +
+                            mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR_OF_DAY) + "h" +
                                     (mCalendarDate.get(Calendar.MINUTE)));
                         }
-                    }, mCalendarDate.get(Calendar.HOUR), mCalendarDate.get(Calendar.MINUTE), true);//Yes 24 hour time
+                    }, mCalendarDate.get(Calendar.HOUR_OF_DAY), mCalendarDate.get(Calendar.MINUTE), true);//Yes 24 hour time
                     mTimePicker.setTitle("Select Time");
                     mTimePicker.show();
-                }else {
+                } else {
 
                 }
             }

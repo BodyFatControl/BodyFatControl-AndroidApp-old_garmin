@@ -130,6 +130,7 @@ public class GraphData {
             }
 
             while (foodDate >= date && foodDate < (date + 60)) { // food is in this interval time
+                if (food == null) break;
                 foodCalories = food.getCaloriesLogged();
                 caloriesSum += foodCalories;
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum)));
@@ -140,6 +141,10 @@ public class GraphData {
                 } else  {
                     break;
                 }
+            }
+
+            if (date == 0) { // very first value should be added to the graph
+                graphDataEntriesList.add(new Entry(0, -2));
             }
         }
 
