@@ -113,27 +113,33 @@ public class GraphData {
         ArrayList<Foods> foodsList = dataBaseLogFoods.DataBaseLogFoodsGetFoods(initialDate*1000, finalDate*1000);
 
         long date = 0;
+        long foodDate = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
-        long graphFinalDate = finalDate - initialDate;
         Iterator foodsListIterator = foodsList.iterator();
         Foods food = null;
         double caloriesSum = 0;
-        double calories;
+        double foodCalories;
+        boolean moveToNextFood = true;
         // Loop trough all the minutes starting from today midnight
         for ( ; date < endOfToday; date += 60) {
 
-            calories = 0;
-            if (foodsListIterator.hasNext()) {
+            if ((moveToNextFood == true) && foodsListIterator.hasNext()) {
                 food = (Foods) foodsListIterator.next();
-                calories = food.getCaloriesLogged();
+                foodDate = (food.getDate() / 1000) - initialDate;
+                moveToNextFood = false;
             }
 
-            if (caloriesSum == 0 && date == 0) { // very first value should be added to the graph
-                graphDataEntriesList.add(new Entry(0, -2));
-            }
-
-            if (date == (endOfToday - 59) && (initialDate < MainActivity.mMidNightToday)) { //  last point
+            while (foodDate >= date && foodDate < (date + 60)) { // food is in this interval time
+                foodCalories = food.getCaloriesLogged();
+                caloriesSum += foodCalories;
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum)));
+
+                if (foodsListIterator.hasNext()) { // iterate on the foods in the same interval
+                    food = (Foods) foodsListIterator.next();
+                    foodDate = (food.getDate() / 1000) - initialDate;
+                } else  {
+                    break;
+                }
             }
         }
 

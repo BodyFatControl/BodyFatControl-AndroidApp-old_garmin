@@ -536,25 +536,24 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesEER.setDrawFilled(true);
             dataSetCaloriesEER.setHighlightEnabled(false);
             dataSetCaloriesEER.setDrawValues(false);
-            dataSetCaloriesEER.setLineWidth(2f);
             dataSetCaloriesEER.setLineWidth(0);
             dataSetCaloriesEER.setDrawCircles(false);
 
             // add entries to Calories consumed dataset
-            LineDataSet dataSetCaloriesConsumed = new LineDataSet(graphDataCaloriesEER, "Calories consumed");
+            LineDataSet dataSetCaloriesConsumed = new LineDataSet(graphDataCaloriesConsumed, "Calories consumed");
             dataSetCaloriesConsumed.setColor(Color.rgb(200, 200 , 0));
             dataSetCaloriesConsumed.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesConsumed.setFillColor(Color.rgb(255, 255, 0));
             dataSetCaloriesConsumed.setFillAlpha(66);
             dataSetCaloriesConsumed.setDrawFilled(true);
             dataSetCaloriesConsumed.setHighlightEnabled(false);
-            dataSetCaloriesConsumed.setDrawValues(false);
+            dataSetCaloriesConsumed.setDrawValues(true);
             dataSetCaloriesConsumed.setLineWidth(2f);
-            dataSetCaloriesConsumed.setLineWidth(0);
-            dataSetCaloriesConsumed.setDrawCircles(false);
+            dataSetCaloriesConsumed.setDrawCircles(true);
 
-//            LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive, dataSetCaloriesConsumed);
-            LineData lineData = new LineData(dataSetCaloriesConsumed);
+            LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive, dataSetCaloriesConsumed);
+//            LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive);
+//            LineData lineData = new LineData(dataSetCaloriesConsumed);
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
