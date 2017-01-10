@@ -145,7 +145,11 @@ public class LogFoodActivity extends AppCompatActivity {
 
                 Foods newFood = originalFood; // make a copy
 
-                newFood.setUnitsLogged(Integer.parseInt(mEditTextServingSizeEntry.getText().toString()));
+                int tmpInt = Integer.parseInt(mEditTextServingSizeEntry.getText().toString());
+                if (tmpInt > 0) {
+                    newFood.setUnitsLogged(tmpInt);
+                }
+
                 newFood.setCaloriesLogged(Integer.parseInt(mTextViewCalories.getText().toString()));
 
                 RadioGroup radiogroup = (RadioGroup) findViewById(R.id.radio_button_group);

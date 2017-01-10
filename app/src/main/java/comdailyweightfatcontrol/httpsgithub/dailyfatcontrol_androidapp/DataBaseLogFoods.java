@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class DataBaseLogFoods extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "database_log_foods.db";
     private static final String TABLE_NAME = "log_foods";
     private static final String COLUMN_DATE = "date";
@@ -30,7 +30,7 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME + " text UNIQUE, " + /* UNIQUE means that there will not be duplicate entries with the same date */
+                COLUMN_NAME + " text, " +
                 COLUMN_DATE + " integer, " +
                 COLUMN_BRAND + " text, " +
                 COLUMN_UNIT + " integer, " +
@@ -65,7 +65,7 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         values.put(COLUMN_IS_CUSTOM_CALORIES, food.getIsCustomCalories());
 
         // Inserting Row: replace food if already exists
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        db.insert(TABLE_NAME, null, values);
         db.close(); // Closing database connection
     }
 
@@ -76,6 +76,38 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, "name=?", new String[]{name});
 
         db.close(); // Closing database connection
+    }
+
+    public ArrayList<Foods> DataBaseLogFoodsGetFoods (long initialDate, long finalDate) {
+        // Query to get all the records starting at last midnight, ordered by date ascending
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_DATE + " BETWEEN " +
+                + initialDate + " AND " + finalDate + " ORDER BY " + COLUMN_DATE +
+                " ASC";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        // Loop to put all the values to the ArrayList<Measurement>
+        cursor.moveToFirst();
+        int counter = cursor.getCount();
+        int date;
+        int hr;
+        ArrayList<Foods> foodsList = new ArrayList<>();
+        for ( ; counter > 0; ) {
+            if (cursor.isAfterLast()) break;
+            Foods food = new Foods();
+            food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
+            food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+            food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
+            food.setCaloriesLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_LOGGED)));
+            food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
+            food.setUnit(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT)));
+            foodsList.add(food);
+            cursor.moveToNext();
+        }
+
+        db.close(); // Closing database connection
+        return foodsList;
     }
 }
 

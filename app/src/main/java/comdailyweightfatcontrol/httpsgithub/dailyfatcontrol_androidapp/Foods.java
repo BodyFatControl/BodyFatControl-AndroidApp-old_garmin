@@ -9,7 +9,7 @@ public class Foods {
     private int unit = 0;
     private String unitType = null;
     private int calories = 0;
-    private int unityLogged = 0;
+    private int unitLogged = 0;
     private int caloriesLogged = 0;
     private String mealTime = null;
     private boolean isCustomCalories = false;
@@ -63,11 +63,11 @@ public class Foods {
     }
 
     public int getUnitsLogged() {
-        return unityLogged;
+        return unitLogged;
     }
 
     public void setUnitsLogged(int unityLogged) {
-        this.unityLogged = unityLogged;
+        this.unitLogged = unityLogged;
     }
 
     public int getCaloriesLogged() {

@@ -14,6 +14,7 @@ public class GraphData {
     private Context mContext;
     private double mMaxCaloriesEER = 0;
     private double mMaxCaloriesActive = 0;
+    private double mMaxCaloriesConsumed = 0;
 
     public GraphData(Context context) {
         mContext = context;
@@ -102,6 +103,42 @@ public class GraphData {
 
     public double getmMaxCaloriesActive() {
         return mMaxCaloriesActive;
+    }
+
+    public List<Entry> prepareCaloriesConsumed(long initialDate, long finalDate) {
+        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
+
+        // Get the measurements from midnight today
+        DataBaseLogFoods dataBaseLogFoods = new DataBaseLogFoods(mContext);
+        ArrayList<Foods> foodsList = dataBaseLogFoods.DataBaseLogFoodsGetFoods(initialDate*1000, finalDate*1000);
+
+        long date = 0;
+        long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
+        Iterator foodsListIterator = foodsList.iterator();
+        Foods food = null;
+        double caloriesSum = 0;
+        double calories;
+        // Loop trough all the minutes starting from today midnight
+        for ( ; date < endOfToday; date += 60) {
+
+            calories = 0;
+            if (foodsListIterator.hasNext()) {
+                food = (Foods) foodsListIterator.next();
+                calories = food.getCaloriesLogged();
+            }
+
+            if (caloriesSum == 0 && date == 0) { // very first value should be added to the graph
+                graphDataEntriesList.add(new Entry(0, -2));
+            }
+
+            if (date == (endOfToday - 59) && (initialDate < MainActivity.mMidNightToday)) { //  last point
+                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum)));
+            }
+        }
+
+        mMaxCaloriesConsumed = caloriesSum;
+        return graphDataEntriesList;
     }
 
     public List<Entry> prepareCaloriesTotal(long initialDate, long finalDate) {
