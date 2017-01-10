@@ -44,7 +44,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void DataBaseWriteFood (Foods food) {
+    public void DataBaseFoodsWriteFood(Foods food) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

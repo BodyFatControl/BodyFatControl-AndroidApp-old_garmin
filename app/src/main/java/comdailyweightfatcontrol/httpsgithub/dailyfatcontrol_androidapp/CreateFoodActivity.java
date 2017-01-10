@@ -39,7 +39,7 @@ public class CreateFoodActivity extends AppCompatActivity {
             long rightNowMillis = rightNow.getTimeInMillis() + offset;
             food.setDate(rightNowMillis);
 
-            new DataBaseFoods(getApplication().getApplicationContext()).DataBaseWriteFood(food);
+            new DataBaseFoods(getApplication().getApplicationContext()).DataBaseFoodsWriteFood(food);
 
             finish(); // finish this activity
             }

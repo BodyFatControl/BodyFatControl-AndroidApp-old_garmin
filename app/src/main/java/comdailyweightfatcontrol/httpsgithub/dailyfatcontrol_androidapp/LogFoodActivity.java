@@ -11,11 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class LogFoodActivity extends AppCompatActivity {
     private Foods mFood;
@@ -24,7 +23,6 @@ public class LogFoodActivity extends AppCompatActivity {
     private EditText mEditTextDate = null;
     private EditText mEditTextTime = null;
     private Button mButtonLogThis = null;
-    private long mNowMillis = 0;
     java.util.Calendar mCalendarDate = java.util.Calendar.getInstance();
 
     @Override
@@ -95,6 +93,8 @@ public class LogFoodActivity extends AppCompatActivity {
                                     mCalendarDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                                     mCalendarDate.set(Calendar.MONTH, monthOfYear);
                                     mCalendarDate.set(Calendar.YEAR, year);
+                                    mCalendarDate.set(Calendar.SECOND, 0);
+                                    mCalendarDate.set(Calendar.MILLISECOND, 0);
 
                                     mEditTextDate.setText(mCalendarDate.get(Calendar.DAY_OF_MONTH) + "/" +
                                             (mCalendarDate.get(Calendar.MONTH)+1) + "/" +
@@ -121,6 +121,8 @@ public class LogFoodActivity extends AppCompatActivity {
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                             mCalendarDate.set(Calendar.HOUR, selectedHour);
                             mCalendarDate.set(Calendar.MINUTE, selectedMinute);
+                            mCalendarDate.set(Calendar.SECOND, 0);
+                            mCalendarDate.set(Calendar.MILLISECOND, 0);
 
                             mEditTextTime.setText(mCalendarDate.get(Calendar.HOUR) + "h" +
                                     (mCalendarDate.get(Calendar.MINUTE)));
@@ -137,7 +139,29 @@ public class LogFoodActivity extends AppCompatActivity {
         mButtonLogThis.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                // Start by getting a food from the database, with the same name
+                DataBaseFoods dataBaseFoods = new DataBaseFoods(getApplication().getApplicationContext());
+                Foods originalFood = dataBaseFoods.DataBaseGetFood(textViewFoodName.getText().toString());
 
+                Foods newFood = originalFood; // make a copy
+
+                newFood.setUnitsLogged(Integer.parseInt(mEditTextServingSizeEntry.getText().toString()));
+                newFood.setCaloriesLogged(Integer.parseInt(mTextViewCalories.getText().toString()));
+
+                RadioGroup radiogroup = (RadioGroup) findViewById(R.id.radio_button_group);
+                int selectedId = radiogroup.getCheckedRadioButtonId(); // get selected radio button from radioGroup
+                RadioButton radioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
+                newFood.setMealTime(radioButton.getText().toString());
+
+                newFood.setDate(mCalendarDate.getTimeInMillis());
+                newFood.setIsCustomCalories(false);
+
+                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood);
+
+                // update stats
+                originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
+                originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
+                dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
 
                 finish(); // finish this activity
             }

@@ -11,8 +11,8 @@ public class Foods {
     private int calories = 0;
     private int unityLogged = 0;
     private int caloriesLogged = 0;
-    private int mealTime = 0;
-    private boolean isAddedCalories = false;
+    private String mealTime = null;
+    private boolean isCustomCalories = false;
 
     public long getDate() {
         return date;
@@ -62,11 +62,11 @@ public class Foods {
         this.calories = calories;
     }
 
-    public int getUnityLogged() {
+    public int getUnitsLogged() {
         return unityLogged;
     }
 
-    public void setUnityLogged(int unityLogged) {
+    public void setUnitsLogged(int unityLogged) {
         this.unityLogged = unityLogged;
     }
 
@@ -78,20 +78,20 @@ public class Foods {
         this.caloriesLogged = caloriesLogged;
     }
 
-    public int getMealTime() {
+    public String getMealTime() {
         return mealTime;
     }
 
-    public void setMealTime(int mealTime) {
+    public void setMealTime(String mealTime) {
         this.mealTime = mealTime;
     }
 
-    public boolean isAddedCalories() {
-        return isAddedCalories;
+    public boolean getIsCustomCalories() {
+        return isCustomCalories;
     }
 
-    public void setAddedCalories(boolean addedCalories) {
-        isAddedCalories = addedCalories;
+    public void setIsCustomCalories(boolean customCalories) {
+        isCustomCalories = customCalories;
     }
 
     public long getUsageFrequency() {
