@@ -11,7 +11,7 @@ import java.util.Calendar;
 
 public class DataBaseHR extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "database.db";
     private static final String TABLE_NAME = "calories_out";
     private static final String COLUMN_DATE = "date";

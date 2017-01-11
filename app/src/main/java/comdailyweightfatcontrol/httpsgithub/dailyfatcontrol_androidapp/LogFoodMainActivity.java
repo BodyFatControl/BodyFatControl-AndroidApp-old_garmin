@@ -1,12 +1,15 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class LogFoodMainActivity extends AppCompatActivity {
-    ArrayList<String> mFoodsNames;
+    ArrayList<Foods> mArrayListLogFood;
     DataBaseFoods mDataBaseFoods = new DataBaseFoods(this);
 
     @Override
@@ -45,9 +48,9 @@ public class LogFoodMainActivity extends AppCompatActivity {
         listViewFoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                @Override
                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
                    Intent intent = new Intent(LogFoodMainActivity.this, LogFoodActivity.class);
-                   intent.putExtra("FOOD_NAME", listViewFoodsList.getItemAtPosition(position).toString());
+                   Foods food = (Foods) listViewFoodsList.getItemAtPosition(position);
+                   intent.putExtra("FOOD_NAME", food.getName());
                    startActivity(intent);
                }
            });
@@ -67,7 +70,8 @@ public class LogFoodMainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(LogFoodMainActivity.this, EditFoodActivity.class);
-                                intent.putExtra("FOOD_NAME", listViewFoodsList.getItemAtPosition(position).toString());
+                                Foods food = (Foods) listViewFoodsList.getItemAtPosition(position);
+                                intent.putExtra("FOOD_NAME", food.getName());
                                 startActivity(intent);
                             }
 
@@ -76,7 +80,8 @@ public class LogFoodMainActivity extends AppCompatActivity {
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mDataBaseFoods.DataBaseDeleteFood(listViewFoodsList.getItemAtPosition(position).toString());
+                                Foods food = (Foods) listViewFoodsList.getItemAtPosition(position);
+                                mDataBaseFoods.DataBaseDeleteFood(food.getName());
                                 onResume(); // refresh the view by calling the onResume()
                             }
 
@@ -88,10 +93,42 @@ public class LogFoodMainActivity extends AppCompatActivity {
             }
         });
 
+        // Populate the listview of logged foods
+        // Start by getting the data from the database and then put on the array adapter, finally to the list
+        mArrayListLogFood = mDataBaseFoods.DataBaseFoodsGetFoods();
+        if (!mArrayListLogFood.isEmpty()) {
+            ArrayAdapter<Foods> arrayAdapterAvailableFoods = new AvailableFoodAdapter(this, mArrayListLogFood);
+            listViewFoodsList.setAdapter(arrayAdapterAvailableFoods);
+        }
+    }
+}
 
-        mFoodsNames = mDataBaseFoods.DataBaseGetFoodsNames();
-        ArrayAdapter<String> arrayAdapterFoodsList =  new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, mFoodsNames);
-        listViewFoodsList.setAdapter(arrayAdapterFoodsList);
+class AvailableFoodAdapter extends ArrayAdapter<Foods> {
+    public AvailableFoodAdapter(Context context, ArrayList<Foods> foodsArrayList) {
+        super(context, 0, foodsArrayList);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Get the data item for this position
+        Foods food = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.available_food, parent, false);
+        }
+        // Lookup view for data population
+        TextView textViewFoodName = (TextView) convertView.findViewById(R.id.food_name);
+        TextView textViewFoodBrand = (TextView) convertView.findViewById(R.id.food_brand);
+        TextView textViewFoodCalories = (TextView) convertView.findViewById(R.id.food_calories);
+        TextView textViewFoodUnits = (TextView) convertView.findViewById(R.id.food_units);
+        TextView textViewFoodUnitsType = (TextView) convertView.findViewById(R.id.food_units_type);
+        // Populate the data into the template view using the data object
+        textViewFoodName.setText(food.getName());
+        textViewFoodBrand.setText(food.getBrand());
+        textViewFoodCalories.setText(Integer.toString(food.getCalories()));
+        textViewFoodUnits.setText(Integer.toString(food.getUnits()));
+        textViewFoodUnitsType.setText(food.getUnitType());
+        // Return the completed view to render on screen
+        return convertView;
     }
 }

@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/food_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/title_text_size"
+            android:text="Name" />
+
+        <TextView
+            android:id="@+id/food_calories"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:textAlignment="textEnd"
+            android:paddingRight="6dp"
+            android:textSize="@dimen/title_text_size"
+            android:text="125" />
+
+        <TextView
+            android:id="@+id/cals_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:textSize="@dimen/title2_text_size"
+            android:text="cals" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/food_brand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/title2_text_size"
+            android:text="Brand" />
+
+        <TextView
+            android:id="@+id/food_units"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:textAlignment="textEnd"
+            android:paddingRight="6dp"
+            android:textSize="@dimen/title2_text_size"
+            android:text="50" />
+
+        <TextView
+            android:id="@+id/food_units_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:textSize="@dimen/title2_text_size"
+            android:text="grams" />
+    </LinearLayout>
+</LinearLayout>

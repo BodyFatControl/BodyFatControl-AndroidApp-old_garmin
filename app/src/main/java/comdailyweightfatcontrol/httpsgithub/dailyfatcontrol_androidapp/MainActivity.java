@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     private ConnectIQ.IQDeviceEventListener mDeviceEventListener = new ConnectIQ.IQDeviceEventListener() {
-
         @Override
         public void onDeviceStatusChanged(IQDevice device, IQDevice.IQDeviceStatus status) {
             if (status == IQDeviceStatus.CONNECTED) {
@@ -112,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             device.setStatus(status);
         }
-
     };
 
     ConnectIQ.ConnectIQListener mListenerSDKInitialize = new ConnectIQ.ConnectIQListener() {

@@ -30,13 +30,15 @@ public class EditFoodActivity extends AppCompatActivity {
         DataBaseFoods dataBaseFoods = new DataBaseFoods(this);
         mFood = dataBaseFoods.DataBaseGetFood(extras.getString("FOOD_NAME"));
 
-        editTextFoodName.setText(mFood.getName());
-        editTextBrand.setText(mFood.getBrand());
-        editTextServingSizeEntry.setText(Integer.toString(mFood.getUnits()));
-        ArrayAdapter arrayAdapterSpinner = (ArrayAdapter) spinnerUnityType.getAdapter();
-        int spinnerPosition = arrayAdapterSpinner.getPosition(mFood.getUnitType());
-        spinnerUnityType.setSelection(spinnerPosition);
-        editTextCaloriesEntry.setText(Integer.toString(mFood.getCalories()));
+        if (mFood != null) {
+            editTextFoodName.setText(mFood.getName());
+            editTextBrand.setText(mFood.getBrand());
+            editTextServingSizeEntry.setText(Integer.toString(mFood.getUnits()));
+            ArrayAdapter arrayAdapterSpinner = (ArrayAdapter) spinnerUnityType.getAdapter();
+            int spinnerPosition = arrayAdapterSpinner.getPosition(mFood.getUnitType());
+            spinnerUnityType.setSelection(spinnerPosition);
+            editTextCaloriesEntry.setText(Integer.toString(mFood.getCalories()));
+        }
 
         // The action for the SaveCustomFood button
         // Take all the data about this food and save it on the databased

@@ -9,13 +9,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class DataBaseFoods extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "database_foods.db";
     private static final String TABLE_NAME = "foods";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_BRAND = "brand";
-    private static final String COLUMN_UNIT = "unit";
+    private static final String COLUMN_UNITS = "units";
     private static final String COLUMN_UNIT_TYPE = "unit_type";
     private static final String COLUMN_CALORIES = "calories";
     private static final String COLUMN_LAST_USAGE_DATE = "last_usage_date";
@@ -31,7 +31,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
                 COLUMN_NAME + " text UNIQUE, " + /* UNIQUE means that there will not be duplicate entries with the same date */
                 COLUMN_DATE + " integer, " +
                 COLUMN_BRAND + " text, " +
-                COLUMN_UNIT + " integer, " +
+                COLUMN_UNITS + " integer, " +
                 COLUMN_UNIT_TYPE + " text, " +
                 COLUMN_CALORIES + " integer, " +
                 COLUMN_LAST_USAGE_DATE + " integer, " +
@@ -52,7 +52,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, food.getDate());
         values.put(COLUMN_NAME, food.getName());
         values.put(COLUMN_BRAND, food.getBrand());
-        values.put(COLUMN_UNIT, food.getUnits());
+        values.put(COLUMN_UNITS, food.getUnits());
         values.put(COLUMN_UNIT_TYPE, food.getUnitType());
         values.put(COLUMN_CALORIES, food.getCalories());
 
@@ -102,19 +102,48 @@ public class DataBaseFoods extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
-
-        Foods food = new Foods();
-        food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
-        food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
-        food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-        food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT)));
-        food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
-        food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
-        food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));
-        food.setUsageFrequency(cursor.getLong(cursor.getColumnIndex(COLUMN_USAGE_FREQUENCY)));
+        Foods food = null;
+        if (!cursor.isAfterLast()) {
+            food = new Foods();
+            food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
+            food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+            food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
+            food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS)));
+            food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
+            food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
+            food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));
+            food.setUsageFrequency(cursor.getLong(cursor.getColumnIndex(COLUMN_USAGE_FREQUENCY)));
+        }
 
         db.close(); // Closing database connection
         return food;
+    }
+
+    public ArrayList<Foods> DataBaseFoodsGetFoods () {
+        // Query to get all the records starting at last midnight, ordered by date ascending
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_DATE + " ASC";
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        int counter = cursor.getCount();
+        ArrayList<Foods> foodsList = new ArrayList<>();
+        for ( ; counter > 0; ) {
+            if (cursor.isAfterLast()) break;
+            Foods food = new Foods();
+            food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+            food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
+            food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS)));
+            food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
+            food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
+            food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));
+            food.setUsageFrequency(cursor.getInt(cursor.getColumnIndex(COLUMN_USAGE_FREQUENCY)));
+            foodsList.add(food);
+            cursor.moveToNext();
+        }
+
+        db.close(); // Closing database connection
+        return foodsList;
     }
 }
 
