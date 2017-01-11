@@ -543,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesActive.setCubicIntensity(1f);
             dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
             dataSetCaloriesActive.setFillColor(Color.rgb(0, 229, 154));
-            dataSetCaloriesActive.setFillAlpha(66);
+            dataSetCaloriesActive.setFillAlpha(127);
             dataSetCaloriesActive.setDrawFilled(true);
             dataSetCaloriesActive.setDrawHighlightIndicators(true);
             dataSetCaloriesActive.setHighlightLineWidth(2f);
@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
             dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
-            dataSetCaloriesEER.setFillAlpha(66);
+            dataSetCaloriesEER.setFillAlpha(127);
             dataSetCaloriesEER.setDrawFilled(true);
             dataSetCaloriesEER.setHighlightEnabled(false);
             dataSetCaloriesEER.setDrawValues(false);
@@ -568,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesConsumed.setColor(Color.rgb(200, 200 , 0));
             dataSetCaloriesConsumed.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesConsumed.setFillColor(Color.rgb(255, 255, 0));
-            dataSetCaloriesConsumed.setFillAlpha(66);
+            dataSetCaloriesConsumed.setFillAlpha(127);
             dataSetCaloriesConsumed.setDrawFilled(true);
             dataSetCaloriesConsumed.setHighlightEnabled(false);
             dataSetCaloriesConsumed.setDrawValues(false);
