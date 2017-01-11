@@ -5,8 +5,6 @@ import android.content.Context;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class GraphData {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
-        DataBase dataBase = new DataBase(mContext);
+        DataBaseHR dataBase = new DataBaseHR(mContext);
         ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(initialDate, finalDate);
 
         // Calc calories on the measurement list

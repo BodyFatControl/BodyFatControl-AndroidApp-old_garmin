@@ -45,7 +45,6 @@ public class LogFoodActivity extends AppCompatActivity {
         mButtonLogThis = (Button) findViewById(R.id.button_log_this);
 
         Bundle extras = getIntent().getExtras();
-
         DataBaseFoods dataBaseFoods = new DataBaseFoods(this);
         mFood = dataBaseFoods.DataBaseGetFood(extras.getString("FOOD_NAME"));
 

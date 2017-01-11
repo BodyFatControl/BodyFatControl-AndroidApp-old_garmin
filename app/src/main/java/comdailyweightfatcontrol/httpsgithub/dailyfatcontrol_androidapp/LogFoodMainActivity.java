@@ -60,19 +60,28 @@ public class LogFoodMainActivity extends AppCompatActivity {
 
                 new AlertDialog.Builder(LogFoodMainActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Delete food")
-                        .setMessage("Are you sure you want to delete?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        .setTitle("Manage food")
+                        .setMessage("You can edit or delete this food.")
+                        .setPositiveButton("Edit", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(LogFoodMainActivity.this, EditFoodActivity.class);
+                                intent.putExtra("FOOD_NAME", listViewFoodsList.getItemAtPosition(position).toString());
+                                startActivity(intent);
+                            }
+
+                        })
+                        .setNegativeButton("Delete", new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mDataBaseFoods.DataBaseDeleteFood(listViewFoodsList.getItemAtPosition(position).toString());
-
                                 onResume(); // refresh the view by calling the onResume()
                             }
 
                         })
-                        .setNegativeButton("No", null)
+                        .setNeutralButton("Cancel", null)
                         .show();
 
                 return true;

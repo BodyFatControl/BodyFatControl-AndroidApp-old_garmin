@@ -58,7 +58,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
 
         // Inserting Row: if there is one food with the same COLUMN_NAME, there new one will not be
         // inserted and will be ignored
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close(); // Closing database connection
     }
 

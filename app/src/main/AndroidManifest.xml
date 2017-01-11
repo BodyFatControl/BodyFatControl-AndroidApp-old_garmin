@@ -24,7 +24,8 @@
             android:label="@string/app_name" />
         <activity android:name=".CreateFoodActivity" />
         <activity android:name=".LogFoodMainActivity" />
-        <activity android:name=".LogFoodActivity"></activity>
+        <activity android:name=".LogFoodActivity" />
+        <activity android:name=".EditFoodActivity" />
     </application>
 
 </manifest>

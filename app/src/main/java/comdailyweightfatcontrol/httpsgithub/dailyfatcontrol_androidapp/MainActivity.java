@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 Collections.reverse(measurementList);
 
                                 // finally write the measurement list to database
-                                new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
+                                new DataBaseHR(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
 
                                 drawGraphs();
 
@@ -478,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             command.add(HISTORIC_HR_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
-            long date = new DataBase(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
+            long date = new DataBaseHR(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
             command.add((int) date);
             sendMessage(command);
             return true;
