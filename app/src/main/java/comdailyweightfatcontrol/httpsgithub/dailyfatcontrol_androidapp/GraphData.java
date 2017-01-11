@@ -103,7 +103,7 @@ public class GraphData {
         return mMaxCaloriesActive;
     }
 
-    public List<Entry> prepareCaloriesConsumed(long initialDate, long finalDate) {
+    public List<Entry> prepareCaloriesConsumed(long initialDate, long finalDate, double CaloriesEER) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
@@ -132,6 +132,9 @@ public class GraphData {
             while (foodDate >= date && foodDate < (date + 60)) { // food is in this interval time
                 if (food == null) break;
                 foodCalories = food.getCaloriesLogged();
+                if (caloriesSum <= CaloriesEER) { // scale 1/10 while caloriesSum <= CaloriesEER
+                    foodCalories /= 10;
+                }
                 previousCaloriesSum = caloriesSum;
                 caloriesSum += foodCalories;
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (previousCaloriesSum)));

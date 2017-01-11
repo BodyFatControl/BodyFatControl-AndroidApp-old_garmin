@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate);
         caloriesEERMax = graphDataObj.getmMaxCaloriesEER();
         List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, caloriesEERMax);
-        List<Entry> graphDataCaloriesConsumed = graphDataObj.prepareCaloriesConsumed(mGraphInitialDate, mGraphFinalDate);
+        List<Entry> graphDataCaloriesConsumed = graphDataObj.prepareCaloriesConsumed(mGraphInitialDate, mGraphFinalDate, caloriesEERMax);
 
         if (graphDataCaloriesActive != null && graphDataCaloriesEER != null && graphDataCaloriesConsumed != null) {
             caloriesActiveMax = graphDataObj.getmMaxCaloriesActive();
@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
 
             // add entries to Calories Active dataset
-            LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Active calories");
+            LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Active cals");
             dataSetCaloriesActive.setColor(Color.rgb(0, 172 , 117));
             dataSetCaloriesActive.setCubicIntensity(1f);
             dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
@@ -547,7 +547,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesActive.setDrawCircles(false);
 
             // add entries to Calories EER dataset
-            LineDataSet dataSetCaloriesEER = new LineDataSet(graphDataCaloriesEER, "No active calories");
+            LineDataSet dataSetCaloriesEER = new LineDataSet(graphDataCaloriesEER, "No active cals");
             dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
             dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesEER.setDrawCircles(false);
 
             // add entries to Calories consumed dataset
-            LineDataSet dataSetCaloriesConsumed = new LineDataSet(graphDataCaloriesConsumed, "Calories consumed");
+            LineDataSet dataSetCaloriesConsumed = new LineDataSet(graphDataCaloriesConsumed, "Consumed cals");
             dataSetCaloriesConsumed.setColor(Color.rgb(200, 200 , 0));
             dataSetCaloriesConsumed.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesConsumed.setFillColor(Color.rgb(255, 255, 0));
