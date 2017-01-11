@@ -74,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private TextView textViewCalories1;
     private TextView textViewCalories2;
     private ListView listViewLogFoodList;
+    private Button mButtonNext;
+    private Button mButtonPrevious;
+    private Button mButtonLogFood;
+    private TextView mDateTitle;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
     public static long mMidNightToday;
@@ -313,21 +317,58 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         // Initialize the SDK
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        final Button buttonNext = (Button) findViewById(R.id.next_button);
-        Button buttonPrevious = (Button) findViewById(R.id.previous_button);
-        Button buttonLogFood = (Button) findViewById(R.id.button_log_food);
-        final TextView dateTitle = (TextView) findViewById(R.id.date_title);
+        mButtonNext = (Button) findViewById(R.id.next_button);
+        mButtonPrevious = (Button) findViewById(R.id.previous_button);
+        mButtonLogFood = (Button) findViewById(R.id.button_log_food);
+        mDateTitle = (TextView) findViewById(R.id.date_title);
         textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
         textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
         connectStatus = (TextView) findViewById(R.id.status_connection);
         listViewLogFoodList = (ListView) findViewById(R.id.log_food_list);
         listViewLogFoodList.setLongClickable(true);
+
+        // Edit or delete a food from the list
+        listViewLogFoodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                final int position = pos;
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Manage logged food")
+                        .setMessage("You can edit or delete this food.")
+                        .setPositiveButton("Edit", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MainActivity.this, EditLoggedFoodActivity.class);
+                                intent.putExtra("FOOD_NAME", listViewLogFoodList.getItemAtPosition(position).toString());
+                                startActivity(intent);
+                            }
+
+                        })
+                        .setNegativeButton("Delete", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDataBaseLogFoods.DataBaseLogFoodsDeleteFood(
+                                        listViewLogFoodList.getItemAtPosition(position).toString());
+                                onResume(); // refresh the view by calling the onResume()
+                            }
+
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         // Calc and set graph initial and final dates (midnight today and rightnow)
         Calendar rightNow = Calendar.getInstance();
@@ -341,14 +382,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mGraphInitialDate = midNightToday;
         mGraphFinalDate = now;
 
-        buttonLogFood.setOnClickListener(new View.OnClickListener() {
+        mButtonLogFood.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication().getApplicationContext(), LogFoodMainActivity.class);
                 startActivity(intent);
             }
         });
 
-        buttonNext.setOnClickListener(new View.OnClickListener() {
+        mButtonNext.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // do something when the button is clicked
                 // Yes we will handle click here but which button clicked??? We don't know
@@ -356,8 +397,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                 mGraphInitialDate += SECONDS_24H; // seconds
 
                 if (mGraphInitialDate == mMidNightToday) { // today
-                    buttonNext.setVisibility(View.INVISIBLE);
-                    dateTitle.setText("today");
+                    mButtonNext.setVisibility(View.INVISIBLE);
+                    mDateTitle.setText("today");
 
                     Calendar rightNow = Calendar.getInstance();
                     long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
@@ -365,15 +406,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     mGraphFinalDate = rightNowMillis / 1000; // seconds
 
                 } else if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
-                    buttonNext.setVisibility(View.VISIBLE);
-                    dateTitle.setText("yesterday");
+                    mButtonNext.setVisibility(View.VISIBLE);
+                    mDateTitle.setText("yesterday");
                     mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
 
                 } else { // other days
-                    buttonNext.setVisibility(View.VISIBLE);
+                    mButtonNext.setVisibility(View.VISIBLE);
                     SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
                     String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
-                    dateTitle.setText(dateString);
+                    mDateTitle.setText(dateString);
                     mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
                 }
 
@@ -382,23 +423,23 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             }
         });
 
-        buttonPrevious.setOnClickListener(new View.OnClickListener() {
+        mButtonPrevious.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // do something when the button is clicked
-                // Yes we will handle click here but which button clicked??? We don't know
+                // Yes we widateTitlell handle click here but which button clicked??? We don't know
 
                 mGraphInitialDate -= SECONDS_24H; // seconds
 
                 if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
-                    buttonNext.setVisibility(View.VISIBLE);
-                    dateTitle.setText("yesterday");
+                    mButtonNext.setVisibility(View.VISIBLE);
+                    mDateTitle.setText("yesterday");
                     mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
 
                 } else { // other days
-                    buttonNext.setVisibility(View.VISIBLE);
+                    mButtonNext.setVisibility(View.VISIBLE);
                     SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
                     String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
-                    dateTitle.setText(dateString);
+                    mDateTitle.setText(dateString);
                     mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
                 }
 
@@ -406,37 +447,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                 drawListConsumedFoods();
             }
         });
-
-        // Delete a food from the list
-        listViewLogFoodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                final int position = pos;
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Delete food")
-                        .setMessage("Are you sure you want to delete?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mDataBaseLogFoods.DataBaseLogFoodsDeleteFood(
-                                        listViewLogFoodList.getItemAtPosition(position).toString());
-
-                                onResume(); // refresh the view by calling the onResume()
-                            }
-
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-
-                drawGraphs();
-                drawListConsumedFoods();
-                return true;
-            }
-        });
-
 
         drawGraphs();
 

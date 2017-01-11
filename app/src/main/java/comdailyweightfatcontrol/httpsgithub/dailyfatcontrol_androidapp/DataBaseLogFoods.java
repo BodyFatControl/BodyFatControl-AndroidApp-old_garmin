@@ -135,5 +135,28 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         db.close(); // Closing database connection
         return foodsNames;
     }
+
+    public Foods DataBaseLogFoodsGetFood(String foodName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME + " LIKE '" + foodName + "'";
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        Foods food = new Foods();
+        food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
+        food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+        food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
+        food.setUnit(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT)));
+        food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
+        food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
+        food.setUnitsLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS_LOGGED)));
+        food.setCaloriesLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_LOGGED)));
+        food.setMealTime(cursor.getString(cursor.getColumnIndex(COLUMN_MEAL_TIME)));
+        food.setIsCustomCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_IS_CUSTOM_CALORIES)) == 1);
+
+        db.close(); // Closing database connection
+        return food;
+    }
 }
 

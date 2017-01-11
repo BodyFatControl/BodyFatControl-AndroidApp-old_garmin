@@ -52,7 +52,7 @@ public class LogFoodMainActivity extends AppCompatActivity {
                }
            });
 
-        // Delete a food from the list
+        // Edit or delete a food from the list
         listViewFoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
@@ -90,10 +90,8 @@ public class LogFoodMainActivity extends AppCompatActivity {
 
 
         mFoodsNames = mDataBaseFoods.DataBaseGetFoodsNames();
-
         ArrayAdapter<String> arrayAdapterFoodsList =  new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, mFoodsNames);
-
         listViewFoodsList.setAdapter(arrayAdapterFoodsList);
     }
 }
