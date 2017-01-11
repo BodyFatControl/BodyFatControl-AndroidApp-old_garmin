@@ -59,7 +59,7 @@ public class LogFoodActivity extends AppCompatActivity {
                 if (!string.isEmpty()) {
                     float value = Integer.parseInt(s.toString());
                     float calories = mFood.getCalories();
-                    float unity = mFood.getUnit();
+                    float unity = mFood.getUnits();
                     value = (1/unity) * calories * value;
                     mTextViewCalories.setText(Integer.toString((int) value));
                 } else {
@@ -159,7 +159,7 @@ public class LogFoodActivity extends AppCompatActivity {
                 newFood.setDate(mCalendarDate.getTimeInMillis());
                 newFood.setIsCustomCalories(false);
 
-                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood);
+                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood, false);
 
                 // update stats
                 originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());

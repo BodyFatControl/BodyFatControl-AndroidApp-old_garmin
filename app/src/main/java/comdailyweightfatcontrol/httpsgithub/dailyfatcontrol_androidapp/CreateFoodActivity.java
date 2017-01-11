@@ -30,7 +30,7 @@ public class CreateFoodActivity extends AppCompatActivity {
             Foods food = new Foods();
             food.setName(editTextFoodName.getText().toString());
             food.setBrand(editTextBrand.getText().toString());
-            food.setUnit(Integer.valueOf(textViewServingSizeEntry.getText().toString()));
+            food.setUnits(Integer.valueOf(textViewServingSizeEntry.getText().toString()));
             food.setUnitType(spinnerUnityType.getSelectedItem().toString());
             food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
 

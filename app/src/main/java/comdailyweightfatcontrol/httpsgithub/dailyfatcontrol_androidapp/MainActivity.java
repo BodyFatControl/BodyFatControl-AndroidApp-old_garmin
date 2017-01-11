@@ -1,6 +1,7 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +9,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private double caloriesEERMax = 0;
     private double caloriesActiveMax = 0;
     DataBaseLogFoods mDataBaseLogFoods = new DataBaseLogFoods(this);
-    ArrayList<String> mLogFoodsNames;
+    ArrayList<Foods> mArrayListLogFood;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -343,20 +346,22 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(MainActivity.this, EditLoggedFoodActivity.class);
-                                intent.putExtra("FOOD_NAME", listViewLogFoodList.getItemAtPosition(position).toString());
+                                Foods food = (Foods) listViewLogFoodList.getItemAtPosition(position);
+                                intent.putExtra("FOOD_ID", food.getId());
                                 startActivity(intent);
                             }
-
                         })
                         .setNegativeButton("Delete", new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mDataBaseLogFoods.DataBaseLogFoodsDeleteFood(
-                                        listViewLogFoodList.getItemAtPosition(position).toString());
+
+                                // Get the food object pointed by position, get the food ID to delete it
+                                Foods food = (Foods) listViewLogFoodList.getItemAtPosition(position);
+                                mDataBaseLogFoods.DataBaseLogFoodsDeleteFood(food.getId());
+
                                 onResume(); // refresh the view by calling the onResume()
                             }
-
                         })
                         .setNeutralButton("Cancel", null)
                         .show();
@@ -449,19 +454,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         });
 
         drawGraphs();
-
         drawListConsumedFoods();
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -509,15 +503,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         return super.onOptionsItemSelected(item);
     }
-
-//    @SuppressWarnings("StatementWithEmptyBody")
-//    @Override
-//    public boolean onNavigationItemSelected(MenuItem item) {
-//
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
 
     void sendMessage(ArrayList<Integer> command) {
         try {
@@ -692,13 +677,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     void drawListConsumedFoods () {
-
-        mLogFoodsNames = mDataBaseLogFoods.DataBaseLogFoodsGetNames(mGraphInitialDate, mGraphFinalDate);
-
-        ArrayAdapter<String> arrayAdapterLogFoodsList =  new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, mLogFoodsNames);
-
-        listViewLogFoodList.setAdapter(arrayAdapterLogFoodsList);
+        // Populate the listview of logged foods
+        // Start by getting the data from the database and then put on the array adapter, finally to the list
+        mArrayListLogFood = mDataBaseLogFoods.DataBaseLogFoodsGetFoods(mGraphInitialDate*1000, mGraphFinalDate*1000);
+        ArrayAdapter<Foods> arrayAdapterLogFoods = new LogFoodAdapter(this, mArrayListLogFood);
+        listViewLogFoodList.setAdapter(arrayAdapterLogFoods);
     }
 
     @Override
@@ -768,5 +751,35 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public void onNothingSelected() {
         textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
         textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
+    }
+}
+
+class LogFoodAdapter extends ArrayAdapter<Foods> {
+    public LogFoodAdapter(Context context, ArrayList<Foods> foodsArrayList) {
+        super(context, 0, foodsArrayList);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Get the data item for this position
+        Foods food = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.logged_food, parent, false);
+        }
+        // Lookup view for data population
+        TextView textViewFoodName = (TextView) convertView.findViewById(R.id.food_name);
+        TextView textViewFoodBrand = (TextView) convertView.findViewById(R.id.food_brand);
+        TextView textViewFoodCaloriesLogged = (TextView) convertView.findViewById(R.id.food_calories_logged);
+        TextView textViewFoodUnitsLogged = (TextView) convertView.findViewById(R.id.food_units_logged);
+        TextView textViewFoodUnitsType = (TextView) convertView.findViewById(R.id.food_units_type);
+        // Populate the data into the template view using the data object
+        textViewFoodName.setText(food.getName());
+        textViewFoodBrand.setText(food.getBrand());
+        textViewFoodCaloriesLogged.setText(Integer.toString(food.getCaloriesLogged()));
+        textViewFoodUnitsLogged.setText(Integer.toString(food.getUnitsLogged()));
+        textViewFoodUnitsType.setText(food.getUnitType());
+        // Return the completed view to render on screen
+        return convertView;
     }
 }

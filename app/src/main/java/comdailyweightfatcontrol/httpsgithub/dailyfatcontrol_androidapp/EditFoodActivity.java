@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -33,7 +32,7 @@ public class EditFoodActivity extends AppCompatActivity {
 
         editTextFoodName.setText(mFood.getName());
         editTextBrand.setText(mFood.getBrand());
-        editTextServingSizeEntry.setText(Integer.toString(mFood.getUnit()));
+        editTextServingSizeEntry.setText(Integer.toString(mFood.getUnits()));
         ArrayAdapter arrayAdapterSpinner = (ArrayAdapter) spinnerUnityType.getAdapter();
         int spinnerPosition = arrayAdapterSpinner.getPosition(mFood.getUnitType());
         spinnerUnityType.setSelection(spinnerPosition);
@@ -47,7 +46,7 @@ public class EditFoodActivity extends AppCompatActivity {
             Foods food = new Foods();
             food.setName(editTextFoodName.getText().toString());
             food.setBrand(editTextBrand.getText().toString());
-            food.setUnit(Integer.valueOf(editTextServingSizeEntry.getText().toString()));
+            food.setUnits(Integer.valueOf(editTextServingSizeEntry.getText().toString()));
             food.setUnitType(spinnerUnityType.getSelectedItem().toString());
             food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
 

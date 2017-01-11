@@ -52,7 +52,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, food.getDate());
         values.put(COLUMN_NAME, food.getName());
         values.put(COLUMN_BRAND, food.getBrand());
-        values.put(COLUMN_UNIT, food.getUnit());
+        values.put(COLUMN_UNIT, food.getUnits());
         values.put(COLUMN_UNIT_TYPE, food.getUnitType());
         values.put(COLUMN_CALORIES, food.getCalories());
 
@@ -107,7 +107,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
         food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
         food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
         food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-        food.setUnit(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT)));
+        food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT)));
         food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
         food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
         food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));

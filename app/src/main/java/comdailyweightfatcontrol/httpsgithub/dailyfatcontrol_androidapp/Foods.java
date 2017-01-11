@@ -1,12 +1,13 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 public class Foods {
+    private int id = 0;
     private long date = 0;
     private long lastUsageDate = 0;
     private long usageFrequency = 0;
     private String name = null;
     private String brand = null;
-    private int unit = 0;
+    private int units = 0;
     private String unitType = null;
     private int calories = 0;
     private int unitLogged = 0;
@@ -38,12 +39,12 @@ public class Foods {
         this.brand = brand;
     }
 
-    public int getUnit() {
-        return unit;
+    public int getUnits() {
+        return units;
     }
 
-    public void setUnit(int unit) {
-        this.unit = unit;
+    public void setUnits(int units) {
+        this.units = units;
     }
 
     public String getUnitType() {
@@ -108,6 +109,22 @@ public class Foods {
 
     public void setLastUsageDate(long lastUsageDate) {
         this.lastUsageDate = lastUsageDate;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isCustomCalories() {
+        return isCustomCalories;
+    }
+
+    public void setCustomCalories(boolean customCalories) {
+        isCustomCalories = customCalories;
     }
 }
 

@@ -50,7 +50,7 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
         // Get the food from the database and populate the view fields with the food data
         Bundle extras = getIntent().getExtras();
         DataBaseLogFoods dataBaseLogFoods = new DataBaseLogFoods(this);
-        mFood = dataBaseLogFoods.DataBaseLogFoodsGetFood(extras.getString("FOOD_NAME"));
+        mFood = dataBaseLogFoods.DataBaseLogFoodsGetFood(extras.getInt("FOOD_ID"));
 
         textViewFoodName.setText(mFood.getName());
         textViewBrand.setText(mFood.getBrand());
@@ -90,7 +90,7 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
                 if (!string.isEmpty()) {
                     float value = Integer.parseInt(s.toString());
                     float calories = mFood.getCalories();
-                    float unity = mFood.getUnit();
+                    float unity = mFood.getUnits();
                     value = (1/unity) * calories * value;
                     mTextViewCalories.setText(Integer.toString((int) value));
                 } else {
@@ -184,7 +184,8 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
                 newFood.setDate(mCalendarDate.getTimeInMillis());
                 newFood.setIsCustomCalories(false);
 
-                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood);
+                // overwrite the exiting food with this new one
+                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood, true);
 
                 // update stats
                 originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
