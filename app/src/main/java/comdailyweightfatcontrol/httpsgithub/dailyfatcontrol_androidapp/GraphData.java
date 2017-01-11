@@ -113,6 +113,7 @@ public class GraphData {
         long date = 0;
         long foodDate = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
+        long graphFinalDate = finalDate - initialDate;
         Iterator foodsListIterator = foodsList.iterator();
         Foods food = null;
         double caloriesSum = 0;
@@ -142,6 +143,10 @@ public class GraphData {
                 } else  {
                     break;
                 }
+            }
+
+            if (graphFinalDate >= date && graphFinalDate < (date + 60)) { // add a point at the current date
+                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum)));
             }
 
             if (date == 0) { // very first value should be added to the graph
