@@ -8,8 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.FloatProperty;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -245,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 // finally write the measurement list to database
                                 new DataBase(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
 
-                                refreshGraphs();
+                                drawGraphs();
 
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
 
@@ -379,7 +377,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
                 }
 
-                refreshGraphs();
+                drawGraphs();
+                drawListConsumedFoods();
             }
         });
 
@@ -403,7 +402,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
                 }
 
-                refreshGraphs();
+                drawGraphs();
+                drawListConsumedFoods();
             }
         });
 
@@ -431,16 +431,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                         .setNegativeButton("No", null)
                         .show();
 
+                drawGraphs();
+                drawListConsumedFoods();
                 return true;
             }
         });
 
-        mLogFoodsNames = mDataBaseLogFoods.DataBaseLogFoodsGetNames(mGraphInitialDate, mGraphFinalDate);
-        ArrayAdapter<String> arrayAdapterLogFoodsList =  new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, mLogFoodsNames);
-        listViewLogFoodList.setAdapter(arrayAdapterLogFoodsList);
 
-        refreshGraphs();
+        drawGraphs();
+
+        drawListConsumedFoods();
     }
 
 //    @Override
@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         }
     }
 
-    void refreshGraphs() {
+    void drawGraphs() {
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
         List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate);
         caloriesEERMax = graphDataObj.getmMaxCaloriesEER();
@@ -679,6 +679,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //            chart.animateY(200);
             mChart.invalidate(); // refresh
         }
+    }
+
+    void drawListConsumedFoods () {
+
+        mLogFoodsNames = mDataBaseLogFoods.DataBaseLogFoodsGetNames(mGraphInitialDate, mGraphFinalDate);
+
+        ArrayAdapter<String> arrayAdapterLogFoodsList =  new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, mLogFoodsNames);
+
+        listViewLogFoodList.setAdapter(arrayAdapterLogFoodsList);
     }
 
     @Override
