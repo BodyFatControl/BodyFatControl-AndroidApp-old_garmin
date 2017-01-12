@@ -36,6 +36,8 @@ import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.components.XAxis;
@@ -536,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesActive.setCubicIntensity(1f);
             dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
             dataSetCaloriesActive.setFillColor(Color.rgb(0, 229, 154));
-            dataSetCaloriesActive.setFillAlpha(127);
+            dataSetCaloriesActive.setFillAlpha(180);
             dataSetCaloriesActive.setDrawFilled(true);
             dataSetCaloriesActive.setDrawHighlightIndicators(true);
             dataSetCaloriesActive.setHighlightLineWidth(2f);
@@ -549,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
             dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
-            dataSetCaloriesEER.setFillAlpha(127);
+            dataSetCaloriesEER.setFillAlpha(240);
             dataSetCaloriesEER.setDrawFilled(true);
             dataSetCaloriesEER.setHighlightEnabled(false);
             dataSetCaloriesEER.setDrawValues(false);
@@ -561,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesConsumed.setColor(Color.rgb(200, 200 , 0));
             dataSetCaloriesConsumed.setMode(LineDataSet.Mode.LINEAR);
             dataSetCaloriesConsumed.setFillColor(Color.rgb(255, 255, 0));
-            dataSetCaloriesConsumed.setFillAlpha(127);
+            dataSetCaloriesConsumed.setFillAlpha(180);
             dataSetCaloriesConsumed.setDrawFilled(true);
             dataSetCaloriesConsumed.setHighlightEnabled(false);
             dataSetCaloriesConsumed.setDrawValues(false);
@@ -572,6 +574,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
+
+            Legend l = mChart.getLegend();
+            l.setEnabled(false);
 
             // enable touch gestures
             mChart.setTouchEnabled(true);
@@ -643,6 +648,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             rightAxis.setGranularity(1);
             rightAxis.setAxisMinimum(0);
             rightAxis.setDrawTopYLabelEntry(true);
+
+//            LimitLine ll1 = new LimitLine((float) caloriesEERMax/10, "");
+//            ll1.setLineWidth(2f);
+//            ll1.disableDashedLine();
+//            leftAxis.addLimitLine(ll1);
+
             rightAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
