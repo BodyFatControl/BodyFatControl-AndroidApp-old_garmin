@@ -6,7 +6,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
     defaultConfig {
-        applicationId "comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.dev"
+        applicationId "comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp"
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
