@@ -16,6 +16,7 @@ public class EditFoodActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Edit food");
         setContentView(R.layout.activity_create_food);
 
         final EditText editTextFoodName = (EditText) findViewById(R.id.food_name);

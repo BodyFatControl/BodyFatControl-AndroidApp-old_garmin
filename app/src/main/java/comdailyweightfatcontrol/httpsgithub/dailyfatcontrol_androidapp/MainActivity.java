@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private ListView listViewLogFoodList;
     private Button mButtonNext;
     private Button mButtonPrevious;
-    private Button mButtonLogFood;
     private TextView mDateTitle;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
@@ -311,9 +312,19 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Daily Control Fat");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication().getApplicationContext(), LogFoodMainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Prefs = getSharedPreferences(MainActivity.PREFERENCES, MODE_PRIVATE);
         mConnectIQ = ConnectIQ.getInstance(this, ConnectIQ.IQConnectType.WIRELESS);
@@ -323,7 +334,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         mButtonNext = (Button) findViewById(R.id.next_button);
         mButtonPrevious = (Button) findViewById(R.id.previous_button);
-        mButtonLogFood = (Button) findViewById(R.id.button_log_food);
         mDateTitle = (TextView) findViewById(R.id.date_title);
         textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
         textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
@@ -386,13 +396,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mMidNightToday = midNightToday;
         mGraphInitialDate = midNightToday;
         mGraphFinalDate = now;
-
-        mButtonLogFood.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplication().getApplicationContext(), LogFoodMainActivity.class);
-                startActivity(intent);
-            }
-        });
 
         mButtonNext.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -460,9 +463,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

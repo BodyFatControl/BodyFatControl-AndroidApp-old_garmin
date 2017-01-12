@@ -13,4 +13,109 @@
     tools:context="comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        tools:context="comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.MainActivity">
+
+        <RelativeLayout
+            android:id="@+id/first_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/corner"
+            android:layout_marginBottom="6dp">
+
+            <Button
+                android:id="@+id/previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Previous"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"/>
+
+            <TextView
+                android:id="@+id/date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_alignParentTop="true"
+                android:text="today"
+                android:textSize="@dimen/title_text_size"
+                android:layout_toLeftOf="@+id/next_button"
+                android:layout_toRightOf="@+id/previous_button" />
+
+            <TextView
+                android:id="@+id/status_connection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:paddingBottom="4dp"
+                android:text="disconnected"
+                android:textSize="@dimen/title2_text_size"
+                android:layout_toLeftOf="@+id/next_button"
+                android:layout_toRightOf="@+id/previous_button"
+                android:layout_below="@id/date_title"/>
+
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                android:visibility="invisible"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ScrollView01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true"
+            android:layout_below="@+id/first_relative_layout">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@drawable/corner" >
+
+                <TextView
+                    android:id="@+id/textViewCalories1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="---"
+                    android:textSize="@dimen/title_text_size" />
+                <TextView
+                    android:id="@+id/textViewCalories2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="---"
+                    android:textSize="@dimen/title_text_size" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_calories_active"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp" />
+
+                <ListView
+                    android:id="@+id/log_food_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:padding="4dp"
+                    android:textSize="@dimen/title_text_size" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 </RelativeLayout>

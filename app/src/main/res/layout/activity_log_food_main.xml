@@ -1,29 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:layout_below="@+id/first_relative_layout">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ScrollView01"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:orientation="vertical">
+        android:fillViewport="true"
+        android:layout_below="@+id/first_relative_layout">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_create_food"
-            android:text="CREATE FOOD"/>
-
-        <ListView
-            android:id="@+id/foods_list"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp"
-            android:textSize="@dimen/title_text_size" />
-    </LinearLayout>
-</ScrollView>
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/foods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:textSize="@dimen/title_text_size" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@drawable/add_button" />
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:src="@drawable/add_button"
+        app:layout_anchor="@id/ScrollView01"
+        app:layout_anchorGravity="bottom|right|end"/>
+</android.support.design.widget.CoordinatorLayout>

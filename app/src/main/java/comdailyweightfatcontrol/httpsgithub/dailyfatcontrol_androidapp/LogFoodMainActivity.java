@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,23 +27,25 @@ public class LogFoodMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Log food");
+        setContentView(R.layout.activity_log_food_main);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication().getApplicationContext(), CreateFoodActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setContentView(R.layout.activity_log_food_main);
 
-        final Button buttonCreateFood = (Button) findViewById(R.id.button_create_food);
         final ListView listViewFoodsList = (ListView) findViewById(R.id.foods_list);
         listViewFoodsList.setLongClickable(true);
-
-        buttonCreateFood.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplication().getApplicationContext(), CreateFoodActivity.class);
-                startActivity(intent);
-            }
-        });
 
         // Add a food from the list
         listViewFoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

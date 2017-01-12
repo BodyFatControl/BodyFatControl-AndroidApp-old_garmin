@@ -30,6 +30,7 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Edit logged food");
         setContentView(R.layout.activity_log_food);
     }
 

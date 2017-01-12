@@ -61,6 +61,7 @@ public class ConnectActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Connect");
         setContentView(R.layout.activity_connect);
 
         mAdapter = new IQDeviceAdapter(this);
@@ -110,11 +111,11 @@ public class ConnectActivity extends ListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.load_devices) {
-            loadDevices();
-            return true;
-        }
+//        int id = item.getItemId();
+//        if (id == R.id.load_devices) {
+//            loadDevices();
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 

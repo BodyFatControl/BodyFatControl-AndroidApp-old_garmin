@@ -27,6 +27,7 @@ public class LogFoodActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTitle("Log food");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_food);
     }
