@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,7 +68,8 @@ import java.util.Random;
 
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener {
-public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener, OnChartGestureListener {
+public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener,
+        OnChartGestureListener {
 
     private ConnectIQ mConnectIQ;
     private IQDevice mIQDevice;
@@ -77,12 +79,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private IQApp mConnectIQApp = new IQApp(MY_APP);
     public static final int HISTORIC_HR_COMMAND = 104030201;
     private static final int USER_DATA_COMMAND = 204030201;
-    private TextView connectStatus;
     private TextView textViewCalories1;
     private TextView textViewCalories2;
     private ListView listViewLogFoodList;
-    private Button mButtonNext;
-    private Button mButtonPrevious;
     private TextView mDateTitle;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
@@ -94,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private double caloriesActiveMax = 0;
     DataBaseLogFoods mDataBaseLogFoods = new DataBaseLogFoods(this);
     ArrayList<Foods> mArrayListLogFood;
+    private float x1,x2;
+    static final int MIN_DISTANCE = 150;
+    static boolean mIsToday = false;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -102,15 +104,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private ConnectIQ.IQDeviceEventListener mDeviceEventListener = new ConnectIQ.IQDeviceEventListener() {
         @Override
         public void onDeviceStatusChanged(IQDevice device, IQDevice.IQDeviceStatus status) {
-            if (status == IQDeviceStatus.CONNECTED) {
-                connectStatus.setText("connected");
-            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
-                connectStatus.setText("not connected");
-            } else if (status == IQDeviceStatus.NOT_PAIRED) {
-                connectStatus.setText("not paired");
-            } else if (status == IQDeviceStatus.UNKNOWN) {
-                connectStatus.setText("unknown");
-            }
+//            if (status == IQDeviceStatus.CONNECTED) {
+//                connectStatus.setText("connected");
+//            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
+//                connectStatus.setText("not connected");
+//            } else if (status == IQDeviceStatus.NOT_PAIRED) {
+//                connectStatus.setText("not paired");
+//            } else if (status == IQDeviceStatus.UNKNOWN) {
+//                connectStatus.setText("unknown");
+//            }
 
             device.setStatus(status);
         }
@@ -144,15 +146,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                         @Override
                         public void onDeviceStatusChanged(IQDevice device, IQDeviceStatus status) {
-                            if (status == IQDeviceStatus.CONNECTED) {
-                                connectStatus.setText("connected");
-                            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
-                                connectStatus.setText("not connected");
-                            } else if (status == IQDeviceStatus.NOT_PAIRED) {
-                                connectStatus.setText("not paired");
-                            } else if (status == IQDeviceStatus.UNKNOWN) {
-                                connectStatus.setText("unknown");
-                            }
+//                            if (status == IQDeviceStatus.CONNECTED) {
+//                                connectStatus.setText("connected");
+//                            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
+//                                connectStatus.setText("not connected");
+//                            } else if (status == IQDeviceStatus.NOT_PAIRED) {
+//                                connectStatus.setText("not paired");
+//                            } else if (status == IQDeviceStatus.UNKNOWN) {
+//                                connectStatus.setText("unknown");
+//                            }
                         }
                     });
                 } catch (InvalidStateException e) {
@@ -332,12 +334,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         // Initialize the SDK
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
 
-        mButtonNext = (Button) findViewById(R.id.next_button);
-        mButtonPrevious = (Button) findViewById(R.id.previous_button);
+
         mDateTitle = (TextView) findViewById(R.id.date_title);
-//        textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
-//        textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
-        connectStatus = (TextView) findViewById(R.id.status_connection);
         listViewLogFoodList = (ListView) findViewById(R.id.log_food_list);
         listViewLogFoodList.setLongClickable(true);
 
@@ -396,65 +394,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mMidNightToday = midNightToday;
         mGraphInitialDate = midNightToday;
         mGraphFinalDate = now;
-
-        mButtonNext.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // do something when the button is clicked
-                // Yes we will handle click here but which button clicked??? We don't know
-
-                mGraphInitialDate += SECONDS_24H; // seconds
-
-                if (mGraphInitialDate == mMidNightToday) { // today
-                    mButtonNext.setVisibility(View.INVISIBLE);
-                    mDateTitle.setText("today");
-
-                    Calendar rightNow = Calendar.getInstance();
-                    long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-                    long rightNowMillis = rightNow.getTimeInMillis() + offset;
-                    mGraphFinalDate = rightNowMillis / 1000; // seconds
-
-                } else if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
-                    mButtonNext.setVisibility(View.VISIBLE);
-                    mDateTitle.setText("yesterday");
-                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
-
-                } else { // other days
-                    mButtonNext.setVisibility(View.VISIBLE);
-                    SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
-                    String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
-                    mDateTitle.setText(dateString);
-                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
-                }
-
-                drawGraphs();
-                drawListConsumedFoods();
-            }
-        });
-
-        mButtonPrevious.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // do something when the button is clicked
-                // Yes we widateTitlell handle click here but which button clicked??? We don't know
-
-                mGraphInitialDate -= SECONDS_24H; // seconds
-
-                if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
-                    mButtonNext.setVisibility(View.VISIBLE);
-                    mDateTitle.setText("yesterday");
-                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
-
-                } else { // other days
-                    mButtonNext.setVisibility(View.VISIBLE);
-                    SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
-                    String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
-                    mDateTitle.setText(dateString);
-                    mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
-                }
-
-                drawGraphs();
-                drawListConsumedFoods();
-            }
-        });
 
         drawGraphs();
         drawListConsumedFoods();
@@ -757,6 +696,84 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public void onNothingSelected() {
         textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
         textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
+
+                if (Math.abs(deltaX) > MIN_DISTANCE)
+                {
+                    // Left to Right swipe action
+                    if (x2 < x1)
+                    {
+                        if (mIsToday == true) break;
+
+                        mGraphInitialDate += SECONDS_24H; // seconds
+
+                        if (mGraphInitialDate == mMidNightToday) { // today
+                            mDateTitle.setText("today");
+
+                            Calendar rightNow = Calendar.getInstance();
+                            long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+                            long rightNowMillis = rightNow.getTimeInMillis() + offset;
+                            mGraphFinalDate = rightNowMillis / 1000; // seconds
+
+                            mIsToday = true;
+
+                        } else if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
+                            mDateTitle.setText("yesterday");
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+
+                        } else { // other days
+                            SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
+                            String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
+                            mDateTitle.setText(dateString);
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                        }
+
+                        drawGraphs();
+                        drawListConsumedFoods();
+                    }
+
+                    // Right to left swipe action
+                    else
+                    {
+                        mIsToday = false;
+
+                        mGraphInitialDate -= SECONDS_24H; // seconds
+
+                        if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
+                            mDateTitle.setText("yesterday");
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+
+                        } else { // other days
+                            SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
+                            String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
+                            mDateTitle.setText(dateString);
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                        }
+
+                        drawGraphs();
+                        drawListConsumedFoods();
+                    }
+
+                }
+                else
+                {
+                    // consider as something else - a screen tap for example
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 }
 
