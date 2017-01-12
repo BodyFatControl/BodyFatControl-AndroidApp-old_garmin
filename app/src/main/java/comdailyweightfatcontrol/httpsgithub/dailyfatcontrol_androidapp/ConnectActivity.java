@@ -104,22 +104,6 @@ public class ConnectActivity extends ListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.load_devices) {
-//            loadDevices();
-//            return true;
-//        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         IQDevice device = mAdapter.getItem(position);
 

@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Daily Control Fat");
+        setTitle("Daily Control Fat - dev");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -463,10 +463,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -489,12 +488,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             long date = new DataBaseHR(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
             command.add((int) date);
             sendMessage(command);
-            return true;
-
-        } else if (id == R.id.create_food) {
-            // Handle the connect action
-            Intent intent = new Intent(this, CreateFoodActivity.class);
-            startActivity(intent);
             return true;
 
         } else if (id == R.id.user_profile) {
@@ -538,11 +531,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             // add entries to Calories Active dataset
             LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Active cals");
-            dataSetCaloriesActive.setColor(Color.rgb(0, 172 , 117));
+            dataSetCaloriesActive.setColor(Color.rgb(0, 204, 137));
             dataSetCaloriesActive.setCubicIntensity(1f);
             dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-            dataSetCaloriesActive.setFillColor(Color.rgb(0, 229, 154));
-            dataSetCaloriesActive.setFillAlpha(180);
+            dataSetCaloriesActive.setFillColor(Color.rgb(0, 230, 154));
+            dataSetCaloriesActive.setFillAlpha(127);
             dataSetCaloriesActive.setDrawFilled(true);
             dataSetCaloriesActive.setDrawHighlightIndicators(true);
             dataSetCaloriesActive.setHighlightLineWidth(2f);
@@ -550,31 +543,31 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesActive.setLineWidth(2f);
             dataSetCaloriesActive.setDrawCircles(false);
 
-            // add entries to Calories EER dataset
-            LineDataSet dataSetCaloriesEER = new LineDataSet(graphDataCaloriesEER, "No active cals");
-            dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
-            dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
-            dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
-            dataSetCaloriesEER.setFillAlpha(240);
-            dataSetCaloriesEER.setDrawFilled(true);
-            dataSetCaloriesEER.setHighlightEnabled(false);
-            dataSetCaloriesEER.setDrawValues(false);
-            dataSetCaloriesEER.setLineWidth(0);
-            dataSetCaloriesEER.setDrawCircles(false);
-
             // add entries to Calories consumed dataset
             LineDataSet dataSetCaloriesConsumed = new LineDataSet(graphDataCaloriesConsumed, "Consumed cals");
-            dataSetCaloriesConsumed.setColor(Color.rgb(200, 200 , 0));
+            dataSetCaloriesConsumed.setColor(Color.rgb(204, 204 , 0));
             dataSetCaloriesConsumed.setMode(LineDataSet.Mode.LINEAR);
-            dataSetCaloriesConsumed.setFillColor(Color.rgb(255, 255, 0));
-            dataSetCaloriesConsumed.setFillAlpha(180);
+            dataSetCaloriesConsumed.setFillColor(Color.rgb(230, 230, 0));
+            dataSetCaloriesConsumed.setFillAlpha(255);
             dataSetCaloriesConsumed.setDrawFilled(true);
             dataSetCaloriesConsumed.setHighlightEnabled(false);
             dataSetCaloriesConsumed.setDrawValues(false);
             dataSetCaloriesConsumed.setLineWidth(2f);
             dataSetCaloriesConsumed.setDrawCircles(false);
 
-            LineData lineData = new LineData(dataSetCaloriesEER, dataSetCaloriesActive, dataSetCaloriesConsumed);
+//            // add entries to Calories EER dataset
+//            LineDataSet dataSetCaloriesEER = new LineDataSet(graphDataCaloriesEER, "No active cals");
+//            dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
+//            dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
+//            dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
+//            dataSetCaloriesEER.setFillAlpha(240);
+//            dataSetCaloriesEER.setDrawFilled(true);
+//            dataSetCaloriesEER.setHighlightEnabled(false);
+//            dataSetCaloriesEER.setDrawValues(false);
+//            dataSetCaloriesEER.setLineWidth(0);
+//            dataSetCaloriesEER.setDrawCircles(false);
+
+            LineData lineData = new LineData(dataSetCaloriesActive, dataSetCaloriesConsumed);
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
