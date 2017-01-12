@@ -122,7 +122,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
     public ArrayList<Foods> DataBaseFoodsGetFoods () {
         // Query to get all the records starting at last midnight, ordered by date ascending
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_DATE + " ASC";
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_NAME + " ASC";
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();

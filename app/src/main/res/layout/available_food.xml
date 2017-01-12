@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:textSize="@dimen/title_text_size"
+            android:textSize="@dimen/text_size_l"
             android:text="Name" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_weight="0.3"
             android:textAlignment="textEnd"
             android:paddingRight="6dp"
-            android:textSize="@dimen/title_text_size"
+            android:textSize="@dimen/text_size_l"
             android:text="125" />
 
         <TextView
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:textSize="@dimen/title2_text_size"
+            android:textSize="@dimen/text_size_m"
             android:text="cals" />
     </LinearLayout>
 
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:textSize="@dimen/title2_text_size"
+            android:textSize="@dimen/text_size_m"
             android:text="Brand" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_weight="0.3"
             android:textAlignment="textEnd"
             android:paddingRight="6dp"
-            android:textSize="@dimen/title2_text_size"
+            android:textSize="@dimen/text_size_m"
             android:text="50" />
 
         <TextView
@@ -70,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:textSize="@dimen/title2_text_size"
+            android:textSize="@dimen/text_size_m"
             android:text="grams" />
     </LinearLayout>
 </LinearLayout>

@@ -335,8 +335,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mButtonNext = (Button) findViewById(R.id.next_button);
         mButtonPrevious = (Button) findViewById(R.id.previous_button);
         mDateTitle = (TextView) findViewById(R.id.date_title);
-        textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
-        textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
+//        textViewCalories1 = (TextView) findViewById(R.id.textViewCalories1);
+//        textViewCalories2 = (TextView) findViewById(R.id.textViewCalories2);
         connectStatus = (TextView) findViewById(R.id.status_connection);
         listViewLogFoodList = (ListView) findViewById(R.id.log_food_list);
         listViewLogFoodList.setLongClickable(true);
@@ -526,8 +526,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         if (graphDataCaloriesActive != null && graphDataCaloriesEER != null && graphDataCaloriesConsumed != null) {
             caloriesActiveMax = graphDataObj.getmMaxCaloriesActive();
-            textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
-            textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
+//            textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
+//            textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
 
             // add entries to Calories Active dataset
             LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Active cals");
@@ -537,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesActive.setFillColor(Color.rgb(0, 230, 154));
             dataSetCaloriesActive.setFillAlpha(127);
             dataSetCaloriesActive.setDrawFilled(true);
-            dataSetCaloriesActive.setDrawHighlightIndicators(true);
+            dataSetCaloriesActive.setDrawHighlightIndicators(false);
             dataSetCaloriesActive.setHighlightLineWidth(2f);
             dataSetCaloriesActive.setDrawValues(false);
             dataSetCaloriesActive.setLineWidth(2f);
@@ -576,9 +576,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             l.setEnabled(false);
 
             // enable touch gestures
-            mChart.setTouchEnabled(true);
+//            mChart.setTouchEnabled(true);
+            mChart.setTouchEnabled(false);
 //            mChart.setOnChartGestureListener(this);
-            mChart.setOnChartValueSelectedListener(this);
+//            mChart.setOnChartValueSelectedListener(this);
 
             mChart.setBackgroundColor(Color.WHITE);
             mChart.setDrawGridBackground(false);
@@ -659,7 +660,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     } else {
                         value = (value - (float) (caloriesEERMax/10)) + (float) caloriesEERMax;
                     }
-
                     return Integer.toString((int) value);
                 }
             });
@@ -694,22 +694,22 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public void onValueSelected(Entry e, Highlight h) {
         // write the selected value of Y value (calories on the point selected)
 
-        float date = e.getX();
-        SimpleDateFormat mFormat;
-        mFormat = new SimpleDateFormat("H'h'mm");
-        String dateString = mFormat.format(new Date((long) ((date-1) *60*60*1000)));
-
-        float value = 0;
-        if (e.getY() < (caloriesEERMax/10)) {
-            value = e.getY()*10;
-        } else {
-//            value = (float) (e.getY()*10 - caloriesEERMax);
-            value = (float) (caloriesEERMax + (e.getY() - (caloriesEERMax / 10)));
-//            value = value + (float) caloriesEERMax;
-        }
-
-        textViewCalories1.setText(dateString + " total calories " + Integer.toString((int) (value)));
-        textViewCalories2.setText("active calories " + Integer.toString(((int) value) - (int) (caloriesEERMax)));
+//        float date = e.getX();
+//        SimpleDateFormat mFormat;
+//        mFormat = new SimpleDateFormat("H'h'mm");
+//        String dateString = mFormat.format(new Date((long) ((date-1) *60*60*1000)));
+//
+//        float value = 0;
+//        if (e.getY() < (caloriesEERMax/10)) {
+//            value = e.getY()*10;
+//        } else {
+////            value = (float) (e.getY()*10 - caloriesEERMax);
+//            value = (float) (caloriesEERMax + (e.getY() - (caloriesEERMax / 10)));
+////            value = value + (float) caloriesEERMax;
+//        }
+//
+//        textViewCalories1.setText(dateString + " total calories " + Integer.toString((int) (value)));
+//        textViewCalories2.setText("active calories " + Integer.toString(((int) value) - (int) (caloriesEERMax)));
     }
 
     @Override
@@ -719,8 +719,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
     @Override
     public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
-        textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
+//        textViewCalories1.setText("total calories: " + Integer.toString((int) (caloriesEERMax + caloriesActiveMax)));
+//        textViewCalories2.setText("active calories: " + Integer.toString((int) caloriesActiveMax));
     }
 
     @Override
