@@ -18,5 +18,7 @@
         <item>grams</item>
         <item>mls</item>
         <item>piece</item>
+        <item>tbsp</item>
+        <item>tsp</item>
     </string-array>
 </resources>

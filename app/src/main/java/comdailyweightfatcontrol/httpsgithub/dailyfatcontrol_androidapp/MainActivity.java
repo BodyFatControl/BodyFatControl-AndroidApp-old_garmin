@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     ArrayList<Foods> mArrayListLogFood;
     private float x1,x2;
     static final int MIN_DISTANCE = 150;
-    static boolean mIsToday = false;
+    static boolean mIsToday = true;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Daily Control Fat - dev");
+        setTitle("Daily Fat Control");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
