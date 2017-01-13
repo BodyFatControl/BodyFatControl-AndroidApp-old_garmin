@@ -23,6 +23,7 @@ public class LogFoodActivity extends AppCompatActivity {
     private EditText mEditTextDate = null;
     private EditText mEditTextTime = null;
     private Button mButtonLogThis = null;
+    private RadioGroup mRadioGroup = null;
     java.util.Calendar mCalendarDate = java.util.Calendar.getInstance();
 
     @Override
@@ -40,6 +41,7 @@ public class LogFoodActivity extends AppCompatActivity {
         final TextView textViewBrand = (TextView) findViewById(R.id.brand);
         final TextView textViewFoodUnityType = (TextView) findViewById(R.id.food_unity_type);
         mTextViewCalories = (TextView) findViewById(R.id.calories);
+        mRadioGroup = (RadioGroup) findViewById(R.id.radio_button_group);
         mEditTextDate = (EditText) findViewById(R.id.date);
         mEditTextTime = (EditText) findViewById(R.id.time);
         mEditTextServingSizeEntry = (EditText) findViewById(R.id.serving_size_entry);
@@ -53,6 +55,11 @@ public class LogFoodActivity extends AppCompatActivity {
         textViewBrand.setText(mFood.getBrand());
         textViewFoodUnityType.setText(mFood.getUnitType());
         mTextViewCalories.setText("");
+
+        // set the radio button Meal Time depending on the current time
+        int radioButtonNumber = utils.returnMealTimeRadioButtonNumber();
+        RadioButton radioButton = (RadioButton) mRadioGroup.getChildAt(radioButtonNumber);
+        radioButton.setChecked(true);
 
         mEditTextServingSizeEntry.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
