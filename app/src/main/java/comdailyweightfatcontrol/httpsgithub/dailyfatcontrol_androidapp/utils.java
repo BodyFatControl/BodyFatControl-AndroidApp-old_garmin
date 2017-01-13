@@ -1,5 +1,7 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
+import java.util.Calendar;
+
 /**
  * Created by cas on 13-01-2017.
  */
@@ -7,7 +9,7 @@ package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 public class utils {
 
     static public int returnMealTimeRadioButtonNumber () {
-        int hourOfDay = java.util.Calendar.getInstance().HOUR_OF_DAY;
+        int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int radioButtonNumber;
         
         if      (hourOfDay >= 6  && hourOfDay < 10) radioButtonNumber = 0; // breakfast
