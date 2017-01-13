@@ -8,58 +8,209 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/activity_create_food"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/food_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:id="@+id/food_name"
-            android:textSize="@dimen/title_text_size"
-            android:hint="Food name"
-            android:singleLine="true" />
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="@dimen/text_size_xl"
+            android:text="Quick calories"/>
 
         <EditText
+            android:id="@+id/brand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:id="@+id/brand"
-            android:textSize="@dimen/title_text_size"
-            android:hint="Brand"
-            android:singleLine="true" />
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="@dimen/text_size_l"
+            android:hint="Brand" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="#c0c0c0" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/serving_size_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="@dimen/text_size_l"
+                android:text="Serving size" />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.15"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:inputType="number"
+                android:id="@+id/serving_size_entry"
+                android:textSize="@dimen/text_size_l"
+                android:text="1"/>
+
+            <Spinner
+                android:id="@+id/spinner_foods_unity_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:entries="@array/foods_unity_type"
+                android:textSize="@dimen/text_size_l"
+                android:layout_weight="0.25"/>
+
+            <EditText
+                android:id="@+id/calories"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_weight="0.15"
+                android:textSize="@dimen/text_size_l"
+                android:text="0" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_weight="0.1"
+                android:textSize="@dimen/text_size_l"
+                android:text="cals." />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:background="#c0c0c0"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/text_size_xl"
+            android:text="Meals and Snacks Time" />
+
+        <RadioGroup
+            android:id="@+id/radio_button_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radio_button_breakfast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BREAKFAST"
+                android:textSize="@dimen/text_size_m"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/radio_button_morning_snack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MORNING SNACK"
+                android:textSize="@dimen/text_size_m"
+                android:checked="false" />
+
+            <RadioButton
+                android:id="@+id/radio_button_lunch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LUNCH"
+                android:textSize="@dimen/text_size_m"
+                android:checked="false" />
+
+            <RadioButton
+                android:id="@+id/radio_button_afternoon_snack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AFTERNOON SNACK"
+                android:textSize="@dimen/text_size_m"
+                android:checked="false" />
+
+            <RadioButton
+                android:id="@+id/radio_button_diner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DINNER"
+                android:textSize="@dimen/text_size_m"
+                android:checked="false" />
+
+            <RadioButton
+                android:id="@+id/radio_button_evening_snack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EVENING SNACK"
+                android:textSize="@dimen/text_size_m"
+                android:checked="false"/>
+
+            <RadioButton
+                android:id="@+id/radio_button_anytime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ANYTIME"
+                android:textSize="@dimen/text_size_m"
+                android:checked="false" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:background="#c0c0c0"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="1"
             android:paddingStart="4dp"
             android:paddingEnd="4dp">
 
-                <TextView
-                android:id="@+id/serving_size_text"
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="5dp"
                 android:layout_weight="0.5"
-                android:textSize="@dimen/title_text_size"
-                android:text="Serving size" />
+                android:textSize="@dimen/text_size_xl"
+                android:text="Date" />
 
-                <EditText
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:inputType="number"
-                android:id="@+id/serving_size_entry"
-                android:textSize="@dimen/title_text_size"
-                android:hint="1"/>
-
-                <Spinner
-                android:id="@+id/spinner_foods_unity_type"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:entries="@array/foods_unity_type"
-                android:layout_weight="0.25"/>
+                android:paddingTop="10dp"
+                android:paddingBottom="5dp"
+                android:layout_weight="0.5"
+                android:inputType="text|number"
+                android:id="@+id/date"
+                android:textSize="@dimen/text_size_l"
+                android:hint="date"/>
         </LinearLayout>
 
         <LinearLayout
@@ -70,23 +221,27 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp">
 
-                <TextView
-                android:id="@+id/calories_text"
+            <android.support.v4.widget.Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:textSize="@dimen/title_text_size"
-                android:text="Calories" />
+                android:layout_weight="0.5"/>
 
-                <EditText
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                    android:id="@+id/calories_entry"
-                android:textSize="@dimen/title_text_size"
-                android:hint="0 cals"
-                    android:inputType="number" />
+                android:inputType="text|number"
+                android:id="@+id/time"
+                android:textSize="@dimen/text_size_l"
+                android:hint="time"/>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:background="#c0c0c0"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -103,11 +258,13 @@
                 android:layout_weight="0.5"/>
 
             <Button
-                android:id="@+id/save_custom_food"
+                android:id="@+id/button_log_this"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:layout_weight="0.5"
-                android:text="LOG CALORIES FOOD"/>
+                android:text="LOG THIS"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

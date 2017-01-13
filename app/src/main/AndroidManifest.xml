@@ -27,6 +27,7 @@
         <activity android:name=".LogFoodActivity" />
         <activity android:name=".EditFoodActivity" />
         <activity android:name=".EditLoggedFoodActivity" />
+        <activity android:name=".LogCaloriesFoodActivity" />
     </application>
 
 </manifest>
