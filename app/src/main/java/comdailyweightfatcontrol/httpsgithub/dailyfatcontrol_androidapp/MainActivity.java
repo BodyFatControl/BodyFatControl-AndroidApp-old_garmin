@@ -507,6 +507,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //            dataSetCaloriesEER.setDrawCircles(false);
 
             LineData lineData = new LineData(dataSetCaloriesActive, dataSetCaloriesConsumed);
+//            LineData lineData = new LineData(dataSetCaloriesActive);
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
@@ -529,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             // enable scaling and dragging
 //            chart.setDragEnabled(true);
 //            chart.setScaleEnabled(true);
-            mChart.setScaleXEnabled(true);
+            mChart.setScaleXEnabled(false);     
             mChart.setScaleYEnabled(false);
 
             XAxis xAxis = mChart.getXAxis();
@@ -614,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             // no description text
             mChart.getDescription().setEnabled(false);
 
-            mChart.setAutoScaleMinMaxEnabled(true);
+            mChart.setAutoScaleMinMaxEnabled(false);
             mChart.setData(lineData);
 //            chart.animateY(200);
             mChart.invalidate(); // refresh

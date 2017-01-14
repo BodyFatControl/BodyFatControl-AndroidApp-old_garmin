@@ -118,6 +118,7 @@ public class GraphData {
         Foods food = null;
         double caloriesSum = 0;
         double previousCaloriesSum = 0;
+        double previewCaloriesSum_1_10 = 0;
         double foodCalories;
         boolean moveToNextFood = true;
         // Loop trough all the minutes starting from today midnight
@@ -129,16 +130,27 @@ public class GraphData {
                 moveToNextFood = false;
             }
 
+            final double caloriesEER_1_10 = CaloriesEER/10;
             while (foodDate >= date && foodDate < (date + 60)) { // food is in this interval time
                 if (food == null) break;
                 foodCalories = food.getCaloriesLogged();
-                if (caloriesSum <= CaloriesEER) { // scale 1/10 while caloriesSum <= CaloriesEER
-                    foodCalories /= 10;
+                previewCaloriesSum_1_10 = caloriesSum + (foodCalories/10);
+
+                if (caloriesSum > caloriesEER_1_10) { // we are already over 1/10 interval
+                    caloriesSum = caloriesSum + foodCalories;
+
+                } else if (previewCaloriesSum_1_10 <= caloriesEER_1_10) { // we will be in the 1/10 interval
+                    caloriesSum += (foodCalories / 10);
+
+                } else { // we have some part in and other over 1/10 interval
+                    double value = caloriesEER_1_10 - caloriesSum;
+                    foodCalories = (foodCalories/10) - value;
+                    caloriesSum = caloriesEER_1_10 + foodCalories*10;
                 }
-                previousCaloriesSum = caloriesSum;
-                caloriesSum += foodCalories;
+
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (previousCaloriesSum)));
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum)));
+                previousCaloriesSum = caloriesSum;
 
                 if (foodsListIterator.hasNext()) { // iterate on the foods in the same interval
                     food = (Foods) foodsListIterator.next();
