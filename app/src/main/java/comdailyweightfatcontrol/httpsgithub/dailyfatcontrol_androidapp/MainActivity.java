@@ -561,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             leftAxis.setDrawTopYLabelEntry(true);
 
             // adjust max y axis value
-            if ((caloriesEERMax + caloriesActiveMax) > 3250) {
+            if ((caloriesEERMax + caloriesActiveMax) > 3000) {
                 leftAxis.resetAxisMaximum();
             } else {
                 leftAxis.setAxisMaximum(800);
@@ -605,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             });
 
             // adjust max y axis value
-            if ((caloriesEERMax + caloriesActiveMax) > 3250) {
+            if ((caloriesEERMax + caloriesActiveMax) > 3000) {
                 rightAxis.resetAxisMaximum();
             } else {
                 rightAxis.setAxisMaximum(800);
