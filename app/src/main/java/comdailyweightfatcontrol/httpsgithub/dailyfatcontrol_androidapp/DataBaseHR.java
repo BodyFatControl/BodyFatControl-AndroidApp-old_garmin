@@ -12,15 +12,10 @@ import java.util.Calendar;
 public class DataBaseHR extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "database.db";
+    private static final String DATABASE_NAME = "database_hr.db";
     private static final String TABLE_NAME = "calories_out";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_HR_VALUE = "hr_value";
-    private static final String COLUMN_USER_BIRTH_YEAR = "user_birth_year";
-    private static final String COLUMN_USER_GENDER = "user_gender";
-    private static final String COLUMN_USER_HEIGH = "user_birth_height";
-    private static final String COLUMN_USER_WEIGH = "user_birth_weight";
-    private static final String COLUMN_USER_ACTIVITY_CLASS = "user_activity_class";
 
     public DataBaseHR(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,12 +25,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_DATE + " integer UNIQUE, " + /* UNIQUE means that there will not be duplicate entries with the same date */
-                COLUMN_HR_VALUE + " integer, " +
-                COLUMN_USER_BIRTH_YEAR + " integer, " +
-                COLUMN_USER_GENDER + " integer, " +
-                COLUMN_USER_HEIGH + " integer, " +
-                COLUMN_USER_WEIGH + " integer, " +
-                COLUMN_USER_ACTIVITY_CLASS + " integer)");
+                COLUMN_HR_VALUE + " integer)");
     }
 
     @Override
@@ -52,11 +42,6 @@ public class DataBaseHR extends SQLiteOpenHelper {
         for (Measurement measurement : measurementList) {
             values.put(COLUMN_DATE, measurement.getDate());
             values.put(COLUMN_HR_VALUE, measurement.getHRValue());
-            values.put(COLUMN_USER_BIRTH_YEAR, measurement.getUserBirthYear());
-            values.put(COLUMN_USER_GENDER, measurement.getUserGender());
-            values.put(COLUMN_USER_HEIGH, measurement.getUserHeight());
-            values.put(COLUMN_USER_WEIGH, measurement.getUserWeight());
-            values.put(COLUMN_USER_ACTIVITY_CLASS, measurement.getUserActivityClass());
 
             // Inserting Row
             db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -154,4 +139,3 @@ public class DataBaseHR extends SQLiteOpenHelper {
         return date;
     }
 }
-
