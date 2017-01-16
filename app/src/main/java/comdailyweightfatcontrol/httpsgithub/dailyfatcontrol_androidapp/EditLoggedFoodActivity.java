@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -165,33 +166,27 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
         mButtonLogThis.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                // Start by getting a food from the database, with the same name
-                DataBaseFoods dataBaseFoods = new DataBaseFoods(getApplication().getApplicationContext());
-                Foods originalFood = dataBaseFoods.DataBaseGetFood(textViewFoodName.getText().toString());
-
-                Foods newFood = originalFood; // make a copy
-
                 Float tmpInt = Float.valueOf(mEditTextServingSizeEntry.getText().toString());
                 if (tmpInt > 0) {
-                    newFood.setUnitsLogged(tmpInt);
+                    mFood.setUnitsLogged(tmpInt);
                 }
 
-                newFood.setCaloriesLogged(Integer.parseInt(mTextViewCalories.getText().toString()));
+                mFood.setCaloriesLogged(Integer.parseInt(mTextViewCalories.getText().toString()));
 
                 int selectedId = mRadioGroup.getCheckedRadioButtonId(); // get selected radio button from radioGroup
                 mRadioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
-                newFood.setMealTime(mRadioButton.getText().toString());
+                mFood.setMealTime(mRadioButton.getText().toString());
 
-                newFood.setDate(mCalendarDate.getTimeInMillis());
-                newFood.setIsCustomCalories(false);
+                mFood.setDate(mCalendarDate.getTimeInMillis());
+                mFood.setIsCustomCalories(false);
 
                 // overwrite the exiting food with this new one
-                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood, true);
+                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(mFood, true);
 
-                // update stats
-                originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
-                originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
-                dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
+//                // update stats
+//                originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
+//                originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
+//                dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
 
                 finish(); // finish this activity
             }
