@@ -16,6 +16,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class LogFoodActivity extends AppCompatActivity {
     private Foods mFood;
     private EditText mEditTextServingSizeEntry = null;
@@ -168,15 +172,25 @@ public class LogFoodActivity extends AppCompatActivity {
                     RadioButton radioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
                     newFood.setMealTime(radioButton.getText().toString());
 
-                    newFood.setDate(mCalendarDate.getTimeInMillis());
+                    long date = 0;
+                    String givenDateString = mEditTextDate.getText().toString() + " " + mEditTextTime.getText().toString();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm");
+                    try {
+                        Date mDate = sdf.parse(givenDateString);
+                        date = mDate.getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    newFood.setDate(date);
+
                     newFood.setIsCustomCalories(false);
 
                     new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(newFood, false);
 
                     // update stats
-                    originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
-                    originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
-                    dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
+//                    originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
+//                    originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
+//                    dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
 
                     finish(); // finish this activity
                 }

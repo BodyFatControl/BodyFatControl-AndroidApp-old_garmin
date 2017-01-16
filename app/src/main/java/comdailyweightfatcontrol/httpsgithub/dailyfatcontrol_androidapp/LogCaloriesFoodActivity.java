@@ -20,7 +20,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class LogCaloriesFoodActivity extends AppCompatActivity {
@@ -161,7 +164,17 @@ public class LogCaloriesFoodActivity extends AppCompatActivity {
                             RadioButton radioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
                             food.setMealTime(radioButton.getText().toString());
 
-                            food.setDate(mCalendarDate.getTimeInMillis());
+                            long date = 0;
+                            String givenDateString = mEditTextDate.getText().toString() + " " + mEditTextTime.getText().toString();
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm");
+                            try {
+                                Date mDate = sdf.parse(givenDateString);
+                                date = mDate.getTime();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            food.setDate(date);
+
                             food.setIsCustomCalories(true);
 
                             new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(food, false);

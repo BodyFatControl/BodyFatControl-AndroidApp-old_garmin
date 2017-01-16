@@ -17,6 +17,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class EditLoggedFoodActivity extends AppCompatActivity {
     private Foods mFood;
     private EditText mEditTextServingSizeEntry = null;
@@ -54,6 +58,8 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
         DataBaseLogFoods dataBaseLogFoods = new DataBaseLogFoods(this);
         mFood = dataBaseLogFoods.DataBaseLogFoodsGetFood(extras.getInt("FOOD_ID"));
 
+        mCalendarDate.setTimeInMillis(mFood.getDate()); // save the food date
+
         textViewFoodName.setText(mFood.getName());
         textViewBrand.setText(mFood.getBrand());
         mEditTextServingSizeEntry.setText(Float.toString(mFood.getUnitsLogged()));
@@ -77,14 +83,12 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
             mRadioGroup.check(R.id.radio_button_anytime);
         }
 
-        java.util.Calendar time = java.util.Calendar.getInstance();
-        time.setTimeInMillis(mFood.getDate());
-        mEditTextDate.setText(time.get(java.util.Calendar.DAY_OF_MONTH) + "/" +
-                (time.get(java.util.Calendar.MONTH)+1)  + "/" +
-                time.get(java.util.Calendar.YEAR));
+        mEditTextDate.setText(mCalendarDate.get(java.util.Calendar.DAY_OF_MONTH) + "/" +
+                (mCalendarDate.get(java.util.Calendar.MONTH)+1)  + "/" +
+                mCalendarDate.get(java.util.Calendar.YEAR));
 
-        mEditTextTime.setText(time.get(java.util.Calendar.HOUR_OF_DAY) + "h" +
-                (time.get(java.util.Calendar.MINUTE)));
+        mEditTextTime.setText(mCalendarDate.get(java.util.Calendar.HOUR_OF_DAY) + "h" +
+                (mCalendarDate.get(java.util.Calendar.MINUTE)));
 
         mEditTextServingSizeEntry.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -181,7 +185,16 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
                     mRadioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
                     mFood.setMealTime(mRadioButton.getText().toString());
 
-                    mFood.setDate(mCalendarDate.getTimeInMillis());
+                    long date = 0;
+                    String givenDateString = mEditTextDate.getText().toString() + " " + mEditTextTime.getText().toString();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm");
+                    try {
+                        Date mDate = sdf.parse(givenDateString);
+                        date = mDate.getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    mFood.setDate(date);
 
                     // overwrite the exiting food with this new one
                     new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(mFood, true);
