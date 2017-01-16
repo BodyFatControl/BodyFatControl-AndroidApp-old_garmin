@@ -166,29 +166,33 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
         mButtonLogThis.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Float tmpInt = Float.valueOf(mEditTextServingSizeEntry.getText().toString());
-                if (tmpInt > 0) {
-                    mFood.setUnitsLogged(tmpInt);
+                // Validate user inputs
+                if (mEditTextServingSizeEntry.getText().toString().length() <= 0
+                        || Float.parseFloat(mEditTextServingSizeEntry.getText().toString()) <= 0.01) {
+                    mEditTextServingSizeEntry.setError("Min of 0.01");
+                } else {
+                    mEditTextServingSizeEntry.setError(null);
+
+                    mFood.setUnitsLogged(Float.valueOf(mEditTextServingSizeEntry.getText().toString()));
+
+                    mFood.setCaloriesLogged(Integer.parseInt(mTextViewCalories.getText().toString()));
+
+                    int selectedId = mRadioGroup.getCheckedRadioButtonId(); // get selected radio button from radioGroup
+                    mRadioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
+                    mFood.setMealTime(mRadioButton.getText().toString());
+
+                    mFood.setDate(mCalendarDate.getTimeInMillis());
+
+                    // overwrite the exiting food with this new one
+                    new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(mFood, true);
+
+                    //                // update stats
+                    //                originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
+                    //                originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
+                    //                dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
+
+                    finish(); // finish this activity
                 }
-
-                mFood.setCaloriesLogged(Integer.parseInt(mTextViewCalories.getText().toString()));
-
-                int selectedId = mRadioGroup.getCheckedRadioButtonId(); // get selected radio button from radioGroup
-                mRadioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
-                mFood.setMealTime(mRadioButton.getText().toString());
-
-                mFood.setDate(mCalendarDate.getTimeInMillis());
-                mFood.setIsCustomCalories(false);
-
-                // overwrite the exiting food with this new one
-                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(mFood, true);
-
-//                // update stats
-//                originalFood.setLastUsageDate(mCalendarDate.getTimeInMillis());
-//                originalFood.setUsageFrequency(originalFood.getUsageFrequency() + 1);
-//                dataBaseFoods.DataBaseFoodsWriteFood(originalFood);
-
-                finish(); // finish this activity
             }
         });
     }

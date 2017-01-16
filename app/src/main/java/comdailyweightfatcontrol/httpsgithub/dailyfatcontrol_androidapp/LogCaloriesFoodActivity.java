@@ -44,8 +44,8 @@ public class LogCaloriesFoodActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        final TextView textViewFoodName = (TextView) findViewById(R.id.food_name);
-        final TextView textViewBrand = (TextView) findViewById(R.id.brand);
+        final EditText editTextFoodName = (EditText) findViewById(R.id.food_name);
+        final EditText editTextBrand = (EditText) findViewById(R.id.brand);
         final Spinner spinnerUnityType = (Spinner) findViewById(R.id.spinner_foods_unity_type);
         mEditTextCalories = (EditText) findViewById(R.id.calories);
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_button_group);
@@ -130,29 +130,46 @@ public class LogCaloriesFoodActivity extends AppCompatActivity {
 
         mButtonLogThis.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Foods mFood = new Foods();
-                mFood.setName(textViewFoodName.getText().toString());
-                mFood.setBrand(textViewBrand.getText().toString());
+                Foods food = new Foods();
 
-                int tmpInt = Integer.parseInt(mEditTextServingSizeEntry.getText().toString());
-                if (tmpInt > 0) {
-                    mFood.setUnitsLogged(tmpInt);
+                if (editTextFoodName.getText().toString().length() <= 0) {
+                    editTextFoodName.setError("Enter food name");
+                } else {
+                    editTextFoodName.setError(null);
+
+                    food.setName(editTextFoodName.getText().toString());
+                    food.setBrand(editTextBrand.getText().toString());
+
+                    // Validate user inputs
+                    if (mEditTextServingSizeEntry.getText().toString().length() <= 0
+                            || Float.parseFloat(mEditTextServingSizeEntry.getText().toString()) <= 0.01) {
+                        mEditTextServingSizeEntry.setError("Min of 0.01");
+                    } else {
+                        mEditTextServingSizeEntry.setError(null);
+                        food.setUnits(Float.valueOf(mEditTextServingSizeEntry.getText().toString()));
+                        food.setUnitType(spinnerUnityType.getSelectedItem().toString());
+
+                        if (mEditTextCalories.getText().toString().length() <= 0
+                                || Float.parseFloat(mEditTextCalories.getText().toString()) <= 0) {
+                            mEditTextCalories.setError("Min of 1");
+                        } else {
+                            mEditTextCalories.setError(null);
+                            food.setCaloriesLogged(Integer.parseInt(mEditTextCalories.getText().toString()));
+
+                            RadioGroup radiogroup = (RadioGroup) findViewById(R.id.radio_button_group);
+                            int selectedId = radiogroup.getCheckedRadioButtonId(); // get selected radio button from radioGroup
+                            RadioButton radioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
+                            food.setMealTime(radioButton.getText().toString());
+
+                            food.setDate(mCalendarDate.getTimeInMillis());
+                            food.setIsCustomCalories(true);
+
+                            new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(food, false);
+
+                            finish(); // finish this activity
+                        }
+                    }
                 }
-
-                mFood.setUnitType(spinnerUnityType.getSelectedItem().toString());
-                mFood.setCaloriesLogged(Integer.parseInt(mEditTextCalories.getText().toString()));
-
-                RadioGroup radiogroup = (RadioGroup) findViewById(R.id.radio_button_group);
-                int selectedId = radiogroup.getCheckedRadioButtonId(); // get selected radio button from radioGroup
-                RadioButton radioButton = (RadioButton) findViewById(selectedId); // find the radio button by returned id
-                mFood.setMealTime(radioButton.getText().toString());
-
-                mFood.setDate(mCalendarDate.getTimeInMillis());
-                mFood.setIsCustomCalories(true);
-
-                new DataBaseLogFoods(getApplication().getApplicationContext()).DataBaseLogFoodsWriteFood(mFood, false);
-
-                finish(); // finish this activity
             }
         });
     }

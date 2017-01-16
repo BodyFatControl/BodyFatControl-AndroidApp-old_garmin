@@ -47,21 +47,38 @@ public class EditFoodActivity extends AppCompatActivity {
         buttonSaveCustomFood.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-            Foods food = new Foods();
-            food.setName(editTextFoodName.getText().toString());
-            food.setBrand(editTextBrand.getText().toString());
-            food.setUnits(Float.valueOf(editTextServingSizeEntry.getText().toString()));
-            food.setUnitType(spinnerUnityType.getSelectedItem().toString());
-            food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
+                Foods food = new Foods();
+                food.setName(editTextFoodName.getText().toString());
+                food.setBrand(editTextBrand.getText().toString());
 
-            Calendar rightNow = Calendar.getInstance();
-            long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
-            long rightNowMillis = rightNow.getTimeInMillis() + offset;
-            food.setDate(rightNowMillis);
+                // Validate user inputs
+                if (editTextServingSizeEntry.getText().toString().length() <= 0
+                        || Float.parseFloat(editTextServingSizeEntry.getText().toString()) <= 0.01) {
+                    editTextServingSizeEntry.setError("Min of 0.01");
+                } else {
+                    editTextServingSizeEntry.setError(null);
 
-            new DataBaseFoods(getApplication().getApplicationContext()).DataBaseFoodsWriteFood(food);
+                    food.setUnits(Float.valueOf(editTextServingSizeEntry.getText().toString()));
+                    food.setUnitType(spinnerUnityType.getSelectedItem().toString());
 
-            finish(); // finish this activity
+                    if (editTextCaloriesEntry.getText().toString().length() <= 0
+                            || Float.parseFloat(editTextCaloriesEntry.getText().toString()) <= 0) {
+                        editTextCaloriesEntry.setError("Min of 1");
+                    } else {
+                        editTextCaloriesEntry.setError(null);
+
+                        food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
+
+                        Calendar rightNow = Calendar.getInstance();
+                        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+                        long rightNowMillis = rightNow.getTimeInMillis() + offset;
+                        food.setDate(rightNowMillis);
+
+                        new DataBaseFoods(getApplication().getApplicationContext()).DataBaseFoodsWriteFood(food);
+
+                        finish(); // finish this activity
+                    }
+                }
             }
         });
     }

@@ -19,7 +19,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:textSize="@dimen/text_size_xl"
-            android:text="Quick calories"/>
+            android:hint="Food name"/>
 
         <EditText
             android:id="@+id/brand"
@@ -86,7 +86,6 @@
                 android:paddingBottom="10dp"
                 android:layout_weight="0.15"
                 android:textSize="@dimen/text_size_l"
-                android:text="0"
                 android:inputType="number" />
 
             <TextView
