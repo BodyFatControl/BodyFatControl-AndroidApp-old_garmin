@@ -60,7 +60,7 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
             userProfile.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
             userProfile.setUserBirthYear(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_BIRTH_YEAR)));
             userProfile.setUserGender(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_GENDER)));
-            userProfile.setUserWeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_HEIGH)));
+            userProfile.setUserHeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_HEIGH)));
             userProfile.setUserWeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_WEIGH)));
             userProfile.setUserActivityClass(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ACTIVITY_CLASS)));
         }

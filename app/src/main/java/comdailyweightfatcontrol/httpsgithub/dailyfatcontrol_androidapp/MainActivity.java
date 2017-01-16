@@ -249,6 +249,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 mUserProfile.setUserWeight(iteratorTheMessage.next());
                                 mUserProfile.setUserActivityClass(iteratorTheMessage.next());
                                 mDataBaseUserProfile.DataBaseUserProfileWrite(mUserProfile);
+
+                                drawGraphs();
                             }
 
                             if (message.size() > 0) {
@@ -303,6 +305,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         // Get the UserProfile from the database
         mDataBaseUserProfile = new DataBaseUserProfile(getApplication().getApplicationContext());
         mUserProfile = mDataBaseUserProfile.DataBaseUserProfileLast();
+        if (mUserProfile == null) { // in the case there is no data on the database
+            mUserProfile = new UserProfile();
+            mUserProfile.setDate(0);
+            mUserProfile.setUserBirthYear(0);
+            mUserProfile.setUserGender(0);
+            mUserProfile.setUserHeight(0);
+            mUserProfile.setUserWeight(0);
+            mUserProfile.setUserActivityClass(0);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -406,6 +417,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             return true;
 
         } else if (id == R.id.update) {
+            // If UserProfile is not updated on the database, send the command to get that information
+            if (mUserProfile.getDate() < mMidNightToday)
+            {
+                command.add(USER_DATA_COMMAND);
+                Random r = new Random();
+                command.add(r.nextInt(2^30));
+                sendMessage(command);
+            }
+
             command.add(HISTORIC_HR_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
@@ -546,11 +566,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             leftAxis.setDrawTopYLabelEntry(true);
 
             // adjust max y axis value
-            if ((caloriesEERMax + caloriesActiveMax) > 3000) {
-                leftAxis.resetAxisMaximum();
-            } else {
-                leftAxis.setAxisMaximum(800);
-            }
+//            if ((caloriesEERMax + caloriesActiveMax) > 3000) {
+//                leftAxis.resetAxisMaximum();
+//            } else {
+//                leftAxis.setAxisMaximum(800);
+//            }
 
             leftAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
@@ -590,11 +610,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             });
 
             // adjust max y axis value
-            if ((caloriesEERMax + caloriesActiveMax) > 3000) {
-                rightAxis.resetAxisMaximum();
-            } else {
-                rightAxis.setAxisMaximum(800);
-            }
+//            if ((caloriesEERMax + caloriesActiveMax) > 3000) {
+//                rightAxis.resetAxisMaximum();
+//            } else {
+//                rightAxis.setAxisMaximum(800);
+//            }
 
 
             // no description text
