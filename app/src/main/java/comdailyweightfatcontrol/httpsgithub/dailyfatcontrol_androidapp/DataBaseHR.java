@@ -87,6 +87,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
             measurementList.add(measurement);
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return measurementList;
     }
@@ -118,6 +119,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
             measurementList.add(measurement);
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return measurementList;
     }
@@ -135,6 +137,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
             date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return date;
     }

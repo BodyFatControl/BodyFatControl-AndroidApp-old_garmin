@@ -51,10 +51,10 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_DATE + " DESC LIMIT 1";
         // open database
         Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
 
         UserProfile userProfile = null;
         if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
             userProfile = new UserProfile();
             userProfile.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
             userProfile.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
@@ -65,6 +65,7 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
             userProfile.setUserActivityClass(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ACTIVITY_CLASS)));
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return userProfile;
     }

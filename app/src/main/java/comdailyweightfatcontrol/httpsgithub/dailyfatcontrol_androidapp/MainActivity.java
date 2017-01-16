@@ -8,10 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +37,6 @@ import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.components.XAxis;
@@ -96,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private float x1,x2;
     static final int MIN_DISTANCE = 150;
     static boolean mIsToday = true;
+    private DataBaseUserProfile mDataBaseUserProfile = null;
+    private UserProfile mUserProfile = null;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -219,15 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                             theMessage = (ArrayList<Integer>) message.get(0);
                             if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
-
                                 // Get the user data to store on each measurement
-                                SharedPreferences mPrefs = MainActivity.getPrefs();
-                                int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
-                                int gender = mPrefs.getInt("GENDER", 0);
-                                int height = mPrefs.getInt("HEIGHT", 0);
-                                int weight = mPrefs.getInt("WEIGHT", 0);
-                                int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
-
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
                                 iteratorTheMessage.next(); // command ID
                                 iteratorTheMessage.next(); // random
@@ -236,14 +226,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                     Measurement measurement = new Measurement();
                                     measurement.setDate(iteratorTheMessage.next());
                                     measurement.setHRValue(iteratorTheMessage.next());
-
-                                    // now set all the values on the measurement
-                                    measurement.setUserBirthYear(birthYear);
-                                    measurement.setUserGender(gender);
-                                    measurement.setUserHeight(height);
-                                    measurement.setUserWeight(weight);
-                                    measurement.setUserActivityClass(activityClass);
-
                                     measurementList.add(measurement);
                                 }
 
@@ -256,18 +238,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 drawGraphs();
 
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
-
-                                // Store the UserData on Preferences
-                                SharedPreferences.Editor editor = getPrefs().edit();
+                                // Store the UserProfile on database
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
-                                iteratorTheMessage.next(); // command ID
+                                iteratorTheMessage.next(); // comdataBaseUserProfilemand ID
                                 iteratorTheMessage.next(); // random
-                                editor.putInt("BIRTH_YEAR", iteratorTheMessage.next());
-                                editor.putInt("GENDER", iteratorTheMessage.next());
-                                editor.putInt("HEIGHT", iteratorTheMessage.next());
-                                editor.putInt("WEIGHT", iteratorTheMessage.next());
-                                editor.putInt("ACTIVITY_CLASS", iteratorTheMessage.next());
-                                editor.commit();
+                                mUserProfile.setDate(mMidNightToday);
+                                mUserProfile.setUserBirthYear(iteratorTheMessage.next());
+                                mUserProfile.setUserGender(iteratorTheMessage.next());
+                                mUserProfile.setUserHeight(iteratorTheMessage.next());
+                                mUserProfile.setUserWeight(iteratorTheMessage.next());
+                                mUserProfile.setUserActivityClass(iteratorTheMessage.next());
+                                mDataBaseUserProfile.DataBaseUserProfileWrite(mUserProfile);
                             }
 
                             if (message.size() > 0) {
@@ -318,6 +299,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Get the UserProfile from the database
+        mDataBaseUserProfile = new DataBaseUserProfile(getApplication().getApplicationContext());
+        mUserProfile = mDataBaseUserProfile.DataBaseUserProfileLast();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -458,9 +443,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
     void drawGraphs() {
         GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
-        List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate);
+        List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate, mUserProfile);
         caloriesEERMax = graphDataObj.getmMaxCaloriesEER();
-        List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, caloriesEERMax);
+        List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, caloriesEERMax, mUserProfile);
         List<Entry> graphDataCaloriesConsumed = graphDataObj.prepareCaloriesConsumed(mGraphInitialDate, mGraphFinalDate, caloriesEERMax);
 
         if (graphDataCaloriesActive != null && graphDataCaloriesEER != null && graphDataCaloriesConsumed != null) {

@@ -116,6 +116,7 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return foodsList;
     }
@@ -142,6 +143,7 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return foodsNames;
     }
@@ -166,6 +168,7 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         food.setMealTime(cursor.getString(cursor.getColumnIndex(COLUMN_MEAL_TIME)));
         food.setIsCustomCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_IS_CUSTOM_CALORIES)) == 1);
 
+        cursor.close();
         db.close(); // Closing database connection
         return food;
     }

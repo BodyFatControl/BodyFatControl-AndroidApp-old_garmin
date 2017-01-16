@@ -83,6 +83,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return foodsNames;
     }
@@ -115,6 +116,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
             food.setUsageFrequency(cursor.getLong(cursor.getColumnIndex(COLUMN_USAGE_FREQUENCY)));
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return food;
     }
@@ -142,6 +144,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
 
+        cursor.close();
         db.close(); // Closing database connection
         return foodsList;
     }

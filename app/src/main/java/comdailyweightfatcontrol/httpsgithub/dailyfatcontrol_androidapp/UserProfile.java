@@ -9,7 +9,11 @@ public class UserProfile {
     private int userWeight;
     private int userActivityClass;
 
+    public UserProfile() {
+    }
+
     public int getId() {
+
         return id;
     }
 

@@ -18,17 +18,17 @@ public class GraphData {
         mContext = context;
     }
 
-    public List<Entry> prepareCaloriesEER(long initialDate, long finalDate) {
+    public List<Entry> prepareCaloriesEER(long initialDate, long finalDate, UserProfile userProfile) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Calc calories on the measurement list
-        Calories caloriesObject = new Calories();
+        Calories caloriesObject = new Calories(mContext);
         double calories = 0;
 
         long date = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
         long graphFinalDate = finalDate - initialDate;
-        calories = caloriesObject.calcCaloriesEER(initialDate, finalDate);
+        calories = caloriesObject.calcCaloriesEER(initialDate, finalDate, userProfile);
         // Loop trough all the minutes starting from today midnight
         for ( ; date < endOfToday; date += 60) {
             if (date < graphFinalDate) { //  calc calories only until current date
@@ -41,7 +41,7 @@ public class GraphData {
         return graphDataEntriesList;
     }
 
-    public List<Entry> prepareCaloriesActive(long initialDate, long finalDate, double CaloriesEER) {
+    public List<Entry> prepareCaloriesActive(long initialDate, long finalDate, double CaloriesEER, UserProfile userProfile) {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
@@ -49,7 +49,7 @@ public class GraphData {
         ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(initialDate, finalDate);
 
         // Calc calories on the measurement list
-        Calories calories = new Calories();
+        Calories calories = new Calories(mContext);
 
         long date = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
@@ -77,7 +77,7 @@ public class GraphData {
             }
 
             if (date < graphFinalDate) { //  calc calories only until current date
-                double tmp = calories.calcActiveCalories(hr);
+                double tmp = calories.calcActiveCalories(hr, userProfile);
                 if (true/*tmp > 0*/) {
                     caloriesSum += tmp;
                     graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));

@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class Calories {
+    private Context mContext;
+
     /*
     EER:
     Your EER (Estimated Energy Requirements) are the number of estimated  calories that you burn
@@ -37,7 +39,8 @@ public class Calories {
 
     private final double HR_DT = 1/(60.0); // 1 minute
 
-    public Calories() {
+    public Calories(Context context) {
+        mContext = context;
     }
 
     public ArrayList<Measurement> calcCalories (ArrayList<Measurement> measurementList) {
@@ -82,18 +85,24 @@ public class Calories {
         return measurementList;
     }
 
-    public double calcCaloriesEER (long initialDate, long finalDate) {
+    public double calcCaloriesEER(long initialDate, long finalDate, UserProfile userProfile) {
 
-        SharedPreferences mPrefs = MainActivity.getPrefs();
-        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
-        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
-        int gender = mPrefs.getInt("GENDER", 0);
-        double height = (double) mPrefs.getInt("HEIGHT", 0);
-        double weight = (double) mPrefs.getInt("WEIGHT", 0);
-        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+        int birthYear = 0;
+        int age = 0;
+        int gender = 0;
+        double height = 0;
+        double weight = 0;
+        int activityClass = 0;
+        if (userProfile != null) {
+            birthYear = userProfile.getUserBirthYear();
+            age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+            gender = userProfile.getUserGender();
+            height = (double) userProfile.getUserHeight();
+            weight = (double) userProfile.getUserWeight();
+            activityClass = userProfile.getUserActivityClass();
+        }
 
         double calories;
-
         if (gender == 0) { // female
             calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
                     (660.7*height/100))); // daily value
@@ -112,67 +121,80 @@ public class Calories {
         return calories;
     }
 
-    public double calcCalories (int hr_value) {
+//    public double calcCalories (int hr_value) {
+//
+//        int birthYear = 0;
+//        int age = 0;
+//        int gender = 0;
+//        double height = 0;
+//        double weight = 0;
+//        int activityClass = 0;
+//        if (userProfile != null) {
+//            birthYear = userProfile.getUserBirthYear();
+//            age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+//            gender = userProfile.getUserGender();
+//            height = (double) userProfile.getUserHeight();
+//            weight = (double) userProfile.getUserWeight();
+//            activityClass = userProfile.getUserActivityClass();
+//        }
+//
+//        double hr = (double) hr_value;
+//        double calories;
+//        if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
+//            if (gender == 0) { // female
+//                calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
+//                        (0.074*height/100)) / 4.184) * 60*HR_DT);
+//            } else { // male
+//                calories = (((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
+//                        (0.2017*height/100)) / 4.184) * 60*HR_DT);
+//            }
+//        } else { // calculation based on Estimated Energy Requirements
+//            if (gender == 0) { // female
+//                calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
+//                        (660.7*height/100))); // daily value
+//                calories = (int) ((calories/24)*HR_DT); // value in VIVOACTIVE_HR_DT
+//            } else { // male
+//                calories = ((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
+//                        (503*height/100)));
+//                calories = ((calories/24)*HR_DT);
+//            }
+//        }
+//
+//        return calories;
+//    }
 
-        SharedPreferences mPrefs = MainActivity.getPrefs();
-        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
-        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
-        int gender = mPrefs.getInt("GENDER", 0);
-        double height = (double) mPrefs.getInt("HEIGHT", 0);
-        double weight = (double) mPrefs.getInt("WEIGHT", 0);
-        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
+    public double calcActiveCalories(int hr_value, UserProfile userProfile) {
 
-        double hr = (double) hr_value;
-        double calories;
-
-        if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
-            if (gender == 0) { // female
-                calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
-                        (0.074*height/100)) / 4.184) * 60*HR_DT);
-            } else { // male
-                calories = (((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
-                        (0.2017*height/100)) / 4.184) * 60*HR_DT);
-            }
-        } else { // calculation based on Estimated Energy Requirements
-            if (gender == 0) { // female
-                calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
-                        (660.7*height/100))); // daily value
-                calories = (int) ((calories/24)*HR_DT); // value in VIVOACTIVE_HR_DT
-            } else { // male
-                calories = ((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
-                        (503*height/100)));
-                calories = ((calories/24)*HR_DT);
-            }
+        int birthYear = 0;
+        int age = 0;
+        int gender = 0;
+        double height = 0;
+        double weight = 0;
+        int activityClass = 0;
+        if (userProfile != null) {
+            birthYear = userProfile.getUserBirthYear();
+            age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+            gender = userProfile.getUserGender();
+            height = (double) userProfile.getUserHeight();
+            weight = (double) userProfile.getUserWeight();
+            activityClass = userProfile.getUserActivityClass();
         }
-
-        return calories;
-    }
-
-    public double calcActiveCalories (int hr_value) {
-
-        SharedPreferences mPrefs = MainActivity.getPrefs();
-        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
-        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
-        int gender = mPrefs.getInt("GENDER", 0);
-        double height = (double) mPrefs.getInt("HEIGHT", 0);
-        double weight = (double) mPrefs.getInt("WEIGHT", 0);
-        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
 
         double hr = (double) hr_value;
         double calories;
         double test;
-
         if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
             if (gender == 0) { // female
-                calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
-                        (0.074*height/100)) / 4.184) * 60*HR_DT);
+                calories = (-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
+                        (0.074*height/100));
+                calories = calories / 4.184;
+                calories = calories * 60*HR_DT;
+
             } else { // male
                 calories = (-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
                         (0.2017*height/100));
                 calories = calories / 4.184;
                 calories = calories * 60*HR_DT;
-                test = calories;
-                System.out.println(test);
             }
         } else { // calculation based on Estimated Energy Requirements
             calories = 0;
