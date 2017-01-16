@@ -51,6 +51,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -806,7 +807,12 @@ class LogFoodAdapter extends ArrayAdapter<Foods> {
         textViewFoodName.setText(food.getName());
         textViewFoodBrand.setText(food.getBrand());
         textViewFoodCaloriesLogged.setText(Integer.toString(food.getCaloriesLogged()));
-        textViewFoodUnitsLogged.setText(Integer.toString(food.getUnitsLogged()));
+
+        // remove trailing zeros of units logged
+        DecimalFormat df = new DecimalFormat();
+        String units = df.format(food.getUnitsLogged());
+        textViewFoodUnitsLogged.setText(units);
+
         textViewFoodUnitsType.setText(food.getUnitType());
         // Return the completed view to render on screen
         return convertView;

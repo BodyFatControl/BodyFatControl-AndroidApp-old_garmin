@@ -35,10 +35,10 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
                 COLUMN_NAME + " text, " +
                 COLUMN_DATE + " integer, " +
                 COLUMN_BRAND + " text, " +
-                COLUMN_UNITS + " integer, " +
+                COLUMN_UNITS + " real, " +
                 COLUMN_UNIT_TYPE + " text, " +
                 COLUMN_CALORIES + " integer, " +
-                COLUMN_UNITS_LOGGED + " text, " +
+                COLUMN_UNITS_LOGGED + " real, " +
                 COLUMN_CALORIES_LOGGED + " integer, " +
                 COLUMN_MEAL_TIME + " integer, " +
                 COLUMN_IS_CUSTOM_CALORIES + " boolean)");
@@ -105,9 +105,9 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
             food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
             food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-            food.setUnitsLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS_LOGGED)));
+            food.setUnitsLogged(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS_LOGGED)));
             food.setCaloriesLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_LOGGED)));
-            food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS)));
+            food.setUnits(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS)));
             food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
             food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
             food.setMealTime(cursor.getString(cursor.getColumnIndex(COLUMN_MEAL_TIME)));
@@ -160,10 +160,10 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
         food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
         food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-        food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS)));
+        food.setUnits(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS)));
         food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
         food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
-        food.setUnitsLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS_LOGGED)));
+        food.setUnitsLogged(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS_LOGGED)));
         food.setCaloriesLogged(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_LOGGED)));
         food.setMealTime(cursor.getString(cursor.getColumnIndex(COLUMN_MEAL_TIME)));
         food.setIsCustomCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_IS_CUSTOM_CALORIES)) == 1);

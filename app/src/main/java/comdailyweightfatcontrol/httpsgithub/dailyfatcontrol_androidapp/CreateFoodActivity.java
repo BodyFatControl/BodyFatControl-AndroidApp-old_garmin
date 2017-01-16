@@ -20,7 +20,7 @@ public class CreateFoodActivity extends AppCompatActivity {
 
         final EditText editTextFoodName = (EditText) findViewById(R.id.food_name);
         final EditText editTextBrand = (EditText) findViewById(R.id.brand);
-        final TextView textViewServingSizeEntry = (EditText) findViewById(R.id.serving_size_entry);
+        final EditText editTextServingSizeEntry = (EditText) findViewById(R.id.serving_size_entry);
         final Spinner spinnerUnityType = (Spinner) findViewById(R.id.spinner_foods_unity_type);
         final EditText editTextCaloriesEntry = (EditText) findViewById(R.id.calories_entry);
         final Button buttonSaveCustomFood = (Button) findViewById(R.id.save_custom_food);
@@ -31,7 +31,7 @@ public class CreateFoodActivity extends AppCompatActivity {
             Foods food = new Foods();
             food.setName(editTextFoodName.getText().toString());
             food.setBrand(editTextBrand.getText().toString());
-            food.setUnits(Integer.valueOf(textViewServingSizeEntry.getText().toString()));
+            food.setUnits(Float.valueOf(editTextServingSizeEntry.getText().toString()));
             food.setUnitType(spinnerUnityType.getSelectedItem().toString());
             food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
 

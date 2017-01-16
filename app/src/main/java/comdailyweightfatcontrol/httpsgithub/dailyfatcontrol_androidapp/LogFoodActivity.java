@@ -65,7 +65,7 @@ public class LogFoodActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String string = s.toString();
                 if (!string.isEmpty()) {
-                    float value = Integer.parseInt(s.toString());
+                    float value = Float.valueOf(s.toString());
                     float calories = mFood.getCalories();
                     float unity = mFood.getUnits();
                     value = (1/unity) * calories * value;
@@ -152,7 +152,7 @@ public class LogFoodActivity extends AppCompatActivity {
 
                 Foods newFood = originalFood; // make a copy
 
-                int tmpInt = Integer.parseInt(mEditTextServingSizeEntry.getText().toString());
+                Float tmpInt = Float.valueOf(mEditTextServingSizeEntry.getText().toString());
                 if (tmpInt > 0) {
                     newFood.setUnitsLogged(tmpInt);
                 }

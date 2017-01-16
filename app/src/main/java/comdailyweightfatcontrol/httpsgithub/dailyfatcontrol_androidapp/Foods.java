@@ -7,10 +7,10 @@ public class Foods {
     private long usageFrequency = 0;
     private String name = null;
     private String brand = null;
-    private int units = 0;
+    private float units = 0;
     private String unitType = null;
     private int calories = 0;
-    private int unitLogged = 0;
+    private float unitLogged = 0;
     private int caloriesLogged = 0;
     private String mealTime = null;
     private boolean isCustomCalories = false;
@@ -39,11 +39,11 @@ public class Foods {
         this.brand = brand;
     }
 
-    public int getUnits() {
+    public float getUnits() {
         return units;
     }
 
-    public void setUnits(int units) {
+    public void setUnits(float units) {
         this.units = units;
     }
 
@@ -63,12 +63,12 @@ public class Foods {
         this.calories = calories;
     }
 
-    public int getUnitsLogged() {
+    public float getUnitsLogged() {
         return unitLogged;
     }
 
-    public void setUnitsLogged(int unityLogged) {
-        this.unitLogged = unityLogged;
+    public void setUnitsLogged(float unitsLogged) {
+        this.unitLogged = unitsLogged;
     }
 
     public int getCaloriesLogged() {

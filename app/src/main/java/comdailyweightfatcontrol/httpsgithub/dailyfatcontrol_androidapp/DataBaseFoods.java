@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class DataBaseFoods extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "database_foods.db";
     private static final String TABLE_NAME = "foods";
     private static final String COLUMN_DATE = "date";
@@ -31,7 +31,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
                 COLUMN_NAME + " text UNIQUE, " + /* UNIQUE means that there will not be duplicate entries with the same date */
                 COLUMN_DATE + " integer, " +
                 COLUMN_BRAND + " text, " +
-                COLUMN_UNITS + " integer, " +
+                COLUMN_UNITS + " real, " +
                 COLUMN_UNIT_TYPE + " text, " +
                 COLUMN_CALORIES + " integer, " +
                 COLUMN_LAST_USAGE_DATE + " integer, " +
@@ -109,7 +109,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
             food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
             food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-            food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS)));
+            food.setUnits(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS)));
             food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
             food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
             food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));
@@ -135,7 +135,7 @@ public class DataBaseFoods extends SQLiteOpenHelper {
             Foods food = new Foods();
             food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
-            food.setUnits(cursor.getInt(cursor.getColumnIndex(COLUMN_UNITS)));
+            food.setUnits(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS)));
             food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
             food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
             food.setLastUsageDate(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_USAGE_DATE)));

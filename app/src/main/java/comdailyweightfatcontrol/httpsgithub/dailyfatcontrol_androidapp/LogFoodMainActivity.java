@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -157,7 +158,12 @@ class AvailableFoodAdapter extends ArrayAdapter<Foods> {
         textViewFoodName.setText(food.getName());
         textViewFoodBrand.setText(food.getBrand());
         textViewFoodCalories.setText(Integer.toString(food.getCalories()));
-        textViewFoodUnits.setText(Integer.toString(food.getUnits()));
+
+        // remove trailing zeros of units
+        DecimalFormat df = new DecimalFormat();
+        String units = df.format(food.getUnits());
+        textViewFoodUnits.setText(units);
+
         textViewFoodUnitsType.setText(food.getUnitType());
         // Return the completed view to render on screen
         return convertView;

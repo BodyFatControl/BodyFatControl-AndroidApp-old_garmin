@@ -65,10 +65,11 @@
                 android:layout_weight="0.15"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:inputType="number"
+                android:inputType="number|numberDecimal"
                 android:id="@+id/serving_size_entry"
                 android:textSize="@dimen/title2_text_size"
-                android:hint="1"/>
+                android:hint="1"
+                android:numeric="integer|decimal" />
 
             <TextView
                 android:id="@+id/food_unity_type"

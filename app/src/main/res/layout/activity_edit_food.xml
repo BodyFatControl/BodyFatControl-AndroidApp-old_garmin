@@ -47,10 +47,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:inputType="number"
+                android:inputType="number|numberDecimal"
                 android:id="@+id/serving_size_entry"
                 android:textSize="@dimen/title_text_size"
-                android:hint="1"/>
+                android:hint="1"
+                    android:numeric="integer|decimal" />
 
                 <Spinner
                 android:id="@+id/spinner_foods_unity_type"

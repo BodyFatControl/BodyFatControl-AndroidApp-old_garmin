@@ -1,6 +1,7 @@
 package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -34,7 +35,7 @@ public class EditFoodActivity extends AppCompatActivity {
         if (mFood != null) {
             editTextFoodName.setText(mFood.getName());
             editTextBrand.setText(mFood.getBrand());
-            editTextServingSizeEntry.setText(Integer.toString(mFood.getUnits()));
+            editTextServingSizeEntry.setText(Float.toString(mFood.getUnits()));
             ArrayAdapter arrayAdapterSpinner = (ArrayAdapter) spinnerUnityType.getAdapter();
             int spinnerPosition = arrayAdapterSpinner.getPosition(mFood.getUnitType());
             spinnerUnityType.setSelection(spinnerPosition);
@@ -49,7 +50,7 @@ public class EditFoodActivity extends AppCompatActivity {
             Foods food = new Foods();
             food.setName(editTextFoodName.getText().toString());
             food.setBrand(editTextBrand.getText().toString());
-            food.setUnits(Integer.valueOf(editTextServingSizeEntry.getText().toString()));
+            food.setUnits(Float.valueOf(editTextServingSizeEntry.getText().toString()));
             food.setUnitType(spinnerUnityType.getSelectedItem().toString());
             food.setCalories(Integer.valueOf(editTextCaloriesEntry.getText().toString()));
 
