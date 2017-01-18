@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:textSize="@dimen/text_size_l"
+            android:textSize="@dimen/text_size_xl"
             android:text="Name" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_weight="0.15"
             android:textAlignment="textEnd"
             android:paddingRight="6dp"
-            android:textSize="@dimen/text_size_l"
+            android:textSize="@dimen/text_size_xl"
             android:text="125" />
 
         <TextView
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.15"
-            android:textSize="@dimen/title2_text_size"
+            android:textSize="@dimen/text_size_m"
             android:text="cals" />
     </LinearLayout>
 
@@ -44,7 +44,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="6dp"
+        android:paddingBottom="4dp"
         android:weightSum="1">
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:textSize="@dimen/text_size_s"
+            android:textSize="@dimen/text_size_m"
             android:text="Brand" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_weight="0.15"
             android:textAlignment="textEnd"
             android:paddingRight="6dp"
-            android:textSize="@dimen/text_size_s"
+            android:textSize="@dimen/text_size_m"
             android:text="50" />
 
         <TextView
@@ -70,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.15"
-            android:textSize="@dimen/text_size_s"
+            android:textSize="@dimen/text_size_m"
             android:text="grams" />
     </LinearLayout>
 </LinearLayout>

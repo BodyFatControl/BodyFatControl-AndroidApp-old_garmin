@@ -481,17 +481,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             /** Draw the various calories sizes */
             SpannableStringBuilder builder = new SpannableStringBuilder();
 
-            SpannableString caloriesConsumedString = new SpannableString(String.valueOf((int) mCaloriesConsumed));
-            caloriesConsumedString.setSpan(new ForegroundColorSpan(Color.rgb(204, 204 , 0)), 0, caloriesConsumedString.length(), 0);
-            builder.append(caloriesConsumedString);
-            builder.append(" - ");
             int caloriesSpent = (int) (mCaloriesEER + mCaloriesActive);
             SpannableString caloriesSpentString = new SpannableString(String.valueOf(caloriesSpent));
             caloriesSpentString.setSpan(new ForegroundColorSpan(Color.rgb(0, 204, 137)), 0, caloriesSpentString.length(), 0);
             builder.append(caloriesSpentString);
-            int caloriesResult = (int) (mCaloriesConsumed - caloriesSpent);
-            if (caloriesResult > 0) {
-                SpannableString caloriesResultString = new SpannableString("+" + String.valueOf(caloriesResult));
+            builder.append(" - ");
+            SpannableString caloriesConsumedString = new SpannableString(String.valueOf((int) mCaloriesConsumed));
+            caloriesConsumedString.setSpan(new ForegroundColorSpan(Color.rgb(204, 204 , 0)), 0, caloriesConsumedString.length(), 0);
+            builder.append(caloriesConsumedString);
+            int caloriesResult = (int) (caloriesSpent - mCaloriesConsumed);
+            if (caloriesResult < 0) {
+                SpannableString caloriesResultString = new SpannableString(String.valueOf(caloriesResult));
                 caloriesResultString.setSpan(new ForegroundColorSpan(Color.RED), 0, caloriesResultString.length(), 0);
                 builder.append(" = ");
                 builder.append(caloriesResultString);
