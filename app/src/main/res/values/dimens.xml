@@ -8,8 +8,10 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="title_text_size">20sp</dimen>
     <dimen name="title2_text_size">14sp</dimen>
-    <dimen name="text_size_xl">20sp</dimen>
-    <dimen name="text_size_l">16sp</dimen>
-    <dimen name="text_size_m">14sp</dimen>
-    <dimen name="text_size_s">12sp</dimen>
+    <dimen name="text_size_xxl">18sp</dimen>
+    <dimen name="text_size_xl">15sp</dimen>
+    <dimen name="text_size_l">13sp</dimen>
+    <dimen name="text_size_m">12sp</dimen>
+    <dimen name="text_size_s">11sp</dimen>
+    <dimen name="text_size_xs">10sp</dimen>
 </resources>

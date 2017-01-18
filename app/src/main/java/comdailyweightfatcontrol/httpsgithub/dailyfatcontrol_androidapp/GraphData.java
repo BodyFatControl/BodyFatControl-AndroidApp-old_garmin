@@ -10,9 +10,9 @@ import java.util.List;
 
 public class GraphData {
     private Context mContext;
-    private double mMaxCaloriesEER = 0;
-    private double mMaxCaloriesActive = 0;
-    private double mMaxCaloriesConsumed = 0;
+    private double mCaloriesEER = 0;
+    private double mCaloriesActive = 0;
+    private double mCaloriesConsumed = 0;
 
     public GraphData(Context context) {
         mContext = context;
@@ -37,7 +37,7 @@ public class GraphData {
             }
         }
 
-        mMaxCaloriesEER = calories;
+        mCaloriesEER = calories;
         return graphDataEntriesList;
     }
 
@@ -91,16 +91,20 @@ public class GraphData {
             }
         }
 
-        mMaxCaloriesActive = caloriesSum;
+        mCaloriesActive = caloriesSum;
         return graphDataEntriesList;
     }
 
-    public double getmMaxCaloriesEER() {
-        return mMaxCaloriesEER;
+    public double getCaloriesEER() {
+        return mCaloriesEER;
     }
 
-    public double getmMaxCaloriesActive() {
-        return mMaxCaloriesActive;
+    public double getCaloriesActive() {
+        return mCaloriesActive;
+    }
+
+    public double getCaloriesConsumed() {
+        return mCaloriesConsumed;
     }
 
     public List<Entry> prepareCaloriesConsumed(long initialDate, long finalDate, double CaloriesEER) {
@@ -121,6 +125,7 @@ public class GraphData {
         double previewCaloriesSum_1_10 = 0;
         double foodCalories;
         boolean moveToNextFood = true;
+        mCaloriesConsumed = 0;
         // Loop trough all the minutes starting from today midnight
         for ( ; date < endOfToday; date += 60) {
 
@@ -134,6 +139,7 @@ public class GraphData {
             while (foodDate >= date && foodDate < (date + 60)) { // food is in this interval time
                 if (food == null) break;
                 foodCalories = food.getCaloriesLogged();
+                mCaloriesConsumed += foodCalories;
                 previewCaloriesSum_1_10 = caloriesSum + (foodCalories/10);
 
                 if (caloriesSum > caloriesEER_1_10) { // we are already over 1/10 interval
@@ -173,7 +179,6 @@ public class GraphData {
             }
         }
 
-        mMaxCaloriesConsumed = caloriesSum;
         return graphDataEntriesList;
     }
 }
