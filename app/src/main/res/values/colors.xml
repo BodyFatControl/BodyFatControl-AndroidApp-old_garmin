@@ -8,4 +8,9 @@
     <color name="firstBackgroundColor">#424242</color>
     <color name="pointColor">#691A99</color>
     <color name="lineColor">#1DE9B6</color>
+
+    <color name="graphCaloriesConsumed">#e6e600</color>
+    <color name="graphCaloriesConsumedLine">#d9d900</color>
+    <color name="graphCaloriesSpent">#00e69a</color>
+    <color name="graphCaloriesSpentLine">#00cc89</color>
 </resources>

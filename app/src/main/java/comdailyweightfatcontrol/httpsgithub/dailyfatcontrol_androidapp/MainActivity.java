@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     static boolean mIsToday = true;
     private DataBaseUserProfile mDataBaseUserProfile = null;
     private UserProfile mUserProfile = null;
+    private Context mContext;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 Collections.reverse(measurementList);
 
                                 // finally write the measurement list to database
-                                new DataBaseHR(getApplication().getApplicationContext()).DataBaseWriteMeasurement(measurementList);
+                                new DataBaseHR(mContext).DataBaseWriteMeasurement(measurementList);
 
                                 drawGraphs();
 
@@ -282,12 +284,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //                        sendMessage(command);
 
                 } catch (InvalidStateException e) {
-                    Toast.makeText(getApplication().getApplicationContext(), "ConnectIQ is not in a valid state", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "ConnectIQ is not in a valid state", Toast.LENGTH_LONG).show();
                 }
             } else {
                 // Since there is no IQDevice saved on SharedPreferences, start the activity for user
                 // select the IQDevice
-                Intent intent = new Intent(getApplication().getApplicationContext(), ConnectActivity.class);
+                Intent intent = new Intent(mContext, ConnectActivity.class);
                 startActivity(intent);
             }
         }
@@ -306,8 +308,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mContext = getApplication().getApplicationContext();
+
         // Get the UserProfile from the database
-        mDataBaseUserProfile = new DataBaseUserProfile(getApplication().getApplicationContext());
+        mDataBaseUserProfile = new DataBaseUserProfile(mContext);
         mUserProfile = mDataBaseUserProfile.DataBaseUserProfileLast();
         if (mUserProfile == null) { // in the case there is no data on the database
             mUserProfile = new UserProfile();
@@ -323,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplication().getApplicationContext(), LogFoodMainActivity.class);
+                Intent intent = new Intent(mContext, LogFoodMainActivity.class);
                 startActivity(intent);
             }
         });
@@ -434,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             command.add(HISTORIC_HR_COMMAND);
             Random r = new Random();
             command.add(r.nextInt(2^30));
-            long date = new DataBaseHR(getApplication().getApplicationContext()).DataBaseGetLastMeasurementDate();
+            long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
             command.add((int) date);
             sendMessage(command);
             return true;
@@ -467,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     void drawGraphs() {
-        GraphData graphDataObj = new GraphData(getApplication().getApplicationContext());
+        GraphData graphDataObj = new GraphData(mContext);
         List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate, mUserProfile);
         mCaloriesEER = graphDataObj.getCaloriesEER();
         List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, mCaloriesEER, mUserProfile);
@@ -475,6 +479,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 
         if (graphDataCaloriesActive != null && graphDataCaloriesEER != null && graphDataCaloriesConsumed != null) {
+            final int caloriesSpentColor = ContextCompat.getColor(mContext, R.color.graphCaloriesSpent);
+            final int caloriesSpentLineColor = ContextCompat.getColor(mContext, R.color.graphCaloriesSpentLine);
+            final int caloriesConsumedColor = ContextCompat.getColor(mContext, R.color.graphCaloriesConsumed);
+            final int caloriesConsumedLineColor = ContextCompat.getColor(mContext, R.color.graphCaloriesConsumedLine);
+
             mCaloriesActive = graphDataObj.getCaloriesActive();
             mCaloriesConsumed = graphDataObj.getCaloriesConsumed();
 
@@ -483,11 +492,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             int caloriesSpent = (int) (mCaloriesEER + mCaloriesActive);
             SpannableString caloriesSpentString = new SpannableString(String.valueOf(caloriesSpent));
-            caloriesSpentString.setSpan(new ForegroundColorSpan(Color.rgb(0, 204, 137)), 0, caloriesSpentString.length(), 0);
+            caloriesSpentString.setSpan(new ForegroundColorSpan(caloriesSpentLineColor), 0, caloriesSpentString.length(), 0);
             builder.append(caloriesSpentString);
             builder.append(" - ");
             SpannableString caloriesConsumedString = new SpannableString(String.valueOf((int) mCaloriesConsumed));
-            caloriesConsumedString.setSpan(new ForegroundColorSpan(Color.rgb(204, 204 , 0)), 0, caloriesConsumedString.length(), 0);
+            caloriesConsumedString.setSpan(new ForegroundColorSpan(caloriesConsumedLineColor), 0, caloriesConsumedString.length(), 0);
             builder.append(caloriesConsumedString);
             int caloriesResult = (int) (caloriesSpent - mCaloriesConsumed);
             if (caloriesResult < 0) {
@@ -502,10 +511,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             // add entries to Calories Active dataset
             LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Burned calories");
-            dataSetCaloriesActive.setColor(Color.rgb(0, 204, 137));
+            dataSetCaloriesActive.setColor(caloriesSpentLineColor);
             dataSetCaloriesActive.setCubicIntensity(1f);
             dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-            dataSetCaloriesActive.setFillColor(Color.rgb(0, 230, 154));
+            dataSetCaloriesActive.setFillColor(caloriesSpentColor);
             dataSetCaloriesActive.setFillAlpha(127);
             dataSetCaloriesActive.setDrawFilled(true);
             dataSetCaloriesActive.setDrawHighlightIndicators(false);
@@ -516,9 +525,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             // add entries to Calories consumed dataset
             LineDataSet dataSetCaloriesConsumed = new LineDataSet(graphDataCaloriesConsumed, "Consumed calories");
-            dataSetCaloriesConsumed.setColor(Color.rgb(204, 204 , 0));
+            dataSetCaloriesConsumed.setColor(caloriesConsumedLineColor);
             dataSetCaloriesConsumed.setMode(LineDataSet.Mode.LINEAR);
-            dataSetCaloriesConsumed.setFillColor(Color.rgb(230, 230, 0));
+            dataSetCaloriesConsumed.setFillColor(caloriesConsumedColor);
             dataSetCaloriesConsumed.setFillAlpha(255);
             dataSetCaloriesConsumed.setDrawFilled(true);
             dataSetCaloriesConsumed.setHighlightEnabled(false);
