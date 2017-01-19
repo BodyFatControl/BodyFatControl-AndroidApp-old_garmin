@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:weightSum="1">
 
         <TextView
@@ -19,7 +20,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
             android:layout_weight="0.7"
-            android:textSize="@dimen/text_size_l"
+            android:textSize="@dimen/text_size_xl"
             android:text="Name" />
 
         <TextView
@@ -29,7 +30,7 @@
             android:layout_weight="0.15"
             android:textAlignment="textEnd"
             android:paddingRight="4dp"
-            android:textSize="@dimen/text_size_m"
+            android:textSize="@dimen/text_size_l"
             android:text="125" />
 
         <TextView
@@ -37,42 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.15"
-            android:textSize="@dimen/text_size_s"
+            android:textSize="@dimen/text_size_m"
             android:text="cals" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/food_brand"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
-            android:layout_weight="0.7"
-            android:textSize="@dimen/text_size_s"
-            android:text="Brand" />
-
-        <TextView
-            android:id="@+id/food_units_logged"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.15"
-            android:textAlignment="textEnd"
-            android:paddingRight="4dp"
-            android:textSize="@dimen/text_size_xs"
-            android:text="50" />
-
-        <TextView
-            android:id="@+id/food_units_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.15"
-            android:textSize="@dimen/text_size_s"
-            android:text="grams" />
     </LinearLayout>
 </LinearLayout>

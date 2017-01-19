@@ -72,22 +72,18 @@ public class GraphData {
                 long measurementDate = (measurement.getDate() - initialDate);
                 if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
                     hr = measurement.getHRValue();
+                    measurement = null;
                     moveToNextMeasurement = true;
                 }
             }
 
             if (date < graphFinalDate) { //  calc calories only until current date
-                double tmp = calories.calcActiveCalories(hr, userProfile);
-                if (true/*tmp > 0*/) {
-                    caloriesSum += tmp;
-                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
-                } else if (tmp == 0 && date == 0) { // very first value should be added to the graph
-                    graphDataEntriesList.add(new Entry(0, -2));
-                }
+                caloriesSum += calories.calcActiveCalories(hr, userProfile);
+                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
             }
 
             if (date == (endOfToday - 59) && (initialDate < MainActivity.mMidNightToday)) { //  last point
-                    graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
+                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
             }
         }
 

@@ -857,23 +857,16 @@ class LogFoodAdapter extends ArrayAdapter<Object> {
         if (getItemViewType(position) == TYPE_FOOD) {
             // Lookup view for data population
             TextView textViewFoodName = (TextView) convertView.findViewById(R.id.food_name);
-            TextView textViewFoodBrand = (TextView) convertView.findViewById(R.id.food_brand);
             TextView textViewFoodCaloriesLogged = (TextView) convertView.findViewById(R.id.food_calories_logged);
-            TextView textViewFoodUnitsLogged = (TextView) convertView.findViewById(R.id.food_units_logged);
-            TextView textViewFoodUnitsType = (TextView) convertView.findViewById(R.id.food_units_type);
             // Populate the data into the template view using the data object
             // Get the data item for this position
             Foods food = (Foods) object;
             textViewFoodName.setText(food.getName());
-            textViewFoodBrand.setText(food.getBrand());
             textViewFoodCaloriesLogged.setText(Integer.toString(food.getCaloriesLogged()));
 
             // remove trailing zeros of units logged
             DecimalFormat df = new DecimalFormat();
             String units = df.format(food.getUnitsLogged());
-            textViewFoodUnitsLogged.setText(units);
-
-            textViewFoodUnitsType.setText(food.getUnitType());
         } else {
             // Lookup view for data population
             TextView textViewMealTime = (TextView) convertView.findViewById(R.id.mealtime);
