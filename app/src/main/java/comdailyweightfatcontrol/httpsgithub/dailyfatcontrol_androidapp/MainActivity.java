@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private double mCaloriesActive = 0.0;
     private double mCaloriesConsumed = 0.0;
     DataBaseLogFoods mDataBaseLogFoods = new DataBaseLogFoods(this);
-    ArrayList<Foods> mArrayListLogFood;
+    ArrayList<Object> mArrayListLogFood;
     private float x1,x2;
     static final int MIN_DISTANCE = 150;
     static boolean mIsToday = true;
@@ -665,8 +666,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     void drawListConsumedFoods () {
         // Populate the listview of logged foods
         // Start by getting the data from the database and then put on the array adapter, finally to the list
-        mArrayListLogFood = mDataBaseLogFoods.DataBaseLogFoodsGetFoods(mGraphInitialDate*1000, mGraphFinalDate*1000);
-        ArrayAdapter<Foods> arrayAdapterLogFoods = new LogFoodAdapter(this, mArrayListLogFood);
+        mArrayListLogFood = mDataBaseLogFoods.DataBaseLogFoodsGetFoodsAndMeals(mGraphInitialDate*1000, mGraphFinalDate*1000);
+        ArrayAdapter<Object> arrayAdapterLogFoods = new LogFoodAdapter(this, mArrayListLogFood);
         listViewLogFoodList.setAdapter(arrayAdapterLogFoods);
     }
 
@@ -815,36 +816,78 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 }
 
-class LogFoodAdapter extends ArrayAdapter<Foods> {
-    public LogFoodAdapter(Context context, ArrayList<Foods> foodsArrayList) {
+class LogFoodAdapter extends ArrayAdapter<Object> {
+    public static final int TYPE_FOOD  = 0;
+    public static final int TYPE_MEALTIME  = 1;
+
+    private ArrayList<Object> mFoodsArrayList;
+
+    public LogFoodAdapter(Context context, ArrayList<Object> foodsArrayList) {
         super(context, 0, foodsArrayList);
+
+        this.mFoodsArrayList = foodsArrayList;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Object object = mFoodsArrayList.get(position);
+        if (object instanceof Foods) return TYPE_FOOD;
+        else return TYPE_MEALTIME;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
-        Foods food = getItem(position);
+
+        Object object = getItem(position);
+
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.logged_food, parent, false);
+            if (getItemViewType(position) == TYPE_FOOD) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.logged_food, parent, false);
+            } else {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.logged_food_mealtime, parent, false);
+            }
         }
-        // Lookup view for data population
-        TextView textViewFoodName = (TextView) convertView.findViewById(R.id.food_name);
-        TextView textViewFoodBrand = (TextView) convertView.findViewById(R.id.food_brand);
-        TextView textViewFoodCaloriesLogged = (TextView) convertView.findViewById(R.id.food_calories_logged);
-        TextView textViewFoodUnitsLogged = (TextView) convertView.findViewById(R.id.food_units_logged);
-        TextView textViewFoodUnitsType = (TextView) convertView.findViewById(R.id.food_units_type);
-        // Populate the data into the template view using the data object
-        textViewFoodName.setText(food.getName());
-        textViewFoodBrand.setText(food.getBrand());
-        textViewFoodCaloriesLogged.setText(Integer.toString(food.getCaloriesLogged()));
 
-        // remove trailing zeros of units logged
-        DecimalFormat df = new DecimalFormat();
-        String units = df.format(food.getUnitsLogged());
-        textViewFoodUnitsLogged.setText(units);
+        if (getItemViewType(position) == TYPE_FOOD) {
+            // Lookup view for data population
+            TextView textViewFoodName = (TextView) convertView.findViewById(R.id.food_name);
+            TextView textViewFoodBrand = (TextView) convertView.findViewById(R.id.food_brand);
+            TextView textViewFoodCaloriesLogged = (TextView) convertView.findViewById(R.id.food_calories_logged);
+            TextView textViewFoodUnitsLogged = (TextView) convertView.findViewById(R.id.food_units_logged);
+            TextView textViewFoodUnitsType = (TextView) convertView.findViewById(R.id.food_units_type);
+            // Populate the data into the template view using the data object
+            // Get the data item for this position
+            Foods food = (Foods) object;
+            textViewFoodName.setText(food.getName());
+            textViewFoodBrand.setText(food.getBrand());
+            textViewFoodCaloriesLogged.setText(Integer.toString(food.getCaloriesLogged()));
 
-        textViewFoodUnitsType.setText(food.getUnitType());
+            // remove trailing zeros of units logged
+            DecimalFormat df = new DecimalFormat();
+            String units = df.format(food.getUnitsLogged());
+            textViewFoodUnitsLogged.setText(units);
+
+            textViewFoodUnitsType.setText(food.getUnitType());
+        } else {
+            // Lookup view for data population
+            TextView textViewMealTime = (TextView) convertView.findViewById(R.id.mealtime);
+            TextView textViewMealTimeCalories = (TextView) convertView.findViewById(R.id.calories);
+            // Populate the data into the template view using the data object
+            // Get the data item for this position
+            MealTime mealTime = (MealTime) object;
+            textViewMealTime.setText(mealTime.getMealTimeName());
+            // remove trailing zeros of units logged
+            DecimalFormat df = new DecimalFormat();
+            String units = df.format(mealTime.getCalories());
+            textViewMealTimeCalories.setText(units);
+        }
+
         // Return the completed view to render on screen
         return convertView;
     }

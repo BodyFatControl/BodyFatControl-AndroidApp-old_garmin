@@ -172,5 +172,100 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         db.close(); // Closing database connection
         return food;
     }
+
+    public ArrayList<Object> DataBaseLogFoodsGetFoodsAndMeals (long initialDate, long finalDate) {
+        // Query to get all the records starting at last midnight, ordered by date ascending
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String mealsTime[] = {MealTime.BREAKFAST, MealTime.MORNING_SNACK, MealTime.LUNCH,
+                MealTime.AFTERNOON_SNACK, MealTime.DINNER, MealTime.EVENING_SNACK, MealTime.ANYTIME};
+
+        ArrayList<Object> foodsAndMealsList = new ArrayList<>();
+        int foodsAndMealsListPosition = 0;
+        int foodsAndMealsListStartPosition = 0;
+        for (String mealTime : mealsTime) {
+            String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_DATE + " BETWEEN " +
+                    +initialDate + " AND " + finalDate + " AND " + COLUMN_MEAL_TIME + " LIKE " +
+                    "'" + mealTime + "'" + " ORDER BY " + COLUMN_DATE + " ASC";
+
+            Cursor cursor = db.rawQuery(query, null);
+            cursor.moveToFirst();
+            int counter = cursor.getCount();
+            int calories = 0;
+            int mealCalories = 0;
+            boolean foodAdded = false;
+            for (; counter > 0; ) {
+                if (cursor.isAfterLast()) break;
+                Foods food = new Foods();
+                food.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                food.setDate(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE)));
+                food.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+                food.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_BRAND)));
+                food.setUnitsLogged(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS_LOGGED)));
+
+                // keep track of total calories on this MealTime
+                calories = cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_LOGGED));
+                mealCalories += calories;
+                food.setCaloriesLogged(calories);
+                food.setUnits(cursor.getFloat(cursor.getColumnIndex(COLUMN_UNITS)));
+                food.setUnitType(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_TYPE)));
+                food.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
+                food.setMealTime(cursor.getString(cursor.getColumnIndex(COLUMN_MEAL_TIME)));
+                food.setIsCustomCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_IS_CUSTOM_CALORIES)) == 1);
+                foodsAndMealsList.add(food);
+                foodAdded = true;
+                foodsAndMealsListPosition++;
+                cursor.moveToNext();
+            }
+
+            if (foodAdded == true) {
+                // add to begin of list the MealTime
+                foodsAndMealsList.add(foodsAndMealsListStartPosition, new MealTime(mealTime, mealCalories));
+                foodsAndMealsListPosition++;
+                foodsAndMealsListStartPosition = foodsAndMealsListPosition;
+            }
+            cursor.close();
+        }
+
+        db.close(); // Closing database connection
+        return foodsAndMealsList;
+    }
 }
 
+class MealTime {
+    public static final String BREAKFAST = "Breakfast";
+    public static final String MORNING_SNACK = "Morning snack";
+    public static final String LUNCH = "Lunch";
+    public static final String AFTERNOON_SNACK = "Afternoon snack";
+    public static final String DINNER = "Dinner";
+    public static final String EVENING_SNACK = "Evening snack";
+    public static final String ANYTIME = "Anytime";
+
+    private int mCalories = 0;
+    private String mMealTimeName = null;
+
+    public MealTime() {
+    }
+
+    public MealTime(String mMealTimeName, int mCalories) {
+        this.mCalories = mCalories;
+        this.mMealTimeName = mMealTimeName;
+    }
+
+    public int getCalories() {
+
+        return mCalories;
+    }
+
+    public void setCalories(int calories) {
+        this.mCalories = calories;
+    }
+
+    public String getMealTimeName() {
+        return mMealTimeName;
+    }
+
+    public void setMealTimeName(String mMealTimeName) {
+        this.mMealTimeName = mMealTimeName;
+    }
+}

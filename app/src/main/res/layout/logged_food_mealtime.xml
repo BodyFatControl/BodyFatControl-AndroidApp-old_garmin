@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/mealtime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:textSize="@dimen/text_size_l"
+            android:textStyle="bold"
+            android:text="Name" />
+
+        <TextView
+            android:id="@+id/calories"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.15"
+            android:textAlignment="textEnd"
+            android:paddingRight="6dp"
+            android:textSize="@dimen/text_size_m"
+            android:textStyle="bold"
+            android:text="125" />
+
+        <TextView
+            android:id="@+id/calories_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.15"
+            android:textSize="@dimen/text_size_s"
+            android:textStyle="bold"
+            android:text="cals" />
+    </LinearLayout>
+</LinearLayout>
