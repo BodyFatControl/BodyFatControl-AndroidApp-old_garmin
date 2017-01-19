@@ -54,6 +54,7 @@ public class GraphData {
         long date = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
         long graphFinalDate = finalDate - initialDate;
+        double caloriesEERPerMinute = CaloriesEER / (graphFinalDate/60);
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -78,7 +79,11 @@ public class GraphData {
             }
 
             if (date < graphFinalDate) { //  calc calories only until current date
-                caloriesSum += calories.calcActiveCalories(hr, userProfile);
+                double caloriesValue = calories.calcActiveCalories(hr, userProfile);
+                if (caloriesValue > 1) { // subtract EER value
+                    caloriesValue -= caloriesEERPerMinute;
+                }
+                caloriesSum += caloriesValue;
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (CaloriesEER/10))));
             }
 
