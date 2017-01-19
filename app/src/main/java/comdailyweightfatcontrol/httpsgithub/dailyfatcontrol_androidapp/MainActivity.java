@@ -868,6 +868,8 @@ class LogFoodAdapter extends ArrayAdapter<Object> {
             // remove trailing zeros of units logged
             DecimalFormat df = new DecimalFormat();
             String units = df.format(food.getUnitsLogged());
+            convertView.setClickable(false);
+            convertView.setFocusable(false);
         } else {
             // Lookup view for data population
             TextView textViewMealTime = (TextView) convertView.findViewById(R.id.mealtime);
@@ -880,6 +882,8 @@ class LogFoodAdapter extends ArrayAdapter<Object> {
             DecimalFormat df = new DecimalFormat();
             String units = df.format(mealTime.getCalories());
             textViewMealTimeCalories.setText(units);
+            convertView.setClickable(true);
+            convertView.setFocusable(true);
         }
 
         // Return the completed view to render on screen
