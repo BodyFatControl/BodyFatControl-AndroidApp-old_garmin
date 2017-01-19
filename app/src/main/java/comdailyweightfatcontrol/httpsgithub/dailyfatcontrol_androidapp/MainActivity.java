@@ -502,7 +502,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             int caloriesResult = (int) (caloriesSpent - mCaloriesConsumed);
             if (caloriesResult < 0) {
                 SpannableString caloriesResultString = new SpannableString(String.valueOf(caloriesResult));
-                caloriesResultString.setSpan(new ForegroundColorSpan(Color.RED), 0, caloriesResultString.length(), 0);
+                caloriesResultString.setSpan(new ForegroundColorSpan(
+                        ContextCompat.getColor(mContext, R.color.caloriesResultValue)), 0, caloriesResultString.length(), 0);
                 builder.append(" = ");
                 builder.append(caloriesResultString);
             } else {
