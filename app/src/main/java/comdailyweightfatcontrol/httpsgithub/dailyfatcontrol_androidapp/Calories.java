@@ -37,52 +37,37 @@ public class Calories {
     Female:((-59.3954 + (0.45 x HR) + (0.380 x VO2max) + (0.103 x W) + (0.274 x A))/4.184) x 60 x T
     */
 
-    private final double HR_DT = 1/(60.0); // 1 minute
-
     public Calories(Context context) {
         mContext = context;
     }
 
-    public ArrayList<Measurement> calcCalories (ArrayList<Measurement> measurementList) {
+    public double calcCaloriesEER(UserProfile userProfile) {
 
-//        SharedPreferences mPrefs = MainActivity.getPrefs();
-//        int birthYear = mPrefs.getInt("BIRTH_YEAR", 0);
-//        int age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
-//        int gender = mPrefs.getInt("GENDER", 0);
-//        double height = (double) mPrefs.getInt("HEIGHT", 0);
-//        double weight = (double) mPrefs.getInt("WEIGHT", 0);
-//        int activityClass = mPrefs.getInt("ACTIVITY_CLASS", 0);
-//
-//        // loop through all the measurements
-//        for (Measurement measurement : measurementList) {
-//            // calc calories value for current measurement
-//            double hr = (double) measurement.getHRValue();
-//            double calories;
-//
-//            if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
-//                if (gender == 0) { // female
-//                    calories = (int) ((((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
-//                            (0.074*height/100)) / 4.184) * 60*VIVOACTIVE_HR_DT) * 1000);
-//                } else { // male
-//                    calories = (int) ((((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
-//                            (0.2017*height/100)) / 4.184) * 60*VIVOACTIVE_HR_DT) * 1000);
-//                }
-//            } else { // calculation based on Estimated Energy Requirements
-//                if (gender == 0) { // female
-//                    calories = (int) (((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
-//                            (660.7*height/100))) * 1000); // daily value
-//                    calories = (int) ((calories/24)*VIVOACTIVE_HR_DT); // value in VIVOACTIVE_HR_DT
-//                } else { // male
-//                    calories = (int) (((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
-//                            (503*height/100))) * 1000);
-//                    calories = (int) ((calories/24)*VIVOACTIVE_HR_DT);
-//                }
-//            }
-//
-//            measurement.setCaloriesOut((int) calories);
-//        }
-//
-        return measurementList;
+        int birthYear = 0;
+        int age = 0;
+        int gender = 0;
+        double height = 0;
+        double weight = 0;
+        int activityClass = 0;
+        if (userProfile != null) {
+            birthYear = userProfile.getUserBirthYear();
+            age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
+            gender = userProfile.getUserGender();
+            height = (double) userProfile.getUserHeight();
+            weight = (double) userProfile.getUserWeight();
+            activityClass = userProfile.getUserActivityClass();
+        }
+
+        double calories;
+        if (gender == 0) { // female
+            calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
+                    (660.7*height/100))); // daily value
+        } else { // male
+            calories = ((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
+                    (503*height/100)));
+        }
+
+        return calories;
     }
 
     public double calcCaloriesEER(long initialDate, long finalDate, UserProfile userProfile) {
@@ -121,48 +106,6 @@ public class Calories {
         return calories;
     }
 
-//    public double calcCalories (int hr_value) {
-//
-//        int birthYear = 0;
-//        int age = 0;
-//        int gender = 0;
-//        double height = 0;
-//        double weight = 0;
-//        int activityClass = 0;
-//        if (userProfile != null) {
-//            birthYear = userProfile.getUserBirthYear();
-//            age = (Calendar.getInstance().get(Calendar.YEAR)) - birthYear;
-//            gender = userProfile.getUserGender();
-//            height = (double) userProfile.getUserHeight();
-//            weight = (double) userProfile.getUserWeight();
-//            activityClass = userProfile.getUserActivityClass();
-//        }
-//
-//        double hr = (double) hr_value;
-//        double calories;
-//        if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
-//            if (gender == 0) { // female
-//                calories = (((-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
-//                        (0.074*height/100)) / 4.184) * 60*HR_DT);
-//            } else { // male
-//                calories = (((-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
-//                        (0.2017*height/100)) / 4.184) * 60*HR_DT);
-//            }
-//        } else { // calculation based on Estimated Energy Requirements
-//            if (gender == 0) { // female
-//                calories = ((387 - (7.31*age) + (1.0*(10.9*weight/1000)) +
-//                        (660.7*height/100))); // daily value
-//                calories = (int) ((calories/24)*HR_DT); // value in VIVOACTIVE_HR_DT
-//            } else { // male
-//                calories = ((864 - (9.72*age) + (1.0*(14.2*weight/1000)) +
-//                        (503*height/100)));
-//                calories = ((calories/24)*HR_DT);
-//            }
-//        }
-//
-//        return calories;
-//    }
-
     public double calcActiveCalories(int hr_value, UserProfile userProfile) {
 
         int birthYear = 0;
@@ -182,21 +125,18 @@ public class Calories {
 
         double hr = (double) hr_value;
         double calories;
-        double test;
         if (hr >= 90 && hr < 255) { // calculation based on formula without VO2max
             if (gender == 0) { // female
                 calories = (-20.4022 + (0.4472*hr) - (0.1263*weight/1000) +
-                        (0.074*height/100));
+                        (0.074*age));
                 calories = calories / 4.184;
-                calories = calories * 60*HR_DT;
 
             } else { // male
                 calories = (-55.0969 + (0.6309*hr) + (0.1988*weight/1000) +
-                        (0.2017*height/100));
+                        (0.2017*age));
                 calories = calories / 4.184;
-                calories = calories * 60*HR_DT;
             }
-        } else { // calculation based on Estimated Energy Requirements
+        } else { // here, calculation based on Estimated Energy Requirements
             calories = 0;
         }
 

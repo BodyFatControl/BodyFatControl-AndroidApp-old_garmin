@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private long mGraphInitialDate;
     private long mGraphFinalDate;
     public static final long SECONDS_24H = 24*60*60;
-    private double mCaloriesEER = 0.0;
+    private double mCurrentCaloriesEER = 0.0;
     private double mCaloriesActive = 0.0;
     private double mCaloriesConsumed = 0.0;
     DataBaseLogFoods mDataBaseLogFoods = new DataBaseLogFoods(this);
@@ -472,14 +471,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     void drawGraphs() {
-        GraphData graphDataObj = new GraphData(mContext);
-        List<Entry> graphDataCaloriesEER = graphDataObj.prepareCaloriesEER(mGraphInitialDate, mGraphFinalDate, mUserProfile);
-        mCaloriesEER = graphDataObj.getCaloriesEER();
-        List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive(mGraphInitialDate, mGraphFinalDate, mCaloriesEER, mUserProfile);
-        List<Entry> graphDataCaloriesConsumed = graphDataObj.prepareCaloriesConsumed(mGraphInitialDate, mGraphFinalDate, mCaloriesEER);
+        GraphData graphDataObj = new GraphData(mContext, mGraphInitialDate, mGraphFinalDate, mUserProfile);
+        List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive();
+        List<Entry> graphCurrentDataCaloriesEER = graphDataObj.prepareCurrentCaloriesEER();
+        mCurrentCaloriesEER = graphDataObj.getCurrentCaloriesEER();
+        List<Entry> graphDataCaloriesConsumed = graphDataObj.prepareCaloriesConsumed();
 
-
-        if (graphDataCaloriesActive != null && graphDataCaloriesEER != null && graphDataCaloriesConsumed != null) {
+        if (graphDataCaloriesActive != null && graphCurrentDataCaloriesEER != null && graphDataCaloriesConsumed != null) {
             final int caloriesSpentColor = ContextCompat.getColor(mContext, R.color.graphCaloriesSpent);
             final int caloriesSpentLineColor = ContextCompat.getColor(mContext, R.color.graphCaloriesSpentLine);
             final int caloriesConsumedColor = ContextCompat.getColor(mContext, R.color.graphCaloriesConsumed);
@@ -491,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             /** Draw the various calories sizes */
             SpannableStringBuilder builder = new SpannableStringBuilder();
 
-            int caloriesSpent = (int) (mCaloriesEER + mCaloriesActive);
+            int caloriesSpent = (int) (mCurrentCaloriesEER + mCaloriesActive);
             SpannableString caloriesSpentString = new SpannableString(String.valueOf(caloriesSpent));
             caloriesSpentString.setSpan(new ForegroundColorSpan(caloriesSpentLineColor), 0, caloriesSpentString.length(), 0);
             builder.append(caloriesSpentString);
@@ -537,20 +535,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             dataSetCaloriesConsumed.setLineWidth(2f);
             dataSetCaloriesConsumed.setDrawCircles(false);
 
-//            // add entries to Calories EER dataset
-//            LineDataSet dataSetCaloriesEER = new LineDataSet(graphDataCaloriesEER, "No active cals");
-//            dataSetCaloriesEER.setColor(Color.rgb(0, 172 , 117));
-//            dataSetCaloriesEER.setMode(LineDataSet.Mode.LINEAR);
-//            dataSetCaloriesEER.setFillColor(Color.rgb(0, 172, 117));
-//            dataSetCaloriesEER.setFillAlpha(240);
-//            dataSetCaloriesEER.setDrawFilled(true);
-//            dataSetCaloriesEER.setHighlightEnabled(false);
-//            dataSetCaloriesEER.setDrawValues(false);
-//            dataSetCaloriesEER.setLineWidth(0);
-//            dataSetCaloriesEER.setDrawCircles(false);
-
             LineData lineData = new LineData(dataSetCaloriesActive, dataSetCaloriesConsumed);
-//            LineData lineData = new LineData(dataSetCaloriesActive);
 
             // in this example, a LineChart is initialized from xml
             LineChart mChart = (LineChart) findViewById(R.id.chart_calories_active);
@@ -604,7 +589,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             leftAxis.setDrawTopYLabelEntry(true);
 
             // adjust max y axis value
-//            if ((mCaloriesEER + mCaloriesActive) > 3000) {
+//            if ((mCurrentCaloriesEER + mCaloriesActive) > 3000) {
 //                leftAxis.resetAxisMaximum();
 //            } else {
 //                leftAxis.setAxisMaximum(800);
@@ -613,10 +598,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             leftAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    if (value < (mCaloriesEER /10)) {
+                    if (value < (mCurrentCaloriesEER /10)) {
                         return "";
                     } else {
-                        value = value - ((float) mCaloriesEER / 10);
+                        value = value - ((float) mCurrentCaloriesEER / 10);
                     }
 
                     return Integer.toString((int) value);
@@ -630,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             rightAxis.setAxisMinimum(0);
             rightAxis.setDrawTopYLabelEntry(true);
 
-//            LimitLine ll1 = new LimitLine((float) mCaloriesEER/10, "");
+//            LimitLine ll1 = new LimitLine((float) mCurrentCaloriesEER/10, "");
 //            ll1.setLineWidth(2f);
 //            ll1.disableDashedLine();
 //            leftAxis.addLimitLine(ll1);
@@ -638,17 +623,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             rightAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    if (value < (mCaloriesEER /10)) {
+                    if (value < (mCurrentCaloriesEER /10)) {
                         value *= 10;
                     } else {
-                        value = (value - (float) (mCaloriesEER /10)) + (float) mCaloriesEER;
+                        value = (value - (float) (mCurrentCaloriesEER /10)) + (float) mCurrentCaloriesEER;
                     }
                     return Integer.toString((int) value);
                 }
             });
 
             // adjust max y axis value
-//            if ((mCaloriesEER + mCaloriesActive) > 3000) {
+//            if ((mCurrentCaloriesEER + mCaloriesActive) > 3000) {
 //                rightAxis.resetAxisMaximum();
 //            } else {
 //                rightAxis.setAxisMaximum(800);
@@ -682,16 +667,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        String dateString = mFormat.format(new Date((long) ((date-1) *60*60*1000)));
 //
 //        float value = 0;
-//        if (e.getY() < (mCaloriesEER/10)) {
+//        if (e.getY() < (mCurrentCaloriesEER/10)) {
 //            value = e.getY()*10;
 //        } else {
-////            value = (float) (e.getY()*10 - mCaloriesEER);
-//            value = (float) (mCaloriesEER + (e.getY() - (mCaloriesEER / 10)));
-////            value = value + (float) mCaloriesEER;
+////            value = (float) (e.getY()*10 - mCurrentCaloriesEER);
+//            value = (float) (mCurrentCaloriesEER + (e.getY() - (mCurrentCaloriesEER / 10)));
+////            value = value + (float) mCurrentCaloriesEER;
 //        }
 //
 //        textViewCalories1.setText(dateString + " total calories " + Integer.toString((int) (value)));
-//        textViewCalories2.setText("active calories " + Integer.toString(((int) value) - (int) (mCaloriesEER)));
+//        textViewCalories2.setText("active calories " + Integer.toString(((int) value) - (int) (mCurrentCaloriesEER)));
     }
 
     @Override
@@ -701,7 +686,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
     @Override
     public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-//        textViewCalories1.setText("total calories: " + Integer.toString((int) (mCaloriesEER + mCaloriesActive)));
+//        textViewCalories1.setText("total calories: " + Integer.toString((int) (mCurrentCaloriesEER + mCaloriesActive)));
 //        textViewCalories2.setText("active calories: " + Integer.toString((int) mCaloriesActive));
     }
 
