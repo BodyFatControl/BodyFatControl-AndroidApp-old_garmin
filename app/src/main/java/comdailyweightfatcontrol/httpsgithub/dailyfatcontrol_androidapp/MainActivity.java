@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private TextView mTextViewCaloriesCalc;
     private ListView listViewLogFoodList;
     private TextView mDateTitle;
+    private ImageView mImageViewConnect;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
     public static long mMidNightToday;
@@ -108,15 +110,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private ConnectIQ.IQDeviceEventListener mDeviceEventListener = new ConnectIQ.IQDeviceEventListener() {
         @Override
         public void onDeviceStatusChanged(IQDevice device, IQDevice.IQDeviceStatus status) {
-//            if (status == IQDeviceStatus.CONNECTED) {
-//                connectStatus.setText("connected");
-//            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
-//                connectStatus.setText("not connected");
-//            } else if (status == IQDeviceStatus.NOT_PAIRED) {
-//                connectStatus.setText("not paired");
-//            } else if (status == IQDeviceStatus.UNKNOWN) {
-//                connectStatus.setText("unknown");
-//            }
+            if (status == IQDeviceStatus.CONNECTED) {
+                mImageViewConnect.setVisibility(View.VISIBLE);
+            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
+                mImageViewConnect.setVisibility(View.INVISIBLE);
+            } else if (status == IQDeviceStatus.NOT_PAIRED) {
+                mImageViewConnect.setVisibility(View.INVISIBLE);
+            } else if (status == IQDeviceStatus.UNKNOWN) {
+                mImageViewConnect.setVisibility(View.INVISIBLE);
+            }
 
             device.setStatus(status);
         }
@@ -150,15 +152,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                         @Override
                         public void onDeviceStatusChanged(IQDevice device, IQDeviceStatus status) {
-//                            if (status == IQDeviceStatus.CONNECTED) {
-//                                connectStatus.setText("connected");
-//                            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
-//                                connectStatus.setText("not connected");
-//                            } else if (status == IQDeviceStatus.NOT_PAIRED) {
-//                                connectStatus.setText("not paired");
-//                            } else if (status == IQDeviceStatus.UNKNOWN) {
-//                                connectStatus.setText("unknown");
-//                            }
+                            if (status == IQDeviceStatus.CONNECTED) {
+                                mImageViewConnect.setVisibility(View.VISIBLE);
+                            } else if (status == IQDeviceStatus.NOT_CONNECTED) {
+                                mImageViewConnect.setVisibility(View.INVISIBLE);
+                            } else if (status == IQDeviceStatus.NOT_PAIRED) {
+                                mImageViewConnect.setVisibility(View.INVISIBLE);
+                            } else if (status == IQDeviceStatus.UNKNOWN) {
+                                mImageViewConnect.setVisibility(View.INVISIBLE);
+                            }
                         }
                     });
                 } catch (InvalidStateException e) {
@@ -343,6 +345,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mTextViewCaloriesCalc = (TextView) findViewById(R.id.calories_calc);
         listViewLogFoodList = (ListView) findViewById(R.id.log_food_list);
         listViewLogFoodList.setLongClickable(true);
+        mImageViewConnect = (ImageView) findViewById(R.id.connect);
+        mImageViewConnect.setVisibility(View.INVISIBLE);
 
         // Edit or delete a food from the list
         listViewLogFoodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

@@ -5,10 +5,8 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="2dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="2dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
@@ -17,10 +15,10 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="2dp"
+        android:paddingTop="8dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="2dp"
+        android:paddingBottom="4dp"
         android:orientation="vertical"
         android:focusableInTouchMode="true"
         tools:context="comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.MainActivity"
@@ -31,11 +29,10 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:orientation="vertical"
-            android:paddingTop="2dp"
             android:background="@drawable/corner"
             android:weightSum="1">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -48,22 +45,26 @@
                     android:text="today"
                     android:gravity="center_horizontal"
                     android:textSize="@dimen/text_size_xl"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/calories_calc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/date_title"
                     android:textAlignment="center"
-                    android:text="today"
-                    android:gravity="center_horizontal"
+                    android:text="---"
                     android:textSize="@dimen/text_size_s"/>
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/connect"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="6dp"
+                    android:tint="@color/firstBackgroundColor"
+                    android:layout_alignRight="@+id/date_title"
+                    android:src="@drawable/connected"/>
+            </RelativeLayout>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart_calories_active"
@@ -78,14 +79,15 @@
             android:id="@+id/ScrollView01"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="2dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:fillViewport="true"
             android:layout_below="@+id/first_relative_layout">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="2dp"
+                android:padding="4dp"
                 android:background="@drawable/corner" >
 
                 <ListView
