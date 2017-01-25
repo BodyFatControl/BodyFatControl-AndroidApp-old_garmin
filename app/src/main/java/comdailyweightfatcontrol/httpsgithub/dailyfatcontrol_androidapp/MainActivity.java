@@ -225,26 +225,21 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                             ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
 
                             theMessage = (ArrayList<Integer>) message.get(0);
-                            if(theMessageupdate.get(0) == ALIVE_COMMAND) {
+                            if(theMessage.get(0) == ALIVE_COMMAND) {
                                 // The app is ready to receive commands, send command to ask for
                                 // historic HR
+                                ArrayList<Integer> command = new ArrayList<>();
+                                // If UserProfile is not updated on the database, send the command to get that information
+                                if (mUserProfile.getDate() < mMidNightToday)
+                                {
+                                    command.add(USER_DATA_COMMAND);
+                                    sendMessage(command);
+                                }
 
-//                                ArrayList<Integer> command = new ArrayList<>();
-//                                // If UserProfile is not updated on the database, send the command to get that information
-//                                if (mUserProfile.getDate() < mMidNightToday)
-//                                {
-//                                    command.add(USER_DATA_COMMAND);
-//                                    Random r = new Random();
-//                                    command.add(r.nextInt(2^30));
-//                                    sendMessage(command);
-//                                }
-//
-//                                command.add(HISTORIC_HR_COMMAND);
-//                                Random r = new Random();
-//                                command.add(r.nextInt(2^30));
-//                                long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
-//                                command.add((int) date);
-//                                sendMessage(command);
+                                command.add(HISTORIC_HR_COMMAND);
+                                long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
+                                command.add((int) date);
+                                sendMessage(command);
 
                             } else if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
                                 // Get the user data to store on each measurement
@@ -280,20 +275,20 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 drawGraphs();
                             }
 
-                            if (message.size() > 0) {
-                                for (Object o : message) {
-                                    builder.append(o.toString());
-                                    builder.append("\r\n");
-                                }
-                            } else {
-                                builder.append("Received an empty message from the application");
-                            }
-
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                            dialog.setTitle(R.string.received_message);
-                            dialog.setMessage(builder.toString());
-                            dialog.setPositiveButton(android.R.string.ok, null);
-                            dialog.create().show();
+//                            if (message.size() > 0) {
+//                                for (Object o : message) {
+//                                    builder.append(o.toString());
+//                                    builder.append("\r\n");
+//                                }
+//                            } else {
+//                                builder.append("Received an empty message from the application");
+//                            }
+//
+//                            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+//                            dialog.setTitle(R.string.received_message);
+//                            dialog.setMessage(builder.toString());
+//                            dialog.setPositiveButton(android.R.string.ok, null);
+//                            dialog.create().show();
                         }
                     });
 
@@ -440,31 +435,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        ArrayList<Integer> command = new ArrayList<Integer>();
-
         if (id == R.id.connect) {
             // Handle the connect action
             Intent intent = new Intent(this, ConnectActivity.class);
             startActivity(intent);
-            return true;
-
-        } else if (id == R.id.update) {
-            // If UserProfile is not updated on the database, send the command to get that information
-            if (mUserProfile.getDate() < mMidNightToday)
-            {
-                command.add(USER_DATA_COMMAND);
-                sendMessage(command);
-            }
-
-            command.add(HISTORIC_HR_COMMAND);
-            long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
-            command.add((int) date);
-            sendMessage(command);
-            return true;
-
-        } else if (id == R.id.user_profile) {
-            command.add(USER_DATA_COMMAND);
-            sendMessage(command);
             return true;
         }
 
