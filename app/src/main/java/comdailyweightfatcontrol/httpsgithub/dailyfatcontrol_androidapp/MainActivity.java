@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private boolean mSdkReady = false;
     public static final String MY_APP = "3F3D83A85F584671A551EA1316623AD7";
     private IQApp mConnectIQApp = new IQApp(MY_APP);
+    public static final int ALIVE_COMMAND = 154030201;
     public static final int HISTORIC_HR_COMMAND = 104030201;
     private static final int USER_DATA_COMMAND = 204030201;
     private TextView mTextViewCaloriesCalc;
@@ -224,12 +225,31 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                             ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
 
                             theMessage = (ArrayList<Integer>) message.get(0);
-                            if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
+                            if(theMessageupdate.get(0) == ALIVE_COMMAND) {
+                                // The app is ready to receive commands, send command to ask for
+                                // historic HR
+
+//                                ArrayList<Integer> command = new ArrayList<>();
+//                                // If UserProfile is not updated on the database, send the command to get that information
+//                                if (mUserProfile.getDate() < mMidNightToday)
+//                                {
+//                                    command.add(USER_DATA_COMMAND);
+//                                    Random r = new Random();
+//                                    command.add(r.nextInt(2^30));
+//                                    sendMessage(command);
+//                                }
+//
+//                                command.add(HISTORIC_HR_COMMAND);
+//                                Random r = new Random();
+//                                command.add(r.nextInt(2^30));
+//                                long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
+//                                command.add((int) date);
+//                                sendMessage(command);
+
+                            } else if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
                                 // Get the user data to store on each measurement
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
                                 iteratorTheMessage.next(); // command ID
-                                iteratorTheMessage.next(); // random
-
                                 while (iteratorTheMessage.hasNext()) {
                                     Measurement measurement = new Measurement();
                                     measurement.setDate(iteratorTheMessage.next());
@@ -248,8 +268,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
                                 // Store the UserProfile on database
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
-                                iteratorTheMessage.next(); // comdataBaseUserProfilemand ID
-                                iteratorTheMessage.next(); // random
+                                iteratorTheMessage.next(); // command ID
                                 mUserProfile.setDate(mMidNightToday);
                                 mUserProfile.setUserBirthYear(iteratorTheMessage.next());
                                 mUserProfile.setUserGender(iteratorTheMessage.next());
@@ -434,14 +453,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             if (mUserProfile.getDate() < mMidNightToday)
             {
                 command.add(USER_DATA_COMMAND);
-                Random r = new Random();
-                command.add(r.nextInt(2^30));
                 sendMessage(command);
             }
 
             command.add(HISTORIC_HR_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
             long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
             command.add((int) date);
             sendMessage(command);
@@ -449,8 +464,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         } else if (id == R.id.user_profile) {
             command.add(USER_DATA_COMMAND);
-            Random r = new Random();
-            command.add(r.nextInt(2^30));
             sendMessage(command);
             return true;
         }
