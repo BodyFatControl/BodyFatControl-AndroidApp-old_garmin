@@ -62,8 +62,19 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="6dp"
                     android:tint="@color/firstBackgroundColor"
-                    android:layout_alignRight="@+id/date_title"
+                    android:layout_alignParentRight="true"
                     android:src="@drawable/connected"/>
+
+                <TextView
+                    android:id="@+id/last_update_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/connect"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="6dp"
+                    android:textAlignment="center"
+                    android:text=""
+                    android:textSize="@dimen/text_size_s"/>
             </RelativeLayout>
 
             <com.github.mikephil.charting.charts.LineChart

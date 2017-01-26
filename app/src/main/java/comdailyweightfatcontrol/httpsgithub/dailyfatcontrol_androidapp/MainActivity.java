@@ -85,12 +85,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private TextView mTextViewCaloriesCalc;
     private ListView listViewLogFoodList;
     private TextView mDateTitle;
+    private TextView textViewLastUpdateDate;
     private ImageView mImageViewConnect;
     public static String PREFERENCES = "MainSharedPreferences";
     public static SharedPreferences Prefs;
     public static long mMidNightToday;
     private long mGraphInitialDate;
     private long mGraphFinalDate;
+    private long mLastUpdateDate = 0;
     public static final long SECONDS_24H = 24*60*60;
     private double mCurrentCaloriesEER = 0.0;
     private double mCaloriesActive = 0.0;
@@ -258,6 +260,19 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 // finally write the measurement list to database
                                 new DataBaseHR(mContext).DataBaseWriteMeasurement(measurementList);
 
+                                // Set current date as LastUpdateDate
+                                Calendar rightNow = Calendar.getInstance();
+                                long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+                                long rightNowMillis = rightNow.getTimeInMillis() + offset;
+                                long now = rightNowMillis / 1000; // now in seconds
+
+                                    long m = (now / 60) % 60;
+                                    long h = (now / (60 * 60)) % 24;
+                                    String string = String.format("%d:%d", h, m);
+                                    textViewLastUpdateDate.setText(string);
+
+                                mLastUpdateDate = rightNowMillis;
+
                                 drawGraphs();
 
                             } else if (theMessage.get(0) == USER_DATA_COMMAND) {
@@ -359,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mTextViewCaloriesCalc = (TextView) findViewById(R.id.calories_calc);
         listViewLogFoodList = (ListView) findViewById(R.id.log_food_list);
         listViewLogFoodList.setLongClickable(true);
+        textViewLastUpdateDate = (TextView) findViewById(R.id.last_update_date);
         mImageViewConnect = (ImageView) findViewById(R.id.connect);
         mImageViewConnect.setVisibility(View.INVISIBLE);
 
