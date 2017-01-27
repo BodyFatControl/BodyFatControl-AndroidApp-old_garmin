@@ -266,9 +266,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 long rightNowMillis = rightNow.getTimeInMillis() + offset;
                                 long now = rightNowMillis / 1000; // now in seconds
 
+                                    long s = now % 60;
                                     long m = (now / 60) % 60;
                                     long h = (now / (60 * 60)) % 24;
-                                    String string = String.format("%d:%d", h, m);
+                                    String string = String.format("%dh%02dm%02ds", h, m, s);
                                     textViewLastUpdateDate.setText(string);
 
                                 mLastUpdateDate = rightNowMillis;
@@ -334,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Daily Fat Control");
+        setTitle("Daily Fat Control - v0.6");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -497,20 +498,24 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             SpannableStringBuilder builder = new SpannableStringBuilder();
 
             int caloriesSpent = (int) (mCurrentCaloriesEER + mCaloriesActive);
-            SpannableString caloriesSpentString = new SpannableString(String.valueOf(caloriesSpent));
-            caloriesSpentString.setSpan(new ForegroundColorSpan(caloriesSpentLineColor), 0, caloriesSpentString.length(), 0);
-            builder.append(caloriesSpentString);
+            SpannableString spannableString = new SpannableString(Integer.toString((int) mCaloriesActive));
+            spannableString.setSpan(new ForegroundColorSpan(caloriesSpentLineColor), 0, spannableString.length(), 0);
+            builder.append(spannableString);
+            builder.append(" + ");
+            spannableString = new SpannableString(Integer.toString((int) mCurrentCaloriesEER));
+            spannableString.setSpan(new ForegroundColorSpan(caloriesSpentLineColor), 0, spannableString.length(), 0);
+            builder.append(spannableString);
             builder.append(" - ");
-            SpannableString caloriesConsumedString = new SpannableString(String.valueOf((int) mCaloriesConsumed));
-            caloriesConsumedString.setSpan(new ForegroundColorSpan(caloriesConsumedLineColor), 0, caloriesConsumedString.length(), 0);
-            builder.append(caloriesConsumedString);
+            spannableString = new SpannableString(String.valueOf((int) mCaloriesConsumed));
+            spannableString.setSpan(new ForegroundColorSpan(caloriesConsumedLineColor), 0, spannableString.length(), 0);
+            builder.append(spannableString);
             int caloriesResult = (int) (caloriesSpent - mCaloriesConsumed);
             if (caloriesResult < 0) {
-                SpannableString caloriesResultString = new SpannableString(String.valueOf(caloriesResult));
-                caloriesResultString.setSpan(new ForegroundColorSpan(
-                        ContextCompat.getColor(mContext, R.color.caloriesResultValue)), 0, caloriesResultString.length(), 0);
+                spannableString = new SpannableString(String.valueOf(caloriesResult));
+                spannableString.setSpan(new ForegroundColorSpan(
+                        ContextCompat.getColor(mContext, R.color.caloriesResultValue)), 0, spannableString.length(), 0);
                 builder.append(" = ");
-                builder.append(caloriesResultString);
+                builder.append(spannableString);
             } else {
                 builder.append(" = " + caloriesResult);
             }
