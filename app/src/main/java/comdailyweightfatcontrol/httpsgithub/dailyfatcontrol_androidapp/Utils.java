@@ -6,7 +6,7 @@ import java.util.Calendar;
  * Created by cas on 13-01-2017.
  */
 
-public class utils {
+public class Utils {
 
     static public int returnMealTimeRadioButtonNumber () {
         int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);

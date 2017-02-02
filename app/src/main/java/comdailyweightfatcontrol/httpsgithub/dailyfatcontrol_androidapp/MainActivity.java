@@ -54,6 +54,8 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
@@ -73,6 +75,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener,
         OnChartGestureListener {
 
+    private Tracker mTracker;
     private ConnectIQ mConnectIQ;
     private IQDevice mIQDevice;
     private IQDeviceAdapter mAdapter;
@@ -335,12 +338,23 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Daily Fat Control - v0.6");
+        setTitle("Daily Fat Control - v0.7");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mContext = getApplication().getApplicationContext();
+
+        // [START shared_tracker]
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        // [END shared_tracker]
+
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("onCreate")
+                .build());
 
         // Get the UserProfile from the database
         mDataBaseUserProfile = new DataBaseUserProfile(mContext);
@@ -359,6 +373,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("LogFoodMainActivity")
+                        .build());
+
                 Intent intent = new Intent(mContext, LogFoodMainActivity.class);
                 startActivity(intent);
             }
@@ -369,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         // Initialize the SDK
         mConnectIQ.initialize(this, true, mListenerSDKInitialize);
-
 
         mDateTitle = (TextView) findViewById(R.id.date_title);
         mTextViewCaloriesCalc = (TextView) findViewById(R.id.calories_calc);
@@ -423,6 +441,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public void onResume() {
         super.onResume();
 
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("onResume")
+                .build());
+
         // Calc and set graph initial and final dates (midnight today and rightnow)
         Calendar rightNow = Calendar.getInstance();
         long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
@@ -456,6 +479,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             // Handle the connect action
             Intent intent = new Intent(this, ConnectActivity.class);
             startActivity(intent);
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("ConnectActivity")
+                    .build());
+
             return true;
         }
 

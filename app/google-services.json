@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "128960321369",
+    "project_id": "daily-fat-control"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128960321369:android:fc2bc222b895d764",
+        "android_client_info": {
+          "package_name": "comegg_electric_unicycle.github.eggunicycle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgcDINeWg_x-cQxxQ0LgaNNqL-VU5eqhw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128960321369:android:162f0e34db3c2e6f",
+        "android_client_info": {
+          "package_name": "comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgcDINeWg_x-cQxxQ0LgaNNqL-VU5eqhw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-91167245-4"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

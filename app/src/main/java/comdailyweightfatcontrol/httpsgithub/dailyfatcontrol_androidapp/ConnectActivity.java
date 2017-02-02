@@ -64,6 +64,8 @@ public class ConnectActivity extends ListActivity {
         setTitle("Connect");
         setContentView(R.layout.activity_connect);
 
+
+
         mAdapter = new IQDeviceAdapter(this);
         getListView().setAdapter(mAdapter);
 

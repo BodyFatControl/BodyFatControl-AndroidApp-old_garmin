@@ -20,11 +20,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class LogFoodMainActivity extends AppCompatActivity {
+    private Tracker mTracker;
     ArrayList<Foods> mArrayListLogFood;
     DataBaseFoods mDataBaseFoods = new DataBaseFoods(this);
 
@@ -44,6 +48,11 @@ public class LogFoodMainActivity extends AppCompatActivity {
         ArrayList<Integer> command = new ArrayList<Integer>();
 
         if (id == R.id.create_food) {
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("CreateFoodActivity")
+                    .build());
+
             // Handle the connect action
             Intent intent = new Intent(this, CreateFoodActivity.class);
             startActivity(intent);
@@ -59,10 +68,21 @@ public class LogFoodMainActivity extends AppCompatActivity {
         setTitle("Log food");
         setContentView(R.layout.activity_log_food_main);
 
+        // [START shared_tracker]
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        // [END shared_tracker]
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("LogCaloriesFoodActivity")
+                        .build());
+
                 Intent intent = new Intent(getApplication().getApplicationContext(), LogCaloriesFoodActivity .class);
                 startActivity(intent);
             }
