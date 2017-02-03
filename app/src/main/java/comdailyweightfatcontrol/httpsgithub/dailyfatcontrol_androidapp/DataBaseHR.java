@@ -5,20 +5,25 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DataBaseHR extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_DIR = "daily_fat_control";
     private static final String DATABASE_NAME = "database_hr.db";
     private static final String TABLE_NAME = "calories_out";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_HR_VALUE = "hr_value";
 
     public DataBaseHR(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory()
+                + File.separator + DATABASE_DIR
+                + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override

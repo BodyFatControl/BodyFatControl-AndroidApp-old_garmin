@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class DataBaseLogFoods extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_DIR = "daily_fat_control";
     private static final String DATABASE_NAME = "database_log_foods.db";
     private static final String TABLE_NAME = "log_foods";
     private static final String COLUMN_ID = "_id";
@@ -25,7 +28,9 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
     private static final String COLUMN_IS_CUSTOM_CALORIES = "is_custom_calories";
 
     public DataBaseLogFoods(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory()
+                + File.separator + DATABASE_DIR
+                + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override

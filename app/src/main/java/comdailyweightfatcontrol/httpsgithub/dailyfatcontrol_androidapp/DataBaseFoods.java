@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class DataBaseFoods extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_DIR = "daily_fat_control";
     private static final String DATABASE_NAME = "database_foods.db";
     private static final String TABLE_NAME = "foods";
     private static final String COLUMN_DATE = "date";
@@ -22,7 +25,9 @@ public class DataBaseFoods extends SQLiteOpenHelper {
     private static final String COLUMN_USAGE_FREQUENCY = "usage_frequency";
 
     public DataBaseFoods(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory()
+                    + File.separator + DATABASE_DIR
+                    + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override

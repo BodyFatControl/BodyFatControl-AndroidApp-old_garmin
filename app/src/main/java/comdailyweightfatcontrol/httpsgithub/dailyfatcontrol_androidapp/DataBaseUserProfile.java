@@ -5,13 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DataBaseUserProfile extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_DIR = "daily_fat_control";
     private static final String DATABASE_NAME = "database_user_profile.db";
     private static final String TABLE_NAME = "user_profile";
     private static final String COLUMN_ID = "_id";
@@ -23,7 +26,9 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
     private static final String COLUMN_USER_ACTIVITY_CLASS = "user_activity_class";
 
     public DataBaseUserProfile(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory()
+                + File.separator + DATABASE_DIR
+                + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override

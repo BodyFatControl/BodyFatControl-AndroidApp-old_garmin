@@ -2,9 +2,13 @@ package comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.icu.util.Calendar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.icu.util.Calendar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,7 +22,9 @@ import android.widget.TimePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class LogCaloriesFoodActivity extends AppCompatActivity {
     private Foods mFood;
@@ -48,7 +54,7 @@ public class LogCaloriesFoodActivity extends AppCompatActivity {
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_button_group);
 
         // set the radio button Meal Time depending on the current time
-        int radioButtonNumber = Utils.returnMealTimeRadioButtonNumber();
+        int radioButtonNumber = utils.returnMealTimeRadioButtonNumber();
         RadioButton radioButton = (RadioButton) mRadioGroup.getChildAt(radioButtonNumber);
         radioButton.setChecked(true);
 
