@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final int ALIVE_COMMAND = 154030201;
     public static final int HISTORIC_HR_COMMAND = 104030201;
     private static final int USER_DATA_COMMAND = 204030201;
+    private static final int CALORIES_BALANCE_COMMAND = 304030201;
     private TextView mTextViewCaloriesCalc;
     private ListView listViewLogFoodList;
     private TextView mDateTitle;
@@ -687,6 +688,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             mChart.setAutoScaleMinMaxEnabled(false);
             mChart.setData(lineData);
             mChart.invalidate(); // refresh
+
+            // Send the calories balance value (but only for today)
+            if (mGraphInitialDate == mMidNightToday) { // today
+                ArrayList<Integer> command = new ArrayList<>();
+                command.add(CALORIES_BALANCE_COMMAND);
+                command.add(caloriesResult);
+                // send value of 4*1/10 of CaloriesEER for the current day, to be used as a scale calc for calories bar
+                command.add((int) (new Calories(mContext).calcCaloriesEER(mUserProfile)/10)*4);
+                sendMessage(command);
+            }
         }
     }
 
