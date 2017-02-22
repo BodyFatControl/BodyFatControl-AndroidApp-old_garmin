@@ -67,7 +67,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 
 //public class MainActivity extends AppCompatActivity
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final int ALIVE_COMMAND = 154030201;
     public static final int HISTORIC_HR_COMMAND = 104030201;
     private static final int USER_DATA_COMMAND = 204030201;
-    private static final int CALORIES_BALANCE_COMMAND = 304030201;
+    private static final int CALORIES_CONSUMED_COMMAND = 304030201;
     private TextView mTextViewCaloriesCalc;
     private ListView listViewLogFoodList;
     private TextView mDateTitle;
@@ -244,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                                 command.add(HISTORIC_HR_COMMAND);
                                 long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
-                                command.add((int) date);
+                                command.add((int) date / 60);
                                 sendMessage(command);
 
                             } else if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
@@ -253,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 iteratorTheMessage.next(); // command ID
                                 while (iteratorTheMessage.hasNext()) {
                                     Measurement measurement = new Measurement();
-                                    measurement.setDate(iteratorTheMessage.next());
+                                    measurement.setDate(iteratorTheMessage.next() * 60); // convert to seconds
                                     measurement.setHRValue(iteratorTheMessage.next());
                                     measurementList.add(measurement);
                                 }
@@ -692,10 +691,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             // Send the calories balance value (but only for today)
             if (mGraphInitialDate == mMidNightToday) { // today
                 ArrayList<Integer> command = new ArrayList<>();
-                command.add(CALORIES_BALANCE_COMMAND);
-                command.add(caloriesResult);
-                // send value of 4*1/10 of CaloriesEER for the current day, to be used as a scale calc for calories bar
-                command.add((int) (new Calories(mContext).calcCaloriesEER(mUserProfile)/10)*4);
+                command.add(CALORIES_CONSUMED_COMMAND);
+                command.add((int) mCaloriesConsumed);
                 sendMessage(command);
             }
         }

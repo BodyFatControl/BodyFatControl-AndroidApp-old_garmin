@@ -65,7 +65,7 @@ public class GraphData {
         long date = 0;
         long endOfToday = MainActivity.SECONDS_24H - 1;
         long graphFinalDate = mFinalDate - mInitialDate;
-        double caloriesEERPerVivoactiveHRSample = mCaloriesEER / ((24*60*60)/95); // Vivoactive HR samples HR at each 95s
+        double caloriesEERPerMinute = mCaloriesEER / (24*60);
         Iterator measurementListIterator = measurementList.iterator();
         int hr;
         boolean moveToNextMeasurement = true;
@@ -92,7 +92,7 @@ public class GraphData {
             if (date < graphFinalDate) { //  calc calories only until current date
                 double caloriesValue = calories.calcActiveCalories(hr, mUserProfile);
                 if (caloriesValue > 1) { // subtract EER value
-                    mCurrentCaloriesEER -= caloriesEERPerVivoactiveHRSample;
+                    mCurrentCaloriesEER -= caloriesEERPerMinute;
                 }
                 caloriesSum += caloriesValue;
                 graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (mCurrentCaloriesEER/10))));

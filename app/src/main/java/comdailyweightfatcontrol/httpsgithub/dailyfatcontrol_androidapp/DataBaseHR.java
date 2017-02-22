@@ -111,7 +111,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
         int counter = cursor.getCount();
         int date;
         int hr;
-            ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
+        ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
         for ( ; counter > 0; ) {
             if (cursor.isAfterLast()) break;
             date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
