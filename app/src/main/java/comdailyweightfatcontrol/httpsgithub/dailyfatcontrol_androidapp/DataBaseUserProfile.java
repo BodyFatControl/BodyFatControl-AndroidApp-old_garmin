@@ -13,7 +13,7 @@ import java.util.Calendar;
 
 public class DataBaseUserProfile extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_DIR = "daily_fat_control";
     private static final String DATABASE_NAME = "database_user_profile.db";
     private static final String TABLE_NAME = "user_profile";
@@ -24,6 +24,7 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
     private static final String COLUMN_USER_HEIGH = "user_birth_height";
     private static final String COLUMN_USER_WEIGH = "user_birth_weight";
     private static final String COLUMN_USER_ACTIVITY_CLASS = "user_activity_class";
+    private static final String COLUMN_USER_CALORIES_PER_MINUTE = "user_calories_per_minute";
 
     public DataBaseUserProfile(Context context) {
         super(context, Environment.getExternalStorageDirectory()
@@ -40,7 +41,8 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
                 COLUMN_USER_GENDER + " integer, " +
                 COLUMN_USER_HEIGH + " integer, " +
                 COLUMN_USER_WEIGH + " integer, " +
-                COLUMN_USER_ACTIVITY_CLASS + " integer)");
+                COLUMN_USER_ACTIVITY_CLASS + " integer, " +
+                COLUMN_USER_CALORIES_PER_MINUTE + " integer)");
     }
 
     @Override
@@ -68,6 +70,7 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
             userProfile.setUserHeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_HEIGH)));
             userProfile.setUserWeight(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_WEIGH)));
             userProfile.setUserActivityClass(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ACTIVITY_CLASS)));
+            userProfile.setUserEERCaloriesPerMinute(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_CALORIES_PER_MINUTE)));
         }
 
         cursor.close();
@@ -86,8 +89,9 @@ public class DataBaseUserProfile extends SQLiteOpenHelper {
         values.put(COLUMN_USER_HEIGH, userProfile.getUserHeight());
         values.put(COLUMN_USER_WEIGH, userProfile.getUserWeight());
         values.put(COLUMN_USER_ACTIVITY_CLASS, userProfile.getUserActivityClass());
+        values.put(COLUMN_USER_CALORIES_PER_MINUTE, userProfile.getUserEERCaloriesPerMinute());
 
-        // Inserting Row: if there is one food with the same COLUMN_NAME, there new one will not be
+        // Inserting Row: if there is one UserProfile with the same COLUMN_DATE, a new one will not be
         // inserted and will be ignored
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close(); // Closing database connection

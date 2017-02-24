@@ -11,99 +11,81 @@ import java.util.List;
 public class GraphData {
     private Context mContext;
     private double mCurrentCaloriesEER = 0;
-    private double mCaloriesEER = 0;
     private double mCaloriesActive = 0;
     private double mCaloriesConsumed = 0;
     private long mInitialDate = 0;
     private long mFinalDate = 0;
-    private UserProfile mUserProfile = null;
 
-    public GraphData(Context context, long initialDate, long finalDate, UserProfile userProfile) {
+    public GraphData(Context context, long initialDate, long finalDate) {
         mContext = context;
         mInitialDate = initialDate;
         mFinalDate = finalDate;
-        mUserProfile = userProfile;
-
-        Calories caloriesObject = new Calories(mContext);
-        mCaloriesEER = caloriesObject.calcCaloriesEER(mUserProfile);
-        mCurrentCaloriesEER = caloriesObject.calcCaloriesEER(mInitialDate, mFinalDate, mUserProfile);
     }
 
-    public List<Entry> prepareCurrentCaloriesEER() {
-        List<Entry> graphDataEntriesList = new ArrayList<Entry>();
-
-        // Calc calories on the measurement list
-        Calories caloriesObject = new Calories(mContext);
-        double calories = 0;
-
-        long date = 0;
-        long endOfToday = MainActivity.SECONDS_24H - 1;
-        long graphFinalDate = mFinalDate - mInitialDate;
-        calories = caloriesObject.calcCaloriesEER(mInitialDate, mFinalDate, mUserProfile);
-        // Loop trough all the minutes starting from today midnight
-        for ( ; date < endOfToday; date += 60) {
-            if (date < graphFinalDate) { //  calc calories only until current date
-                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) calories
-                        / 10)); // divide by 10 for the graph scale
-            }
-        }
-
-        mCurrentCaloriesEER = calories;
-        return graphDataEntriesList;
-    }
-
-    public List<Entry> prepareCaloriesActive() {
+    public List<Entry> prepareCalories() {
         List<Entry> graphDataEntriesList = new ArrayList<Entry>();
 
         // Get the measurements from midnight today
-        DataBaseHR dataBase = new DataBaseHR(mContext);
+        DataBaseCalories dataBase = new DataBaseCalories(mContext);
         ArrayList<Measurement> measurementList = dataBase.DataBaseGetMeasurements(mInitialDate, mFinalDate);
 
-        // Calc calories on the measurement list
-        Calories calories = new Calories(mContext);
-
         long date = 0;
-        long endOfToday = MainActivity.SECONDS_24H - 1;
-        long graphFinalDate = mFinalDate - mInitialDate;
-        double caloriesEERPerMinute = mCaloriesEER / (24*60);
+        long endOfToday = (MainActivity.SECONDS_24H - 1) / 60;
+        long graphFinalDate = (mFinalDate - mInitialDate) / 60; // in minutes
+        double caloriesEERPerMinute = MainActivity.userCaloriesEERPerMinute;
+        double caloriesEER = 0;
         Iterator measurementListIterator = measurementList.iterator();
-        int hr;
-        boolean moveToNextMeasurement = true;
         Measurement measurement = null;
-        double caloriesSum = 0;
-        // Loop trough all the minutes starting from today midnight
-        for ( ; date < endOfToday; date += 60) {
+        double caloriesActiveSum = 0;
+        double calories = 0;
 
-            if ((moveToNextMeasurement == true) && measurementListIterator.hasNext()) {
-                measurement = (Measurement) measurementListIterator.next();
-                moveToNextMeasurement = false;
-            }
-
-            hr = 0;
-            if (measurement != null) {
-                long measurementDate = (measurement.getDate() - mInitialDate);
-                if (measurementDate < (date + 60)) { // means that measurement is in the interval of next minute
-                    hr = measurement.getHRValue();
+        // ***************************************************
+        // First calc the EER calories (subtracting the active calories
+        ArrayList<Measurement> measurementList1 = measurementList; // make a copy
+        Iterator measurementListIterator1 = measurementList1.iterator();
+        for ( ; date < endOfToday; date++) { // Loop trough all the minutes starting from today midnight
+            if (date <= graphFinalDate) { //  calc calories only until current date
+                if (measurement == null && measurementListIterator1.hasNext() ) { // read new measurement if wasn't done before
+                    measurement = (Measurement) measurementListIterator1.next();
+                }
+                if (measurement != null) {
+                    if (measurement.getCalories() <= caloriesEERPerMinute) { // means that we don't have active calories here
+                        caloriesEER += caloriesEERPerMinute; // default value of calories for this minute
+                    }
                     measurement = null;
-                    moveToNextMeasurement = true;
                 }
             }
+        }
+        mCurrentCaloriesEER = caloriesEER;
+        // ***************************************************
 
-            if (date < graphFinalDate) { //  calc calories only until current date
-                double caloriesValue = calories.calcActiveCalories(hr, mUserProfile);
-                if (caloriesValue > 1) { // subtract EER value
-                    mCurrentCaloriesEER -= caloriesEERPerMinute;
+        // ***************************************************
+        // Now calc the active calories and prepare the graph data
+        date = 0;
+        for ( ; date < endOfToday; date++) { // Loop trough all the minutes starting from today midnight
+            if (date <= graphFinalDate) { //  calc calories only until current date
+                if (measurement == null && measurementListIterator.hasNext() ) { // read new measurement if wasn't done before
+                    measurement = (Measurement) measurementListIterator.next();
                 }
-                caloriesSum += caloriesValue;
-                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (mCurrentCaloriesEER/10))));
+
+                if (measurement != null) {
+                    calories = measurement.getCalories();
+                    if (calories > caloriesEERPerMinute) { // means that we have active calories here
+                        caloriesActiveSum += calories;
+                    }
+                    measurement = null;
+                }
+
+                graphDataEntriesList.add(new Entry((float) date / 60, (float) (caloriesActiveSum/1000 + (mCurrentCaloriesEER/10/1000))));
             }
 
-            if (date == (endOfToday - 59) && (mInitialDate < MainActivity.mMidNightToday)) { //  last point
-                graphDataEntriesList.add(new Entry((float) date / (60 * 60), (float) (caloriesSum + (mCurrentCaloriesEER/10))));
+            if (date == endOfToday && (mInitialDate < (MainActivity.mMidNightToday/60))) { //  last point
+                graphDataEntriesList.add(new Entry((float) date / 60, (float) (caloriesActiveSum/1000 + (mCurrentCaloriesEER/10/1000))));
             }
         }
 
-        mCaloriesActive = caloriesSum;
+        mCurrentCaloriesEER /= 1000;
+        mCaloriesActive = caloriesActiveSum/1000;
         return graphDataEntriesList;
     }
 

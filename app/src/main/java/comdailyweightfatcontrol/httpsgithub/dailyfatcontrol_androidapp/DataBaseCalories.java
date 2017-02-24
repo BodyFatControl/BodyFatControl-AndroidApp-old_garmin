@@ -11,16 +11,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class DataBaseHR extends SQLiteOpenHelper {
+public class DataBaseCalories extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_DIR = "daily_fat_control";
-    private static final String DATABASE_NAME = "database_hr.db";
+    private static final String DATABASE_NAME = "database_calories.db";
     private static final String TABLE_NAME = "calories_out";
     private static final String COLUMN_DATE = "date";
-    private static final String COLUMN_HR_VALUE = "hr_value";
+    private static final String COLUMN_CALORIES_VALUE = "calories_value";
 
-    public DataBaseHR(Context context) {
+    public DataBaseCalories(Context context) {
         super(context, Environment.getExternalStorageDirectory()
                 + File.separator + DATABASE_DIR
                 + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,7 +30,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_DATE + " integer UNIQUE, " + /* UNIQUE means that there will not be duplicate entries with the same date */
-                COLUMN_HR_VALUE + " integer)");
+                COLUMN_CALORIES_VALUE + " integer)");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class DataBaseHR extends SQLiteOpenHelper {
 
         for (Measurement measurement : measurementList) {
             values.put(COLUMN_DATE, measurement.getDate());
-            values.put(COLUMN_HR_VALUE, measurement.getHRValue());
+            values.put(COLUMN_CALORIES_VALUE, measurement.getCalories());
 
             // Inserting Row
             db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -63,8 +63,8 @@ public class DataBaseHR extends SQLiteOpenHelper {
         long rightNowMillis = rightNow.getTimeInMillis() + offset;
         long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
         long midNightToday = rightNowMillis - sinceMidnightToday;
-        rightNowMillis /= 1000; // now in seconds
-        midNightToday /= 1000; // now in seconds
+        rightNowMillis /= 1000*60; // now in minutes
+        midNightToday /= 1000*60; // now in minutes
 
         // Query to get all the records starting at last midnight, ordered by date ascending
         SQLiteDatabase db = this.getWritableDatabase();
@@ -78,17 +78,17 @@ public class DataBaseHR extends SQLiteOpenHelper {
         cursor.moveToFirst();
         int counter = cursor.getCount();
         int date;
-        int hr;
+        int calories;
         ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
         for ( ; counter > 0; ) {
             if (cursor.isAfterLast()) break;
             date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
-            hr = cursor.getInt(cursor.getColumnIndex(COLUMN_HR_VALUE));
+            calories = cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
             cursor.moveToNext();
 
             Measurement measurement = new Measurement();
             measurement.setDate(date);
-            measurement.setHRValue(hr);
+            measurement.setCalories(calories);
             measurementList.add(measurement);
         }
 
@@ -110,17 +110,17 @@ public class DataBaseHR extends SQLiteOpenHelper {
         cursor.moveToFirst();
         int counter = cursor.getCount();
         int date;
-        int hr;
+        int calories;
         ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
         for ( ; counter > 0; ) {
             if (cursor.isAfterLast()) break;
             date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
-            hr = cursor.getInt(cursor.getColumnIndex(COLUMN_HR_VALUE));
+            calories = cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
             cursor.moveToNext();
 
             Measurement measurement = new Measurement();
             measurement.setDate(date);
-            measurement.setHRValue(hr);
+            measurement.setCalories(calories);
             measurementList.add(measurement);
         }
 

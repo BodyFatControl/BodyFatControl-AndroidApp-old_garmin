@@ -9,6 +9,8 @@ public class UserProfile {
     private int userWeight;
     private int userActivityClass;
 
+    private int userEERCaloriesPerMinute;
+
     public UserProfile() {
     }
 
@@ -67,5 +69,13 @@ public class UserProfile {
 
     public void setUserActivityClass(int userActivityClass) {
         this.userActivityClass = userActivityClass;
+    }
+
+    public int getUserEERCaloriesPerMinute() {
+        return userEERCaloriesPerMinute;
+    }
+
+    public void setUserEERCaloriesPerMinute(int userEERCaloriesPerMinute) {
+        this.userEERCaloriesPerMinute = userEERCaloriesPerMinute;
     }
 }

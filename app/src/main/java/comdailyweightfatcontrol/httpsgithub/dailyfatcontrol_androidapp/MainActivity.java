@@ -42,13 +42,12 @@ import com.garmin.android.connectiq.ConnectIQ.IQMessageStatus;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.XAxis.XAxisPosition;
+
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final String MY_APP = "3F3D83A85F584671A551EA1316623AD7";
     private IQApp mConnectIQApp = new IQApp(MY_APP);
     public static final int ALIVE_COMMAND = 154030201;
-    public static final int HISTORIC_HR_COMMAND = 104030201;
+    public static final int HISTORIC_CALS_COMMAND = 104030201;
     private static final int USER_DATA_COMMAND = 204030201;
     private static final int CALORIES_CONSUMED_COMMAND = 304030201;
     private TextView mTextViewCaloriesCalc;
@@ -97,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private long mGraphFinalDate;
     private long mLastUpdateDate = 0;
     public static final long SECONDS_24H = 24*60*60;
+    public static double mUserCaloriesEER = 0.0;
+    public static double userCaloriesEERPerMinute = 0.0;
     private double mCurrentCaloriesEER = 0.0;
     private double mCaloriesActive = 0.0;
     private double mCaloriesConsumed = 0.0;
@@ -241,19 +242,21 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                     sendMessage(command);
                                 }
 
-                                command.add(HISTORIC_HR_COMMAND);
-                                long date = new DataBaseHR(mContext).DataBaseGetLastMeasurementDate();
+                                command.add(HISTORIC_CALS_COMMAND);
+                                long date = new DataBaseCalories(mContext).DataBaseGetLastMeasurementDate();
                                 command.add((int) date / 60);
                                 sendMessage(command);
 
-                            } else if(theMessage.get(0) == HISTORIC_HR_COMMAND) {
+                            } else if(theMessage.get(0) == HISTORIC_CALS_COMMAND) {
                                 // Get the user data to store on each measurement
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
                                 iteratorTheMessage.next(); // command ID
+                                long date = (iteratorTheMessage.next() * 60);
                                 while (iteratorTheMessage.hasNext()) {
                                     Measurement measurement = new Measurement();
-                                    measurement.setDate(iteratorTheMessage.next() * 60); // convert to seconds
-                                    measurement.setHRValue(iteratorTheMessage.next());
+                                    measurement.setDate((int) date);
+                                    date -= 60;
+                                    measurement.setCalories(iteratorTheMessage.next());
                                     measurementList.add(measurement);
                                 }
 
@@ -261,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 Collections.reverse(measurementList);
 
                                 // finally write the measurement list to database
-                                new DataBaseHR(mContext).DataBaseWriteMeasurement(measurementList);
+                                new DataBaseCalories(mContext).DataBaseWriteMeasurement(measurementList);
 
                                 // Set current date as LastUpdateDate
                                 Calendar rightNow = Calendar.getInstance();
@@ -289,7 +292,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 mUserProfile.setUserHeight(iteratorTheMessage.next());
                                 mUserProfile.setUserWeight(iteratorTheMessage.next());
                                 mUserProfile.setUserActivityClass(iteratorTheMessage.next());
+                                mUserProfile.setUserEERCaloriesPerMinute(iteratorTheMessage.next());
                                 mDataBaseUserProfile.DataBaseUserProfileWrite(mUserProfile);
+
+                                userCaloriesEERPerMinute = mUserProfile.getUserEERCaloriesPerMinute();
 
                                 drawGraphs();
                             }
@@ -367,7 +373,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             mUserProfile.setUserHeight(0);
             mUserProfile.setUserWeight(0);
             mUserProfile.setUserActivityClass(0);
+            mUserProfile.setUserEERCaloriesPerMinute(0);
         }
+        userCaloriesEERPerMinute = mUserProfile.getUserEERCaloriesPerMinute();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -508,13 +516,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     void drawGraphs() {
-        GraphData graphDataObj = new GraphData(mContext, mGraphInitialDate, mGraphFinalDate, mUserProfile);
-        List<Entry> graphDataCaloriesActive = graphDataObj.prepareCaloriesActive();
-        List<Entry> graphCurrentDataCaloriesEER = graphDataObj.prepareCurrentCaloriesEER();
+        GraphData graphDataObj = new GraphData(mContext, mGraphInitialDate, mGraphFinalDate);
+        List<Entry> graphDataCalories = graphDataObj.prepareCalories();
         mCurrentCaloriesEER = graphDataObj.getCurrentCaloriesEER();
         List<Entry> graphDataCaloriesConsumed = graphDataObj.prepareCaloriesConsumed();
 
-        if (graphDataCaloriesActive != null && graphCurrentDataCaloriesEER != null && graphDataCaloriesConsumed != null) {
+        if (graphDataCalories != null && graphDataCaloriesConsumed != null) {
             final int caloriesSpentColor = ContextCompat.getColor(mContext, R.color.graphCaloriesSpent);
             final int caloriesSpentLineColor = ContextCompat.getColor(mContext, R.color.graphCaloriesSpentLine);
             final int caloriesConsumedColor = ContextCompat.getColor(mContext, R.color.graphCaloriesConsumed);
@@ -551,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             mTextViewCaloriesCalc.setText(builder, TextView.BufferType.SPANNABLE);
 
             // add entries to Calories Active dataset
-            LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCaloriesActive, "Burned calories");
+            LineDataSet dataSetCaloriesActive = new LineDataSet(graphDataCalories, "Burned calories");
             dataSetCaloriesActive.setColor(caloriesSpentLineColor);
             dataSetCaloriesActive.setCubicIntensity(1f);
             dataSetCaloriesActive.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
@@ -599,11 +606,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             // enable scaling and dragging
 //            chart.setDragEnabled(true);
 //            chart.setScaleEnabled(true);
-            mChart.setScaleXEnabled(false);     
+            mChart.setScaleXEnabled(false);
             mChart.setScaleYEnabled(false);
 
             XAxis xAxis = mChart.getXAxis();
-            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setTextColor(Color.GRAY);
             xAxis.setDrawAxisLine(true);
             xAxis.setDrawGridLines(true);
