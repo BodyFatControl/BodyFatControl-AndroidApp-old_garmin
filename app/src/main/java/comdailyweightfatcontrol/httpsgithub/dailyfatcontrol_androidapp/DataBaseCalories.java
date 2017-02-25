@@ -55,6 +55,48 @@ public class DataBaseCalories extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public ArrayList<Measurement> DataBaseGetLastDayMeasurements () {
+
+        // Get the MidNightToday and RightNow date values
+        Calendar rightNow = Calendar.getInstance();
+        long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+        long rightNowMillis = rightNow.getTimeInMillis() + offset;
+        long sinceMidnightToday = rightNowMillis % (24 * 60 * 60 * 1000);
+        long midNightToday = rightNowMillis - sinceMidnightToday;
+        rightNowMillis /= 1000*60; // now in minutes
+        midNightToday /= 1000*60; // now in minutes
+
+        // Query to get all the records starting at last midnight, ordered by date ascending
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_DATE + " BETWEEN " +
+                + midNightToday + " AND " + rightNowMillis + " ORDER BY " + COLUMN_DATE +
+                " ASC";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        // Loop to put all the values to the ArrayList<Measurement>
+        cursor.moveToFirst();
+        int counter = cursor.getCount();
+        int date;
+        int calories;
+        ArrayList<Measurement> measurementList = new ArrayList<Measurement>();
+        for ( ; counter > 0; ) {
+            if (cursor.isAfterLast()) break;
+            date = cursor.getInt(cursor.getColumnIndex(COLUMN_DATE));
+            calories = cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
+            cursor.moveToNext();
+
+            Measurement measurement = new Measurement();
+            measurement.setDate(date);
+            measurement.setCalories(calories);
+            measurementList.add(measurement);
+        }
+
+        cursor.close();
+        db.close(); // Closing database connection
+        return measurementList;
+    }
+
     public ArrayList<Measurement> DataBaseGetMeasurements (long initialDate, long finalDate) {
         // Query to get all the records starting at last midnight, ordered by date ascending
         SQLiteDatabase db = this.getWritableDatabase();

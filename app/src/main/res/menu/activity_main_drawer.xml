@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/ic_menu_home"
-            android:icon="@drawable/ic_menu_home"
-            android:title="Home"
-            android:orderInCategory="100" />
-        <item
-            android:id="@+id/ic_menu_connect"
-            android:icon="@drawable/ic_menu_bluetooth"
-            android:title="Connect to device"
-            android:orderInCategory="200" />
-        <item
-            android:id="@+id/ic_menu_about"
-            android:icon="@drawable/ic_menu_about"
-            android:title="About"
-            android:orderInCategory="300" />
+
     </group>
-</menu>
+    </menu>

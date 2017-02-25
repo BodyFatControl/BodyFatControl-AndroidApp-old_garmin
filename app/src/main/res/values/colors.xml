@@ -15,8 +15,4 @@
     <color name="graphCaloriesSpentLine">#00cc89</color>
 
     <color name="caloriesResultValue">#ff2222</color>
-
-    <color name = "navTextHover">#ef6c00</color>
-    <color name="navTextNormal">#424242</color>
-    <color name = "fillMenuIcon">#424242</color>
 </resources>
