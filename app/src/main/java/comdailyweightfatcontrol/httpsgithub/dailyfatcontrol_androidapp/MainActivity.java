@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static final int HISTORIC_CALS_COMMAND = 104030201;
     private static final int USER_DATA_COMMAND = 204030201;
     private static final int CALORIES_CONSUMED_COMMAND = 304030201;
+    NavigationView navigationView;
+    private CustomDrawerLayout mDrawerLayout;
     private TextView mTextViewCaloriesCalc;
     private ListView listViewLogFoodList;
     private TextView mDateTitle;
@@ -112,8 +115,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private DataBaseUserProfile mDataBaseUserProfile = null;
     private UserProfile mUserProfile = null;
     private Context mContext;
-
-    NavigationView navigationView;
 
     public static SharedPreferences getPrefs() {
         return Prefs;
@@ -304,30 +305,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                                 drawGraphs();
                             }
-
-//                            if (message.size() > 0) {
-//                                for (Object o : message) {
-//                                    builder.append(o.toString());
-//                                    builder.append("\r\n");
-//                                }
-//                            } else {
-//                                builder.append("Received an empty message from the application");
-//                            }
-//
-//                            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-//                            dialog.setTitle(R.string.received_message);
-//                            dialog.setMessage(builder.toString());
-//                            dialog.setPositiveButton(android.R.string.ok, null);
-//                            dialog.create().show();
                         }
                     });
-
-//                        // Start by sending the USER_DATA_COMMAND, which is needed to get the user information at app start
-//                        ArrayList<Integer> command = new ArrayList<Integer>();
-//                        command.add(USER_DATA_COMMAND);
-//                        Random r = new Random();
-//                        command.add(r.nextInt(2^30));
-//                        sendMessage(command);
 
                 } catch (InvalidStateException e) {
                     Toast.makeText(mContext, "ConnectIQ is not in a valid state", Toast.LENGTH_LONG).show();
@@ -354,10 +333,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (CustomDrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -728,7 +707,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //                rightAxis.resetAxisMaximum();
 //            } else {
 //                rightAxis.setAxisMaximum(800);
-//            }
+//            }w
 
 
             // no description text
@@ -974,3 +953,4 @@ class LogFoodAdapter extends ArrayAdapter<Object> {
         return convertView;
     }
 }
+

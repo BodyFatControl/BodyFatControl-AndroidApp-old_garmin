@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.CustomDrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
@@ -51,4 +51,4 @@
         app:itemTextColor="@drawable/nav_menu_item_color"
         app:itemIconTint="@drawable/nav_menu_item_color"/>
 
-</android.support.v4.widget.DrawerLayout>
+</comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.CustomDrawerLayout>
