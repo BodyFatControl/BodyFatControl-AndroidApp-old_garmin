@@ -491,36 +491,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         drawGraphs();
         drawListConsumedFoods();
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.connect) {
-            // Handle the connect action
-            Intent intent = new Intent(this, ConnectActivity.class);
-            startActivity(intent);
-
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Action")
-                    .setAction("ConnectActivity")
-                    .build());
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
+    
     void sendMessage(ArrayList<Integer> command) {
         try {
             mConnectIQ.sendMessage(mIQDevice, mConnectIQApp, command, new IQSendMessageListener() {

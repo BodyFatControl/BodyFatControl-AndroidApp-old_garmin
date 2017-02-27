@@ -1,9 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.cas.test.MainActivity">
-    <item
-        android:id="@+id/connect"
-        android:title="Connect to device"
-        android:orderInCategory="300"/>
-</menu>
