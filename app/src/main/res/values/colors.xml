@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#00695C</color>
+    <color name="colorPrimaryLight">#007c6c</color>
     <color name="colorPrimaryDark">#004D40</color>
     <color name="colorAccent">#FF4081</color>
     <!--<color name="backgroundColor">#80CBC4</color>-->
@@ -17,6 +18,6 @@
     <color name="caloriesResultValue">#ff2222</color>
 
     <color name = "navTextHover">#ef6c00</color>
-    <color name="navTextNormal">#424242</color>
+    <color name = "navTextNormal">#424242</color>
     <color name = "fillMenuIcon">#424242</color>
 </resources>
