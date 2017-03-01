@@ -14,7 +14,7 @@ import java.util.Calendar;
 public class DataBaseCalories extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 2;
-    private static final String DATABASE_DIR = "daily_fat_control";
+    private static final String DATABASE_DIR = "body_fat_control";
     private static final String DATABASE_NAME = "database_calories.db";
     private static final String TABLE_NAME = "calories_out";
     private static final String COLUMN_DATE = "date";

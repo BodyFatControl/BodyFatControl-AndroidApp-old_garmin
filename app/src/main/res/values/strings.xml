@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Daily Fat Control</string>
+    <string name="app_name">Body Fat Control</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -11,9 +11,19 @@
     <string name="service_unavailable">The ConnectIQ service is unavailabe.</string>
 
     <string name="received_message">Received message from device.</string>
-    <string name="missing_widget">Missing Daily Fat Control app</string>
-    <string name="missing_widget_message">The Daily Fat Control app used with this application is not installed on your ConnectIQ device.   Please install the app and try again.</string>
+    <string name="missing_widget">Missing Body Fat Control app</string>
+    <string name="missing_widget_message">The Body Fat Control app used with this application is not installed on your ConnectIQ device.   Please install the app and try again.</string>
     <string name="connect_info">Please select the Garmin device connected to your Android phone.</string>
+
+    <string name="app_version">Body Fat Control - v0.8</string>
+    <string name="about_text">
+        <![CDATA[
+        <p><b><a href="https://github.com/BodyFatControl">Body Fat Control</a></b> is a pair of free and OpenSource Android app and Garmin Connect IQ app, to help users daily control their calories consumed and calories spent. By controlling the balance of calories consumed VS calories spent, is possible to manage the amount of fat stored on the body.</p>
+        <p>Body Fat Control have a strong focus on calories balance and heart rate values (for instance, no steps values are used). Calories spent are calculated only based on the user heart rate, weight, height and age, using well know scientific formulas. The calculated values are near the ones calculated from Garmin.</p>
+        <p>For more information, please visit the <a href="https://github.com/BodyFatControl">Body Fat Control page</a>.</p>
+        <p>Please send your feedback to my e-mail: <a href="mailto:casainho@gmail.com?Subject=BodyFatControl" target="_top">casainho@gmail.com</a></p>
+        ]]>
+    </string>
 
     <string-array name="foods_unity_type">
         <item>grams</item>

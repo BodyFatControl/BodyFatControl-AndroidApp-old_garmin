@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class DataBaseFoods extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
-    private static final String DATABASE_DIR = "daily_fat_control";
+    private static final String DATABASE_DIR = "body_fat_control";
     private static final String DATABASE_NAME = "database_foods.db";
     private static final String TABLE_NAME = "foods";
     private static final String COLUMN_DATE = "date";

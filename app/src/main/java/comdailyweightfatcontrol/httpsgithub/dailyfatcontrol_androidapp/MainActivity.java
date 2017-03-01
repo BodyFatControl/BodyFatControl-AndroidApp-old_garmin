@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Daily Fat Control - v0.7");
+        setTitle("Body Fat Control");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -460,6 +460,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     .build());
         } else if (id == R.id.ic_menu_about){
 
+            // Handle the connect action
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -491,7 +494,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         drawGraphs();
         drawListConsumedFoods();
     }
-    
+
     void sendMessage(ArrayList<Integer> command) {
         try {
             mConnectIQ.sendMessage(mIQDevice, mConnectIQApp, command, new IQSendMessageListener() {
