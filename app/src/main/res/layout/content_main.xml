@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.MainActivity"
+    tools:context="combodyfatcontrol.httpsgithub.bodyfatcontrol.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <LinearLayout
@@ -21,7 +21,7 @@
         android:paddingBottom="4dp"
         android:orientation="vertical"
         android:focusableInTouchMode="true"
-        tools:context="comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp.MainActivity"
+        tools:context="combodyfatcontrol.httpsgithub.bodyfatcontrol.MainActivity"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 

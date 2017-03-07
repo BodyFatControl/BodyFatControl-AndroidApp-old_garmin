@@ -2,11 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        config {
+            keyAlias 'google_android_ide_sign_apps_key.jks'
+            keyPassword 'Yb94wguLcMKanGSB'
+            storeFile file('/home/cas/Dropbox/google_android_ide_sign_apps_key.jks')
+            storePassword 'U47L5Vfbkz3MgzJsxNT'
+        }
     }
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion '25.0.2'
     defaultConfig {
-        applicationId 'comdailyweightfatcontrol.httpsgithub.dailyfatcontrol_androidapp'
+        applicationId 'combodyfatcontrol.httpsgithub.bodyfatcontrol'
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 3
@@ -29,13 +35,13 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/connectiq.jar')
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
-    compile 'com.google.android.gms:play-services-analytics:10.0.1'
+    compile 'com.google.android.gms:play-services-analytics:10.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
