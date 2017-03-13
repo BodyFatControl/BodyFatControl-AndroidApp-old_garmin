@@ -15,12 +15,16 @@
     <string name="missing_widget_message">The Body Fat Control app used with this application is not installed on your ConnectIQ device.   Please install the app and try again.</string>
     <string name="connect_info">Please select the Garmin device connected to your Android phone.</string>
 
-    <string name="app_version">Body Fat Control - v0.8</string>
+    <string name="app_version">Body Fat Control - v0.8.1</string>
     <string name="about_text">
         <![CDATA[
-        <p><b><a href="https://github.com/BodyFatControl">Body Fat Control</a></b> is a pair of free and OpenSource Android app and Garmin Connect IQ app, to help users daily control their calories consumed and calories spent. By controlling the balance of calories consumed VS calories spent, is possible to manage the amount of fat stored on the body.</p>
-        <p>Body Fat Control have a strong focus on calories balance and heart rate values (for instance, no steps values are used). Calories spent are calculated only based on the user heart rate, weight, height and age, using well know scientific formulas. The calculated values are near the ones calculated from Garmin.</p>
-        <p>For more information, please visit the <a href="https://github.com/BodyFatControl">Body Fat Control page</a>.</p>
+        <p><b><a href="https://github.com/BodyFatControl/documentation/wiki">Body Fat Control</a></b> is a free and OpenSource Android app and Garmin app, to help users daily control their balance of calories consumed versus calories spent. By controlling this balance is possible to manage the amount of fat stored on the body.</p>
+        <p>From my experience, is important to control the balance/quantity of calories and also the "quality of food" - for instance, eating 400kcals of a whole wheat bread is preferable than eating the same amount of 400kcals of sweet cake. Resuming: control the calories consumed versus calories spent and also prefer health food.</p>
+        <p><b>How it works</b><br>
+        - The Body Fat Control app running on <a href="https://buy.garmin.com/en-US/US/p/538374">Garmin vívoactive HR</a> measures automatically the calories spent by the user and syncs this information with the Android app<br>
+        - The user logs his meals on the Android Body Fat Control app and will see the historic graph of the day with the consumed calories and the spent calories<br></p>
+        <p>To verify the results/close the loop is recommended the users to measure theirs body fat. I recommend using the <a href="https://www.skulpt.me/">Skulpt Scanner</a> - I measure everyday my muscles (mainly the ABS) using Skulpt Scanner.</p>
+        <p>For the full information, please visit the <a href="https://github.com/BodyFatControl/documentation/wiki">Body Fat Control website</a>.</p>
         <p>Please send your feedback to my e-mail: <a href="mailto:casainho@gmail.com?Subject=BodyFatControl" target="_top">casainho@gmail.com</a></p>
         ]]>
     </string>
