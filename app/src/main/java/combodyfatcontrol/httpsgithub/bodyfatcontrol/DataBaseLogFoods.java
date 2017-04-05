@@ -183,7 +183,7 @@ public class DataBaseLogFoods extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String mealsTime[] = {MealTime.BREAKFAST, MealTime.MORNING_SNACK, MealTime.LUNCH,
-                MealTime.AFTERNOON_SNACK, MealTime.DINNER, MealTime.EVENING_SNACK, MealTime.ANYTIME};
+                MealTime.AFTERNOON_SNACK, MealTime.DINNER, MealTime.EVENING_SNACK};
 
         ArrayList<Object> foodsAndMealsList = new ArrayList<>();
         int foodsAndMealsListPosition = 0;
@@ -244,7 +244,6 @@ class MealTime {
     public static final String AFTERNOON_SNACK = "Afternoon snack";
     public static final String DINNER = "Dinner";
     public static final String EVENING_SNACK = "Evening snack";
-    public static final String ANYTIME = "Anytime";
 
     private int mCalories = 0;
     private String mMealTimeName = null;

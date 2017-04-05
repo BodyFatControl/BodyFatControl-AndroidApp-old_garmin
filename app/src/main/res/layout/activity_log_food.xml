@@ -17,7 +17,7 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:paddingBottom="6dp"
             android:textSize="@dimen/title_text_size"
             android:text="---" />
 
@@ -27,9 +27,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:singleLine="true"
             android:textSize="@dimen/title2_text_size"
             android:text="---" />
 
@@ -106,6 +104,40 @@
             android:layout_height= "2dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="#c0c0c0" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+            <Button
+                android:id="@+id/button_log_this"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_weight="0.5"
+                android:text="LOG THIS"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             android:background="#c0c0c0"/>
 
         <TextView
@@ -116,7 +148,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:layout_weight="0.5"
-            android:textSize="@dimen/title_text_size"
+            android:textSize="@dimen/text_size_xl"
             android:text="Meals and Snacks Time" />
 
         <RadioGroup
@@ -128,7 +160,7 @@
                 android:id="@+id/radio_button_breakfast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:textSize="@dimen/text_size_m"
                 android:text="BREAKFAST"
                 android:checked="false"
                 android:duplicateParentState="false" />
@@ -138,6 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MORNING SNACK"
+                android:textSize="@dimen/text_size_m"
                 android:checked="false" />
 
             <RadioButton
@@ -145,6 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="LUNCH"
+                android:textSize="@dimen/text_size_m"
                 android:checked="false" />
 
             <RadioButton
@@ -152,6 +186,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="AFTERNOON SNACK"
+                android:textSize="@dimen/text_size_m"
                 android:checked="false" />
 
             <RadioButton
@@ -159,20 +194,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="DINNER"
+                android:textSize="@dimen/text_size_m"
                 android:checked="false" />
 
             <RadioButton
                 android:id="@+id/radio_button_evening_snack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="EVENING SNACK" />
+                android:text="EVENING SNACK"
+                android:textSize="@dimen/text_size_m" />
 
-            <RadioButton
-                android:id="@+id/radio_button_anytime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ANYTIME"
-                android:checked="false" />
         </RadioGroup>
 
         <View
@@ -196,7 +227,7 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="5dp"
                 android:layout_weight="0.5"
-                android:textSize="@dimen/title_text_size"
+                android:textSize="@dimen/text_size_xl"
                 android:text="Date" />
 
             <EditText
@@ -207,7 +238,7 @@
                 android:layout_weight="0.5"
                 android:inputType="text|number"
                 android:id="@+id/date"
-                android:textSize="@dimen/title2_text_size"
+                android:textSize="@dimen/text_size_m"
                 android:hint="date"/>
         </LinearLayout>
 
@@ -230,7 +261,7 @@
                 android:layout_weight="0.5"
                 android:inputType="text|number"
                 android:id="@+id/time"
-                android:textSize="@dimen/title2_text_size"
+                android:textSize="@dimen/text_size_m"
                 android:hint="time"/>
         </LinearLayout>
 
@@ -241,28 +272,5 @@
             android:paddingEnd="4dp"
             android:background="#c0c0c0"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="1"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:paddingTop="25dp">
-
-            <android.support.v4.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"/>
-
-            <Button
-                android:id="@+id/button_log_this"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_weight="0.5"
-                android:text="LOG THIS"/>
-        </LinearLayout>
     </LinearLayout>
 </ScrollView>

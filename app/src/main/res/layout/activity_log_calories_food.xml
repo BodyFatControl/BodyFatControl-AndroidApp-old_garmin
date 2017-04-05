@@ -17,8 +17,8 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="@dimen/text_size_xl"
+            android:paddingBottom="6dp"
+            android:textSize="@dimen/title_text_size"
             android:hint="Food name"/>
 
         <EditText
@@ -27,9 +27,8 @@
             android:layout_height="wrap_content"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:textSize="@dimen/text_size_l"
+            android:textSize="@dimen/title2_text_size"
             android:hint="Brand" />
 
         <View
@@ -103,6 +102,40 @@
             android:layout_height= "2dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="#c0c0c0" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+            <Button
+                android:id="@+id/button_log_this"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_weight="0.5"
+                android:text="LOG THIS"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             android:background="#c0c0c0"/>
 
         <TextView
@@ -169,13 +202,6 @@
                 android:textSize="@dimen/text_size_m"
                 android:checked="false"/>
 
-            <RadioButton
-                android:id="@+id/radio_button_anytime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ANYTIME"
-                android:textSize="@dimen/text_size_m"
-                android:checked="false" />
         </RadioGroup>
 
         <View
@@ -210,7 +236,7 @@
                 android:layout_weight="0.5"
                 android:inputType="text|number"
                 android:id="@+id/date"
-                android:textSize="@dimen/text_size_l"
+                android:textSize="@dimen/text_size_m"
                 android:hint="date"/>
         </LinearLayout>
 
@@ -233,7 +259,7 @@
                 android:layout_weight="0.5"
                 android:inputType="text|number"
                 android:id="@+id/time"
-                android:textSize="@dimen/text_size_l"
+                android:textSize="@dimen/text_size_m"
                 android:hint="time"/>
         </LinearLayout>
 
@@ -244,28 +270,5 @@
             android:paddingEnd="4dp"
             android:background="#c0c0c0"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="1"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:paddingTop="25dp">
-
-            <android.support.v4.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"/>
-
-            <Button
-                android:id="@+id/button_log_this"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_weight="0.5"
-                android:text="LOG THIS"/>
-        </LinearLayout>
     </LinearLayout>
 </ScrollView>

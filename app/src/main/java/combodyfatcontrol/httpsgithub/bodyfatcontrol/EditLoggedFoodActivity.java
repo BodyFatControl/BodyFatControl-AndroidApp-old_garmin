@@ -78,8 +78,6 @@ public class EditLoggedFoodActivity extends AppCompatActivity {
             mRadioGroup.check(R.id.radio_button_diner);
         } else if (foodMealTime.equals("EVENING SNACK")) {
             mRadioGroup.check(R.id.radio_button_evening_snack);
-        } else if (foodMealTime.equals("ANYTIME")) {
-            mRadioGroup.check(R.id.radio_button_anytime);
         }
 
         mEditTextDate.setText(mCalendarDate.get(java.util.Calendar.DAY_OF_MONTH) + "/" +
