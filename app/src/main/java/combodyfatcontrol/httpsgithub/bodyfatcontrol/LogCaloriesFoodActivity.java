@@ -167,7 +167,10 @@ public class LogCaloriesFoodActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            food.setDate(date);
+
+                            java.util.Calendar rightNow = java.util.Calendar.getInstance();
+                            long offset = rightNow.get(java.util.Calendar.DST_OFFSET);
+                            food.setDate(date + offset);
 
                             food.setIsCustomCalories(true);
 
