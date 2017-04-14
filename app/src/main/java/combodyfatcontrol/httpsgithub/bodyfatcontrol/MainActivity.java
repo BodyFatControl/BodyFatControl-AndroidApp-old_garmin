@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private long mGraphFinalDate;
     private long mLastUpdateDate = 0;
     public static final long SECONDS_24H = 24*60*60;
-    public static double mUserCaloriesEER = 0.0;
-    public static double userCaloriesEERPerMinute = 0.0;
     private double mCurrentCaloriesEER = 0.0;
     private double mCaloriesActive = 0.0;
     private double mCaloriesConsumed = 0.0;
@@ -256,12 +254,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 // Get the user data to store on each measurement
                                 Iterator<Integer> iteratorTheMessage = theMessage.iterator();
                                 iteratorTheMessage.next(); // command ID
-                                long date = (iteratorTheMessage.next() * 60);
+                                int date = (iteratorTheMessage.next() * 60);
+                                int EERCalsPerMinute = iteratorTheMessage.next();
                                 while (iteratorTheMessage.hasNext()) {
                                     Measurement measurement = new Measurement();
                                     measurement.setDate((int) date);
                                     date -= 60;
                                     measurement.setCalories(iteratorTheMessage.next());
+                                    measurement.setCaloriesEERPerMinute(EERCalsPerMinute);
                                     measurementList.add(measurement);
                                 }
 
@@ -297,10 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                                 mUserProfile.setUserHeight(iteratorTheMessage.next());
                                 mUserProfile.setUserWeight(iteratorTheMessage.next());
                                 mUserProfile.setUserActivityClass(iteratorTheMessage.next());
-                                mUserProfile.setUserEERCaloriesPerMinute(iteratorTheMessage.next());
                                 mDataBaseUserProfile.DataBaseUserProfileWrite(mUserProfile);
-
-                                userCaloriesEERPerMinute = mUserProfile.getUserEERCaloriesPerMinute();
 
                                 drawGraphs();
                             }
@@ -372,9 +369,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             mUserProfile.setUserHeight(0);
             mUserProfile.setUserWeight(0);
             mUserProfile.setUserActivityClass(0);
-            mUserProfile.setUserEERCaloriesPerMinute(0);
         }
-        userCaloriesEERPerMinute = mUserProfile.getUserEERCaloriesPerMinute();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -810,13 +805,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                         } else if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
                             mDateTitle.setText("yesterday");
-                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H - (1 * 60); // seconds, 24*59*60
 
                         } else { // other days
                             SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
                             String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
                             mDateTitle.setText(dateString);
-                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H - (1 * 60); // seconds, 24*59*60
                         }
 
                         drawGraphs();
@@ -832,13 +827,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
                         if (mGraphInitialDate == (mMidNightToday - SECONDS_24H)) { // yesterday
                             mDateTitle.setText("yesterday");
-                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H - (1 * 60); // seconds, 24*59*60
 
                         } else { // other days
                             SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
                             String dateString = formatter.format(new Date(mGraphInitialDate * 1000L));
                             mDateTitle.setText(dateString);
-                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H; // seconds
+                            mGraphFinalDate = mGraphInitialDate + SECONDS_24H - (1 * 60); // seconds, 24*59*60
                         }
 
                         drawGraphs();

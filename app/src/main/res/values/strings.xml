@@ -15,7 +15,7 @@
     <string name="missing_widget_message">The Body Fat Control app used with this application is not installed on your ConnectIQ device.   Please install the app and try again.</string>
     <string name="connect_info">Please select the Garmin device connected to your Android phone.</string>
 
-    <string name="app_version">Body Fat Control - v0.8.1</string>
+    <string name="app_version">Body Fat Control - v0.9.0</string>
     <string name="about_text">
         <![CDATA[
         <p><b><a href="https://github.com/BodyFatControl/documentation/wiki">Body Fat Control</a></b> is a free and OpenSource Android app and Garmin app, to help users daily control their balance of calories consumed versus calories spent. By controlling this balance is possible to manage the amount of fat stored on the body.</p>

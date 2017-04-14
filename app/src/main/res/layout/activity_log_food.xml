@@ -67,7 +67,8 @@
                 android:id="@+id/serving_size_entry"
                 android:textSize="@dimen/title2_text_size"
                 android:hint="1"
-                android:numeric="integer|decimal" />
+                android:numeric="integer|decimal"
+                android:imeOptions="actionDone" />
 
             <TextView
                 android:id="@+id/food_unity_type"

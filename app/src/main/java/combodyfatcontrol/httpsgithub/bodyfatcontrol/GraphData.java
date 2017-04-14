@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GraphData {
     private Context mContext;
-    private double mCurrentCaloriesEER = 0;
+    private double mCurrentCaloriesEER = -1;
     private double mCaloriesActive = 0;
     private double mCaloriesConsumed = 0;
     private long mInitialDate = 0;
@@ -32,22 +32,17 @@ public class GraphData {
         long date = 0;
         long endOfToday = (MainActivity.SECONDS_24H - 1) / 60;
         long graphFinalDate = (mFinalDate - mInitialDate) / 60; // in minutes
-        double caloriesEERPerMinute = MainActivity.userCaloriesEERPerMinute;
-        double caloriesEER = 0;
+        double caloriesEERPerMinute = 0;
         Iterator measurementListIterator = measurementList.iterator();
         Measurement measurement = null;
         double caloriesActiveSum = 0;
         double calories = 0;
 
         // ***************************************************
-        // First calc the EER calories (sum of EER calories per minute
-         mCurrentCaloriesEER = caloriesEERPerMinute * (graphFinalDate + 1);
-        // ***************************************************
-
-        // ***************************************************
         // Now calc the active calories and prepare the graph data
         date = 0;
         for ( ; date < endOfToday; date++) { // Loop trough all the minutes starting from today midnight
+
             if (date <= graphFinalDate) { //  calc calories only until current date
                 if (measurement == null && measurementListIterator.hasNext() ) { // read new measurement if wasn't done before
                     measurement = (Measurement) measurementListIterator.next();
@@ -55,6 +50,11 @@ public class GraphData {
 
                 if (measurement != null) {
                     calories = measurement.getCalories();
+                    caloriesEERPerMinute = measurement.getCaloriesEERPerMinute();
+
+                    // Calc the EER calories for the first time
+                    if (mCurrentCaloriesEER == -1) { mCurrentCaloriesEER = caloriesEERPerMinute * (graphFinalDate + 1); }
+
                     if (calories > caloriesEERPerMinute) { // means that we have active calories here
                         caloriesActiveSum += calories - caloriesEERPerMinute; // subtract the EER calories value, to get only the calories active value
                     }

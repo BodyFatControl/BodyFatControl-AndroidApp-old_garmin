@@ -15,8 +15,8 @@ android {
         applicationId 'combodyfatcontrol.httpsgithub.bodyfatcontrol'
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 4
-        versionName "0.8.1"
+        versionCode 5
+        versionName "0.9.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
